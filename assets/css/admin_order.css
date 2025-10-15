@@ -1,3 +1,8 @@
+:root {
+    --primary-color: #8b5cf6;
+    --grey-color: #787676;
+}
+
 body {
     margin: 0px;
 }
@@ -27,6 +32,17 @@ body {
     background-color: #efaeb9;
     color: #920404;
 }
+
+.search-element {
+    margin: 0 5px;
+    width: calc(25% - 10px);
+    border-radius: 8px;
+    padding: 10px 15px;
+}
+
+.radius-8 {
+    border-radius: 8px;
+}
 /*-------------------*/
 
 .wrapper {
@@ -37,7 +53,7 @@ body {
 
 .left-bar {
     width: 20%;
-    background-color: #8b5cf6;
+    background-color: var(--primary-color);
     display: inline-block;
 }
 
@@ -81,9 +97,33 @@ body {
 }
 
 .orders .search-bar {
-    height: 100px;
     background-color: white;
     border-radius: 8px;
+    padding: 20px;
+}
+
+.search-bar form {
+    display: flex;
+    flex-wrap: wrap; 
+}
+
+.search-bar span {
+    margin: 20px 5px;
+}
+
+.search-bar .input-search {
+    border: 1px var(--grey-color) solid;
+}
+
+.search-bar .input-date {
+    margin: 20px 5px;
+}
+
+.search-bar .search-btn {
+    color: white;
+    background-color: var(--primary-color);
+    border-radius: 8px;
+    border: none;
 }
 
 .orders .order-list {
@@ -185,18 +225,18 @@ body {
 
 .status-update-form .update-btn {
     box-sizing: border-box;
-    padding: 10px;
+    padding: 10px 20px;
     border-radius: 8px;
-    background-color: #8b5cf6;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     cursor: pointer;
 }
 
 .status-update-form .update-btn:hover {
-    color: #8b5cf6;
+    color: var(--primary-color);
     background-color: white;
-    border: 2px solid #8b5cf6;
+    border: 2px solid var(--primary-color);
 }
 
 .wrapper-order-content .order-footer {
@@ -207,13 +247,13 @@ body {
 .order-footer .detail-bnt {
     padding: 10px 20px;
     background-color: white;
-    color: #8b5cf6;
-    border: 2px solid #8b5cf6;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
     border-radius: 8px;
     cursor: pointer;
 }
 
 .order-footer .detail-bnt:hover {
     color: white;
-    background-color: #8b5cf6;
+    background-color: var(--primary-color);
 }

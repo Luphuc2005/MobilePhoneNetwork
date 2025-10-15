@@ -26,8 +26,27 @@
                     <p>Quản lý và theo dõi trạng thái đơn hàng</p>
                 </div>
                 <div class = "search-bar">
-                    <input type = "search" placeholder = "Tìm mã đơn hàng, khách hàng" class = "input-search">
+                    <form>
+                        <input type = "search" class = "search-element input-search" placeholder = "Tìm mã đơn hàng, khách hàng">
                         
+                        <select id = "status-select" class = "search-element">
+                            <option value = "all" selected>Tất cả trạng thái</option>
+                            <option value = "waiting">Chờ xử lý</option>
+                            <option value = "accepted">Đã xác nhận</option>
+                            <option value = "delivery">Đang giao</option>
+                            <option value = "done">Hoàn thành</option>
+                            <option value = "cancel">Đã hủy</option>
+                        </select>
+
+                        <select id = "dictrict-select" class = "search-element">
+                            <option value = "all">Tất cả phường xã</option>
+                        </select>
+                        <button class = "search-btn search-element">Lọc</button>
+                        <span class = "info-label">Từ ngày:</span>
+                        <input type = "date" id = "start-date" class = "input-date">
+                        <span>-</span>
+                        <input type = "date" id = "end-date" class = "input-date">
+                    </form>
                 </div>
                 <div class = "order-list">
                     <div class = "order-item">
