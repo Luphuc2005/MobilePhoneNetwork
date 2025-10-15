@@ -1,6 +1,7 @@
 :root {
     --primary-color: #8b5cf6;
     --grey-color: #787676;
+    --grey-background: #f7f7f7;
 }
 
 body {
@@ -43,6 +44,11 @@ body {
 .radius-8 {
     border-radius: 8px;
 }
+
+.selected-fill {
+    background-color: var(--primayry-color);
+    color: white;
+}
 /*-------------------*/
 
 .wrapper {
@@ -61,6 +67,7 @@ body {
     width: 80%;
     display: inline-block;
     overflow: hidden;
+    padding: 20px;
 }
 
 .header {
@@ -85,7 +92,7 @@ body {
 
 .orders {
     box-sizing: border-box;
-    padding: 20px;
+    padding: 20px 0px;
 }
 
 .orders .title {
@@ -256,4 +263,38 @@ body {
 .order-footer .detail-bnt:hover {
     color: white;
     background-color: var(--primary-color);
+}
+
+.content .content-footer {
+    box-sizing: border-box;
+    background-color: white;
+    display: flex;
+}
+
+.content-footer .page-number {
+    box-sizing: border-box;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+}
+
+.content-footer .page-controler {
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.page-controler .page-item {
+    display: inline-block;
+    padding: 10px;
+    border: 2px var(--primary-color) solid;
+    margin: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.page-controler .page-item:hover {
+    background-color: var(--primary-color);
+    color: white;
 }
