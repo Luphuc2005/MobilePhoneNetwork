@@ -1,0 +1,239 @@
+
+/* xóa mặc định  */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Times New Roman', Times, serif;
+    background-color: #f5f5f5;
+    min-width: 500px;
+}
+
+/* header chính */
+.main-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: sticky;
+    /* cho lúc nào cũng ở trên  */
+    top: 0;
+    /* độ chìm -> me 1000 */
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* bố cục header  */
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 40px;
+    /* khoảng cách giữa các phần tử */
+    gap: 30px;
+    /* cho xuống hàng  */
+    flex-wrap: wrap;
+}
+
+/* logo */
+.logo a {
+    /* bỏ gạch dưới  */
+    text-decoration: none;
+    font-size: 28px;
+    font-weight: 700;
+    color: white;
+    /* giảm khoảng cách */
+    letter-spacing: -0.5px;
+    /* không cho xuống hàng  */
+    white-space: nowrap;
+}
+
+/* thanh tìm kiếm  */
+.search-bar {
+    /* 1 1 0 */
+    flex: 1;
+    min-width: 250px;
+    position: relative;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 12px 16px;
+    /* xóa border và bo tròn gốc */
+    border: none;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.95);
+    font-size: 14px;
+    /* tất cả hiệu ứng 0.3s */
+    transition: all 0.3s ease;
+    /* THÊM MỚI: Thêm shadow cho input */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar input:focus {
+    outline: none;
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+/* chữ chìm đổi màu */
+.search-bar input::placeholder {
+    color: #999;
+}
+
+/* menu điều hướng  */
+.main-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.main-nav a {
+    display: block;
+    padding: 10px 18px;
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+    font-size: 14px;
+    border-radius: 6px;
+    /* tất cả hiệu ứng 0.3s */
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.main-nav a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    /* di chuyển lên trên  */
+    transform: translateY(-2px);
+}
+/* tạo phần tử giả dấu gạch dưới  */
+.main-nav a::after {
+    /* không cần chèn cái gì vào hết  */
+    content: '';
+    /* duy chuyển tự do */
+    position: absolute;
+    bottom: 5px;
+    left: 18px;
+    right: 18px;
+    height: 2px;
+    background-color: white;
+    /* ban đầu ẩn nó đi  */
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+/* bấm vào mới hiện */
+.main-nav a:hover::after {
+    transform: scaleX(1);
+}
+/* hành động người dùng  */
+.user-actions {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+/* con chỏ  */
+.cart-icon-wrapper, .acount-icon {
+    position: relative;
+    padding: 8px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+/* phóng to lên tí */
+.cart-icon-wrapper:hover, .acount-icon:hover {
+    transform: scale(1.1);
+}
+/* icon */
+.cart-icon-wrapper img, .acount-icon img {
+    width: 24px;
+    height: 24px;
+    /* THÊM MỚI: Filter để icon trắng trên background tối */
+    filter: brightness(0) invert(1);
+}
+
+/* số điếm giỏ hàng  */
+.cart-count {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #ff4757;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* tài khoản  */
+.user-acount-area a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: white;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    /* tất cả hiệu ứng 0.3s */
+    transition: all 0.3s ease;
+}
+
+.user-acount-area a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.user-acount-area img {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) invert(1);
+}
+
+.cart-icon a {
+    text-decoration: none;
+    color: white;
+}
+
+
+/* Mobile nhỏ - dưới 500px */
+@media (max-width:700px) {
+    .header-top {
+        flex-wrap: wrap; 
+        padding: 12px 15px;
+        gap: 15px;
+    }
+
+    .logo {
+        flex-shrink: 0;
+    }
+    /* co dãn thoải mái  */
+    .search-bar {
+        flex: 1; 
+        min-width: 150px;
+    }
+    /* tạo phần tử vô hình cho thanh tìm kiếm không có kích thước  */
+    .search-bar::after {
+        content: '';      
+        flex-basis: 100%; 
+        width: 0;       
+        height: 0;       
+        order: 3;   
+    }
+
+    .main-nav {
+        order: 4;
+    }
+
+    .user-actions {
+        order: 5;
+    }
+}
