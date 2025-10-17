@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/css/components.css">
+    <title>Trang Chính Admin</title>
+</head>
+<body>
+    <!-- ========HEADER========== -->
+    <header class="main-header">
+        <div class="logo">
+            <a href="admin.html">📱PhoneStore</a>
+        </div>
+        <div class="admin-info">
+            <div class="admin-avatar">👨‍💼</div>
+            <div class="admin-user">
+                <span id="admin-name">Duy Đăng</span>
+                <span>Quản trị viên</span>
+            </div>
+            <button class="logout-btn" onclick="handleLogout()">
+                <span>🚪</span>
+                Đăng xuất
+            </button>
+        </div>
+    </header>
+    <!-- ============MAIN CONTAINER========== -->
+<div class="main-container">
+        <!-- thanh điều hướng -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon">⚙️</div>
+                <div class="sidebar-brand-text">Admin Panel</div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="#dashboard" class="sidebar-menu-item active" onclick="navigateTo('dashboard', event)">
+                        <img src="./assets/images/icons/home-space.png" alt="logo home-space" class="logo-dashboard">
+                        <span>Tổng quan</span>
+                    </a>
+                </li>
+
+                <div class="sidebar-section-title">Quản lý</div>
+
+                <!-- HỒNG PHÚC - Quản lý khách hàng -->
+                <li>
+                    <a href="#customers" class="sidebar-menu-item" onclick="navigateTo('customers', event)">  
+                         <img src="./assets/images/icons/manager-customer.png" alt="logo manager-customer" class="logo-dashboard">
+                        <span>Quản lý khách hàng</span>
+                    </a>
+                </li>
+
+                <!-- HUYỀN TRANG - Quản lý sản phẩm -->
+                <li>
+                    <a href="#products" class="sidebar-menu-item" onclick="navigateTo('products', event)">
+                       <img src="./assets/images/icons/manager-product.png" alt="logo manager-product" class="logo-dashboard">
+                        <span>Quản lý sản phẩm</span>
+                    </a>
+                </li>
+
+                <!-- DUY ĐĂNG - Quản lý loại sản phẩm (Tuần 2) -->
+                <li>
+                    <a href="#categories" class="sidebar-menu-item" onclick="navigateTo('categories', event)">
+                        <img src="./assets/images/icons/manager-product.png" alt="logo manager-product" class="logo-dashboard">
+                        <span>Quản lý loại SP</span>
+                    </a>
+                </li>
+
+                <!-- THANH NHÀN - Quản lý đơn hàng -->
+                <li>
+                    <a href="#orders" class="sidebar-menu-item" onclick="navigateTo('orders', event)">
+                        <img src="./assets/images/icons/manager-product.png" alt="logo manager-product" class="logo-dashboard">
+                        <span>Quản lý đơn hàng</span>
+                    </a>
+                </li>
+
+                <!-- THANH NHÀN - Quản lý tồn kho -->
+                <li>
+                    <a href="#inventory" class="sidebar-menu-item" onclick="navigateTo('inventory', event)">
+                        <img src="./assets/images/icons/manager-product.png" alt="logo manager-product" class="logo-dashboard">
+                        <span>Quản lý tồn kho</span>
+                    </a>
+                </li>
+
+                <!-- HUYỀN TRANG - Quản lý nhập hàng -->
+                <li>
+                    <a href="#import" class="sidebar-menu-item" onclick="navigateTo('import', event)">
+                        <img src="./assets/images/icons/manager-product.png" alt="logo manager-product" class="logo-dashboard">
+                        <span>Quản lý nhập hàng</span>
+                    </a>
+                </li>
+
+                <div class="sidebar-section-title">Khác</div>
+
+                <!-- HỒNG PHÚC - Quản lý giá (Tuần 2) -->
+                <li>
+                    <a href="#pricing" class="sidebar-menu-item" onclick="navigateTo('pricing', event)">
+                       <img src="./assets/images/icons/manager-product.png" alt="logo manager-product" class="logo-dashboard">
+                        <span>Quản lý giá</span>
+                    </a>
+                </li>
+
+                <!-- DUY ĐĂNG - Cài đặt hệ thống -->
+                <li>
+                    <a href="#settings" class="sidebar-menu-item" onclick="navigateTo('settings', event)">
+                        <img src="./assets/images/icons/manager-product.png" alt="logo manager-product" class="logo-dashboard">
+                        <span>Cài đặt</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- ============DUY ĐĂNG============= -->
+        <main class="content-area">
+            <!-- DASHBOARD SECTION -->
+            <div id="dashboard-content" class="dashboard-section">
+                <div class="dashboard-header">
+                    <h1>Tổng quan</h1>
+                    <p>Chào mừng đến với bảng điều khiển quản trị MobileShop</p>
+                </div>
+
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <img src="./assets/images/icons/manager-product.png" alt="logo manager-product" class="logo-dashboard">
+                        </div>
+                        <div class="stat-content">
+                            <h3>Khách hàng</h3>
+                            <p>1,250</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                           <img src="./assets/images/icons/manager-product.png" alt="logo manager-product" class="logo-dashboard">
+                        </div>
+                        <div class="stat-content">
+                            <h3>Sản phẩm</h3>
+                            <p>320</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                           <img src="./assets/images/icons/manager-product.png" alt="logo manager-product" class="logo-dashboard">
+                        </div>
+                        <div class="stat-content">
+                            <h3>Đơn hàng</h3>
+                            <p>428</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <img src="./assets/images/icons/manager-product.png" alt="logo manager-product" class="logo-dashboard">
+                        </div>
+                        <div class="stat-content">
+                            <h3>Doanh thu</h3>
+                            <p>2.5B đ</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-links">
+                    <h2>Liên kết nhanh</h2>
+                    <div class="links-grid">
+                        <button class="quick-link-btn" onclick="navigateTo('customers', event)">
+                            <img src="./assets/images/icons/manager-product.png" alt="logo manager-product" class="logo-dashboard">
+                            Quản lý khách hàng
+                        </button>
+                        <button class="quick-link-btn" onclick="navigateTo('products', event)">
+                           <img src="./assets/images/icons/manager-product.png" alt="logo manager-product" class="logo-dashboard">
+                            Thêm sản phẩm
+                        </button>
+                        <button class="quick-link-btn" onclick="navigateTo('orders', event)">
+                            <img src="./assets/images/icons/manager-product.png" alt="logo manager-product" class="logo-dashboard">
+                            Xem đơn hàng
+                        </button>
+                        <button class="quick-link-btn" onclick="navigateTo('inventory', event)">
+                           <img src="./assets/images/icons/manager-product.png" alt="logo manager-product" class="logo-dashboard">
+                            Tồn kho
+                        </button>
+                        <button class="quick-link-btn" onclick="navigateTo('import', event)">
+                            <img src="./assets/images/icons/manager-product.png" alt="logo manager-product" class="logo-dashboard">
+                            Nhập hàng
+                        </button>
+                        <button class="quick-link-btn" onclick="navigateTo('pricing', event)">
+                            <img src="./assets/images/icons/manager-product.png" alt="logo manager-product" class="logo-dashboard">
+                            Quản lý giá
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OTHER SECTIONS (Placeholder) -->
+            <div id="other-content" style="display: none;">
+                <div class="dashboard-header">
+                    <h1 id="section-title">Quản lý</h1>
+                    <p id="section-desc">Trang này sẽ được phát triển...</p>
+                </div>
+            </div>
+        </main>
+     
+</body>
+</html>
