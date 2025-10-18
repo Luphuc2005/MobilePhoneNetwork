@@ -433,7 +433,7 @@ body {
         .logo-dashboard{
             width: 20px;
             height: 20px;
-            color: white;
+            filter: brightness(0) invert(1);
         }
         .logo a {
             text-decoration: none;
