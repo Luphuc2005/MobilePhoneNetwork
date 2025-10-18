@@ -302,3 +302,23 @@ modal-content select {
 .section-content {
   padding: 20px;
 }
+.table-header > div {
+  position: relative;
+  padding-right: 20px; /* Để chừa chỗ cho icon */
+}
+
+.table-header > div.sort-asc::after {
+  content: " ↑";
+  color: #007bff;
+  font-weight: bold;
+}
+
+.table-header > div.sort-desc::after {
+  content: " ↓";
+  color: #007bff;
+  font-weight: bold;
+}
+
+.table-header > div:hover {
+  background-color: #f8f9fa; /* Hover effect */
+}
