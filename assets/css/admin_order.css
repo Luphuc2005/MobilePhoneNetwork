@@ -46,49 +46,22 @@ body {
 }
 
 .selected-fill {
-    background-color: var(--primayry-color);
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-page-active {
+    background-color: var(--primary-color);
     color: white;
 }
 /*-------------------*/
 
-.wrapper {
-    width: 100%; 
-    background-color: #f7f7f7;
-    display: flex;
-}
-
-.left-bar {
-    width: 20%;
-    background-color: var(--primary-color);
-    display: inline-block;
-}
-
-.content {
-    width: 80%;
+.orders-content {
+    width: 100%;
     display: inline-block;
     overflow: hidden;
-    padding: 20px;
 }
 
-.header {
-    width: 100%;
-    height: 60px;
-    background-color: white;
-    box-sizing: border-box;
-    padding: 10px 10px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-.header .account {
-    display: inline-block;
-}
-
-.header .notification {
-    display: inline-block;
-    padding: 0px 10px;
-}
 
 .orders {
     box-sizing: border-box;
@@ -100,33 +73,37 @@ body {
 }
 
 .orders .title h1 {
-    margin: 0px;
+    margin: 20px 0px;
 }
 
-.orders .search-bar {
+.orders .title p {
+    margin: 20px 0px;
+}
+
+.orders .order-search-bar {
     background-color: white;
     border-radius: 8px;
     padding: 20px;
 }
 
-.search-bar form {
+.order-search-bar form {
     display: flex;
     flex-wrap: wrap; 
 }
 
-.search-bar span {
+.order-search-bar span {
     margin: 20px 5px;
 }
 
-.search-bar .input-search {
+.order-search-bar .input-search {
     border: 1px var(--grey-color) solid;
 }
 
-.search-bar .input-date {
+.order-search-bar .input-date {
     margin: 20px 5px;
 }
 
-.search-bar .search-btn {
+.order-search-bar .search-btn {
     color: white;
     background-color: var(--primary-color);
     border-radius: 8px;
@@ -265,7 +242,7 @@ body {
     background-color: var(--primary-color);
 }
 
-.content .content-footer {
+.content-footer {
     box-sizing: border-box;
     background-color: white;
     display: flex;

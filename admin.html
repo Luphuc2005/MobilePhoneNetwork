@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./assets/css/components.css">
+    <link rel="stylesheet" href="./assets/css/admin_order.css">
     <title>Trang Chính Admin</title>
 </head>
 <body>
@@ -202,7 +203,7 @@
         <!-- ============DUY ĐĂNG============= -->
         <main class="content-area">
             <!-- DASHBOARD SECTION -->
-            <div id="dashboard-content" class="dashboard-section" style="display: block;"> <!--hongphuc comment -->
+            <div id="dashboard-content" class="dashboard-section" style = "display: none">
                 <div class="dashboard-header">
                     <h1>Tổng quan</h1>
                     <p>Chào mừng đến với bảng điều khiển quản trị MobileShop</p>
@@ -236,119 +237,103 @@
                         <p>428</p>
                     </div>
                 </div>
-                </div> <!-- HỒNG PHÚC - QUẢN LÝ NGƯỜI DÙNG -->
-            <div id="customers-content" class="section-content" style="display: none;">
-                <div class="user-management">
-                    <!-- Tiêu đề trang -->
-                    <div class="page-title">
-                      <h2>Quản lý người dùng</h2>
-                      <p>Quản lý thông tin và trạng thái người dùng</p>
+            </div>
+            <div class = "orders-content">
+                <div class = "orders">
+                    <div class = "title">
+                        <h1>Quản lý đơn hàng</h1>
+                        <p>Quản lý và theo dõi trạng thái đơn hàng</p>
                     </div>
-              
-                    <!-- Thanh tìm kiếm và nút thêm -->
-                    <div class="top-bar">
-                      <input
-                        id="userSearchInput"
-                        type="text"
-                        placeholder="Tìm kiếm theo tên, email, SĐT..."
-                        autocomplete="off"
-                      />
-                      <button id="btnAddUser">+ Thêm người dùng</button>
+                    <div class = "order-search-bar">
+                        <form id = "search-orders-form">
+                            <input type = "search" class = "search-element input-search" id = "search-id-name" placeholder = "Tìm mã đơn hàng, khách hàng">
+                            
+                            <select id = "status-select" class = "search-element">
+                                <option value = "all" selected>Tất cả trạng thái</option>
+                                <option value = "waiting">Chờ xử lý</option>
+                                <option value = "accepted">Đã xác nhận</option>
+                                <option value = "delivery">Đang giao</option>
+                                <option value = "done">Hoàn thành</option>
+                                <option value = "cancel">Đã hủy</option>
+                            </select>
+
+                            <select id = "dictrict-select" class = "search-element">
+                                <option value = "all">Tất cả phường xã</option>
+                            </select>
+                            <button class = "search-btn search-element" type="submit">Lọc</button>
+                            <span class = "info-label">Từ ngày:</span>
+                            <input type = "date" id = "start-date" class = "input-date">
+                            <span>-</span>
+                            <input type = "date" id = "end-date" class = "input-date">
+                        </form>
                     </div>
-              
-                    <!-- Bảng người dùng -->
-                    <div class="user-table">
-                      <!-- Header -->
-                      <div class="table-header">
-                        <div>ID</div>
-                        <div>Họ tên</div>
-                        <div>Email</div>
-                        <div>SĐT</div>
-                        <div>Vai trò</div>
-                        <div>Đơn hàng</div>
-                        <div>Ngày tham gia</div>
-                        <div>Hành động</div>
-                      </div>
-              
-                      <!-- Dòng dữ liệu -->
-                      <div class="table-row">
-                        <!-- Dữ liệu sẽ được load bằng JavaScript -->
-                      </div>
-                    </div>
-              
-                    <!-- Thông tin số lượng người dùng -->
-                    <div style="margin: 10px 0 0 10px; font-size: 15px; color: #444">
-                      Hiển thị 1-5 trang trong tổng số 50 người
-                    </div>
-                    <!-- Phân trang -->
-                    <div class="pagination">
-                      <button id="prevPage">Trước</button>
-                      <span id="pageNumbers"></span>
-                      <button id="nextPage">Sau</button>
+                    <div class = "order-list">
+                        <!-- <div class = "order-item">
+                            <div class = "order-header">
+                                <div class = "order-id order-header-item">
+                                    <p>Mã đơn</p>
+                                    <p class = "header-value">DH001234</p>
+                                </div>
+                                <div class = "order-date order-header-item">
+                                    <p>Ngày đặt</p>
+                                    <p class = "header-value">15/10/2025 14:30</p>
+                                </div>
+                                <div class = "order-address order-header-item">
+                                    <p>Quận/huyện</p>
+                                    <p class = "header-value">Quận 1</p>
+                                </div>
+                                <div class = "order-status waiting-status">
+                                    Chờ xử lý
+                                </div>
+                            </div>
+                            <div class = "wrapper-order-content"> 
+                                <div class = "order-content">
+                                    <div class="customer-info">
+                                        <h3>Thông tin khách hàng</h3>
+                                        <div class="info-line name info-label">Họ tên: <span class = "info-value">Nguyễn Văn A</span></div>
+                                        <div class="info-line phone info-label">Số điện thoại: <span class = "info-value">0912345678</span></div>
+                                        <div class="info-line address info-label"><span class = "info-value">123 Đường ABC, Phường Bến Nghé, Quận 1, TP.HCM</span></div>
+                                    </div>
+                                    <div class = "order-info">
+                                        <h3>Thông tin đơn hàng</h3>
+                                        <div class="info-line info-label">Tổng tiền: <span class="total-price info-value">29.990.000₫</span></div>
+                                        <div class="info-line info-label">Thanh toán: <span class = "info-value">Tiền mặt khi giao hàng</span></div>
+                                        
+                                        <div class="status-update-section">
+                                            <label for="status">Cập nhật trạng thái</label>
+                                            <div class="status-update-form">
+                                                <div class="status-select">Chờ xử lý</div>
+                                                <button class="update-btn">Cập nhật</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class = "order-footer">
+                                    <button class = "detail-bnt">Chi tiết</button>
+                                </div>
+                            </div>
+                        </div> -->
                     </div>
                 </div>
-          
-                <!-- Modal thêm người dùng -->
-                <div id="modal" class="modal">
-                  <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <h3>Thêm người dùng mới</h3>
-          
-                    <label>Họ tên</label>
-                    <input type="text" placeholder="Tên người dùng" />
-          
-                    <label>Email</label>
-                    <input type="email" placeholder="Email" />
-          
-                    <label>Số điện thoại</label>
-                    <input type="text" placeholder="Số điện thoại" />
-                    
-                    <label>Vai trò</label>
-                    <select>
-                      <option value="user">Người dùng</option>
-                      <option value="staff">Nhân viên</option>
-                      <option value="admin">Quản trị viên</option>
-                    </select>
-          
-                    <label>Mật khẩu</label>
-                    <input type="password" placeholder="Nhập mật khẩu" />
-          
-                    <div class="modal-actions">
-                      <button class="save">💾 Lưu</button>
-                      <button class="cancel">❌ Hủy</button>
+                <div class = "content-footer radius-8">
+                    <div class = "page-number info-label">Hiển thị <span>1-5</span> trong tổng số <span>158</span> đơn hàng</div>
+                    <div class = "page-controler">
+                        <div class = "page-item" id = "pre-page-btn">
+                            Trước
+                        </div> 
+                        <div class = "page-numbers">
+                            <!-- <div class = "page-item">
+                                1
+                            </div> -->
+                        </div>
+                        <div class = "page-item" id = "next-page-btn">
+                            Sau
+                        </div>
                     </div>
-                  </div>
-                </div>
-                
-                <!-- Modal xem/sửa người dùng -->
-                <div id="editModal" class="modal">
-                  <div class="modal-content">
-                    <span class="close close-edit">&times;</span>
-                    <h3 id="editModalTitle">Xem / Sửa người dùng</h3>
-          
-                    <p>Họ tên</p>
-                    <input type="text" id="editName" />
-          
-                    <p>Email</p>
-                    <input type="email" id="editEmail" />
-          
-                    <p>Số điện thoại</p>
-                    <input type="text" id="editPhone" />
-          
-                    <p>Vai trò</p>
-                    <select id="editRole">
-                      <option>Người dùng</option>
-                      <option>Quản trị viên</option>
-                      <option>Đã khóa</option>
-                    </select>
-          
-                    <div class="modal-buttons">
-                      <button class="save-edit">Lưu</button>
-                      <button class="cancel-edit">Hủy</button>
-                    </div>
-                  </div>
                 </div>
             </div>
+        </div>
 
             <!-- OTHER SECTIONS (Placeholder) -->
             <div id="other-content" class="section-content" style="display: none;">
@@ -361,30 +346,8 @@
 
            
         </main>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <img src="./assets/images/icons/icon-price.png" alt="icon-cart" class="icon-while">
-                    </div>
-                    <div class="stat-content">
-                        <h3>Doanh thu</h3>
-                        <p>2.5B đ</p>
-                    </div>
-                </div>
-            </div>
-
-        <!-- OTHER SECTIONS (Placeholder) -->
-        <div id="other-content" style="display: none;">
-            <div class="dashboard-header">
-                <h1 id="section-title">Quản lý</h1>
-                <p id="section-desc">Trang này sẽ được phát triển...</p>
-            </div>
-        </div>
-    </main>
-     
-    <!-- JavaScript cho HỒNG PHÚC - Quản lý người dùng -->
-     <script src="./assets/js/quanlynguoidung.js"></script>
-     <link href="./assets/css/admin.css" rel="stylesheet">
-   
+    <script src=".\assets\js\customer.js"></script>
+    <script src=".\assets\js\order.js"></script>
 </body>
 </html>
 
