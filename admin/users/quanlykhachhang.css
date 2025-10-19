@@ -71,7 +71,7 @@ body {
 .table-header,
 .table-row {
   display: grid;
-  grid-template-columns: 40px 160px 230px 100px 140px 100px 160px 200px;
+  grid-template-columns: 80px 220px 300px 200px 160px 140px 180px 200px;
   align-items: center;
   padding: 10px 0;
 }
@@ -280,45 +280,4 @@ modal-content select {
 .modal-content select:focus {
   border-color: #2563eb;
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
-}
-
-/* Sidebar active state */
-.sidebar-menu-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  color: #374151;
-  text-decoration: none;
-}
-.sidebar-menu-item.active,
-.sidebar-menu-item:hover {
-  background-color: #eef2ff;
-  border-radius: 8px;
-  color: #1f2937;
-}
-
-/* Section content wrapper */
-.section-content {
-  padding: 20px;
-}
-.table-header > div {
-  position: relative;
-  padding-right: 20px; /* Để chừa chỗ cho icon */
-}
-
-.table-header > div.sort-asc::after {
-  content: " ↑";
-  color: #007bff;
-  font-weight: bold;
-}
-
-.table-header > div.sort-desc::after {
-  content: " ↓";
-  color: #007bff;
-  font-weight: bold;
-}
-
-.table-header > div:hover {
-  background-color: #f8f9fa; /* Hover effect */
 }
