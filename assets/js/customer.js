@@ -50,4 +50,3 @@ function getAllCustomer() {
 
 //--------------------MAIN--------------------------//
 storeCustomerInLocalStorage()
-customerData = getAllCustomer();

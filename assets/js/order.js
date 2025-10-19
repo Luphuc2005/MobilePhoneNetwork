@@ -340,6 +340,18 @@ function renderOrders(startOrder, numberOrderPerPage, allOrders, allCustomers, t
     for (let i = start; i <= end; i++) {
         addPageButton(i, numberOrderPerPage, allOrders, allCustomers, totalOrders, currentPage);
     } 
+    document.getElementById('now-page').innerHTML = `${startOrder + 1} - ${startOrder + numberOrderPerPage}`;
+    document.getElementById('all-page').innerHTML = `${totalOrders}`;
+    document.getElementById('pre-page-btn').addEventListener('click', function () {
+        if (currentPage <= 1) return;
+        currentPage -= 1;
+        renderOrders((currentPage - 1) * numberOrderPerPage, numberOrderPerPage, allOrders, allCustomers, totalOrders, currentPage)
+    })
+    document.getElementById('next-page-btn').addEventListener('click', function () {
+        if (currentPage > (totalOrders + numberOrderPerPage - 1)/(numberOrderPerPage)) return;
+        currentPage += 1;
+        renderOrders((currentPage - 1) * numberOrderPerPage, numberOrderPerPage, allOrders, allCustomers, totalOrders, currentPage)
+    })
 }
 
 //---------------Search-------------------//
