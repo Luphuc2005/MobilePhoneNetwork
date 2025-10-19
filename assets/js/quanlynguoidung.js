@@ -1,33 +1,21 @@
-document
-  .getElementById("login-form")
-  .addEventListener("submit", function (event) {
-    event.preventDefault(); // Ngăn form gửi đi theo cách mặc định
+function navigateTo(section, event) {
+  event.preventDefault();
 
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-    const errorMessage = document.getElementById("error-message");
+  // Ẩn tất cả phần nội dung
+  document
+    .querySelectorAll("#dashboard-content, #customers-content, #other-content")
+    .forEach((div) => (div.style.display = "none"));
 
-    // Xóa thông báo lỗi cũ
-    errorMessage.textContent = "";
+  // Hiển thị phần tương ứng
+  if (section === "dashboard") {
+    document.getElementById("dashboard-content").style.display = "block";
+  } else if (section === "customers") {
+    document.getElementById("customers-content").style.display = "block";
+  } else {
+    document.getElementById("other-content").style.display = "block";
+  }
+}
 
-    // Validation đơn giản
-    if (username.trim() === "" || password.trim() === "") {
-      errorMessage.textContent =
-        "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.";
-      return;
-    }
-
-    // Giả lập kiểm tra đăng nhập
-    // Trong thực tế, bạn sẽ gửi yêu cầu đến server ở đây
-    if (username === "admin" && password === "123456") {
-      alert("Đăng nhập thành công!");
-      // Chuyển hướng đến trang dashboard
-      // window.location.href = 'dashboard.html';
-    } else {
-      errorMessage.textContent = "Tên đăng nhập hoặc mật khẩu không đúng.";
-    }
-  });
-// ====== TÌM KIẾM NGƯỜI DÙNG ======
 let searchQuery = "";
 const searchInput = document.getElementById("userSearchInput");
 if (searchInput) {
@@ -132,10 +120,10 @@ function renderUsers() {
       <div>${user.orders}</div>
       <div>${user.joinDate}</div>
       <div class="col actions">
-        <button><img src="../../images/eye1.png" alt="Xem" /></button>
-        <button><img src="../../images/sua.png" alt="Sửa" /></button>
-        <button><img src="../../images/khoa.png" alt="Khóa" /></button>
-        <button><img src="../../images/xoa.png" alt="Xóa" /></button>
+        <button><img src="assets/images/icons/eye1.png" alt="Xem" /></button>
+        <button><img src="assets/images/icons/sua.png" alt="Sửa" /></button>
+        <button><img src="assets/images/icons/khoa.png" alt="Khóa" /></button>
+        <button><img src="assets/images/icons/xoa.png" alt="Xóa" /></button>
       </div>
     `;
     userTable.appendChild(newRow);

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="..\..\assets\css\admin_order.css">
+    <title>Listorders</title>
+</head>
+<body>
+    <div class = "wrapper">
+        <div class = "left-bar">
+            
+        </div>
+        <div class = "content">
+            <div class = "header">
+                <div class = "notification">
+                    Notification
+                </div>
+                <div class = "account">
+                    Account
+                </div>
+            </div>
+            <div class = "orders">
+                <div class = "title">
+                    <h1>Quản lý đơn hàng</h1>
+                    <p>Quản lý và theo dõi trạng thái đơn hàng</p>
+                </div>
+                <div class = "search-bar">
+                    <form>
+                        <input type = "search" class = "search-element input-search" placeholder = "Tìm mã đơn hàng, khách hàng">
+                        
+                        <select id = "status-select" class = "search-element">
+                            <option value = "all" selected>Tất cả trạng thái</option>
+                            <option value = "waiting">Chờ xử lý</option>
+                            <option value = "accepted">Đã xác nhận</option>
+                            <option value = "delivery">Đang giao</option>
+                            <option value = "done">Hoàn thành</option>
+                            <option value = "cancel">Đã hủy</option>
+                        </select>
+
+                        <select id = "dictrict-select" class = "search-element">
+                            <option value = "all">Tất cả phường xã</option>
+                        </select>
+                        <button class = "search-btn search-element">Lọc</button>
+                        <span class = "info-label">Từ ngày:</span>
+                        <input type = "date" id = "start-date" class = "input-date">
+                        <span>-</span>
+                        <input type = "date" id = "end-date" class = "input-date">
+                    </form>
+                </div>
+                <div class = "order-list">
+                    <!-- <div class = "order-item">
+                        <div class = "order-header">
+                            <div class = "order-id order-header-item">
+                                <p>Mã đơn</p>
+                                <p class = "header-value">DH001234</p>
+                            </div>
+                            <div class = "order-date order-header-item">
+                                <p>Ngày đặt</p>
+                                <p class = "header-value">15/10/2025 14:30</p>
+                            </div>
+                            <div class = "order-address order-header-item">
+                                <p>Quận/huyện</p>
+                                <p class = "header-value">Quận 1</p>
+                            </div>
+                            <div class = "order-status waiting-status">
+                                Chờ xử lý
+                            </div>
+                        </div>
+                        <div class = "wrapper-order-content"> 
+                            <div class = "order-content">
+                                <div class="customer-info">
+                                    <h3>Thông tin khách hàng</h3>
+                                    <div class="info-line name info-label">Họ tên: <span class = "info-value">Nguyễn Văn A</span></div>
+                                    <div class="info-line phone info-label">Số điện thoại: <span class = "info-value">0912345678</span></div>
+                                    <div class="info-line address info-label"><span class = "info-value">123 Đường ABC, Phường Bến Nghé, Quận 1, TP.HCM</span></div>
+                                </div>
+                                <div class = "order-info">
+                                    <h3>Thông tin đơn hàng</h3>
+                                    <div class="info-line info-label">Tổng tiền: <span class="total-price info-value">29.990.000₫</span></div>
+                                    <div class="info-line info-label">Thanh toán: <span class = "info-value">Tiền mặt khi giao hàng</span></div>
+                                    
+                                    <div class="status-update-section">
+                                        <label for="status">Cập nhật trạng thái</label>
+                                        <div class="status-update-form">
+                                            <div class="status-select">Chờ xử lý</div>
+                                            <button class="update-btn">Cập nhật</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class = "order-footer">
+                                <button class = "detail-bnt">Chi tiết</button>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+            <div class = "content-footer radius-8">
+                <div class = "page-number info-label">Hiển thị <span>1-5</span> trong tổng số <span>158</span> đơn hàng</div>
+                <div class = "page-controler">
+                    <div class = "page-item">
+                        <span><</span>
+                    </div>
+                    <!-- <div class = "page-item">
+                        1
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="..\..\assets\js\customer.js"></script>
+    <script src="..\..\assets\js\order.js"></script>
+</body>
+</html>
