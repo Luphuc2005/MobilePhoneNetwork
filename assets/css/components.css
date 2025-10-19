@@ -730,3 +730,33 @@ body {
 .content-area::-webkit-scrollbar-thumb:hover {
     background: #999;
 }
+/* =====================HERO BANNER/SLIDER================= */
+.hero-section{
+    position: relative;
+    width: 100%;
+    height: 500px;
+    /* bị tràn là ẩn liền  */
+    overflow: hidden;
+    margin-bottom: 40px;
+}
+.slider-container{
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.slide{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    /* độ đục */
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-content: center;
+    justify-content: center;
+}
+.slide.active{
+    /* cho hiện lên trước đục 100% */
+    opacity: 1;
+}
