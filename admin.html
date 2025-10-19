@@ -1,13 +1,12 @@
-
-<!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./assets/css/components.css">
-    <link rel="stylesheet" href="./assets/css/admin_order.css">
     <title>Trang Chính Admin</title>
 </head>
+
 <body>
     <!-- ========HEADER========== -->
     <header class="main-header">
@@ -27,105 +26,18 @@
         </div>
     </header>
     <!-- ============MAIN CONTAINER========== -->
-<div class="main-container">
-    <!-- thanh điều hướng -->
-    <aside class="sidebar">
-        <div class="sidebar-brand">
-            <div class="sidebar-brand-icon">⚙️</div>
-            <div class="sidebar-brand-text">Admin Panel</div>
-        </div>
-
-        <ul class="sidebar-menu">
-            <li>
-                <a href="#dashboard" class="sidebar-menu-item active" onclick="navigateTo('dashboard', event)">
-                    <img src="./assets/images/icons/home-space.png" alt="logo home-space" class="icon-while">
-                    <span>Tổng quan</span>
-                </a>
-            </li>
-
-            <div class="sidebar-section-title">Quản lý</div>
-
-            <!-- HỒNG PHÚC - Quản lý khách hàng -->
-            <li>
-                <a href="#customers" class="sidebar-menu-item" onclick="navigateTo('customers', event)">  
-                        <img src="./assets/images/icons/manager-customer.png" alt="logo manager-customer" class="icon-while">
-                    <span>Quản lý khách hàng</span>
-                </a>
-            </li>
-
-            <!-- HUYỀN TRANG - Quản lý sản phẩm -->
-            <li>
-                <a href="#products" class="sidebar-menu-item" onclick="navigateTo('products', event)">
-                    <img src="./assets/images/icons/manager-product.png" alt="logo manager-product" class="icon-while">
-                    <span>Quản lý sản phẩm</span>
-                </a>
-            </li>
-
-            <!-- DUY ĐĂNG - Quản lý loại sản phẩm (Tuần 2) -->
-            <li>
-                <a href="#categories" class="sidebar-menu-item" onclick="navigateTo('categories', event)">
-                    <img src="./assets/images/icons/icon-categories.png" alt="logo categories" class="icon-while">
-                    <span>Quản lý loại SP</span>
-                </a>
-            </li>
-
-            <!-- THANH NHÀN - Quản lý đơn hàng -->
-            <li>
-                <a href="#orders" class="sidebar-menu-item" onclick="navigateTo('orders', event)">
-                    <img src="./assets/images/icons/icon-cart.png" alt="logo manager orders" class="icon-while">
-                    <span>Quản lý đơn hàng</span>
-                </a>
-            </li>
-
-            <!-- THANH NHÀN - Quản lý tồn kho -->
-            <li>
-                <a href="#inventory" class="sidebar-menu-item" onclick="navigateTo('inventory', event)">
-                    <img src="./assets/images/icons/icon-inventory.png" alt="logo icon-inventory" class="icon-while">
-                    <span>Quản lý tồn kho</span>
-                </a>
-            </li>
-
-            <!-- HUYỀN TRANG - Quản lý nhập hàng -->
-            <li>
-                <a href="#import" class="sidebar-menu-item" onclick="navigateTo('import', event)">
-                    <img src="./assets/images/icons/icon-import.png" alt="icon-import" class="icon-while">
-                    <span>Quản lý nhập hàng</span>
-                </a>
-            </li>
-
-            <div class="sidebar-section-title">Khác</div>
-
-            <!-- HỒNG PHÚC - Quản lý giá (Tuần 2) -->
-            <li>
-                <a href="#pricing" class="sidebar-menu-item" onclick="navigateTo('pricing', event)">
-                    <img src="./assets/images/icons/icon-price.png" alt="icon-price" class="icon-while">
-                    <span>Quản lý giá</span>
-                </a>
-            </li>
-
-            <!-- DUY ĐĂNG - Cài đặt hệ thống -->
-            <li>
-                <a href="#settings" class="sidebar-menu-item" onclick="navigateTo('settings', event)">
-                    <img src="./assets/images/icons/icon-settings.png" alt="logo manager-product" class="icon-while">
-                    <span>Cài đặt</span>
-                </a>
-            </li>
-        </ul>
-    </aside>
-
-    <!-- ============DUY ĐĂNG============= -->
-    <main class="content-area">
-        <!-- DASHBOARD SECTION -->
-        <div id="dashboard-content" class="dashboard-section">
-            <div class="dashboard-header">
-                <h1>Tổng quan</h1>
-                <p>Chào mừng đến với bảng điều khiển quản trị MobileShop</p>
+    <div class="main-container">
+        <!-- thanh điều hướng -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon">⚙️</div>
+                <div class="sidebar-brand-text">Admin Panel</div>
             </div>
 
             <ul class="sidebar-menu">
                 <li>
                     <a href="#dashboard" class="sidebar-menu-item active" onclick="navigateTo('dashboard', event)">
-                        <img src="./assets/images/icons/home-space.png" alt="logo home-space" class="logo-dashboard">
+                        <img src="./assets/images/icons/home-space.png" alt="logo home-space" class="icon-while">
                         <span>Tổng quan</span>
                     </a>
                 </li>
@@ -134,8 +46,9 @@
 
                 <!-- HỒNG PHÚC - Quản lý khách hàng -->
                 <li>
-                    <a href="#customers" class="sidebar-menu-item" onclick="navigateTo('customers', event)">  
-                         <img src="./assets/images/icons/manager-customer.png" alt="logo manager-customer" class="logo-dashboard">
+                    <a href="#customers" class="sidebar-menu-item" onclick="navigateTo('customers', event)">
+                        <img src="./assets/images/icons/manager-customer.png" alt="logo manager-customer"
+                            class="icon-while">
                         <span>Quản lý khách hàng</span>
                     </a>
                 </li>
@@ -143,7 +56,8 @@
                 <!-- HUYỀN TRANG - Quản lý sản phẩm -->
                 <li>
                     <a href="#products" class="sidebar-menu-item" onclick="navigateTo('products', event)">
-                       <img src="./assets/images/icons/manager-product.png" alt="logo manager-product" class="logo-dashboard">
+                        <img src="./assets/images/icons/manager-product.png" alt="logo manager-product"
+                            class="icon-while">
                         <span>Quản lý sản phẩm</span>
                     </a>
                 </li>
@@ -151,7 +65,7 @@
                 <!-- DUY ĐĂNG - Quản lý loại sản phẩm (Tuần 2) -->
                 <li>
                     <a href="#categories" class="sidebar-menu-item" onclick="navigateTo('categories', event)">
-                        <img src="./assets/images/icons/icon-categories.png" alt="logo categories" class="logo-dashboard">
+                        <img src="./assets/images/icons/icon-categories.png" alt="logo categories" class="icon-while">
                         <span>Quản lý loại SP</span>
                     </a>
                 </li>
@@ -159,7 +73,7 @@
                 <!-- THANH NHÀN - Quản lý đơn hàng -->
                 <li>
                     <a href="#orders" class="sidebar-menu-item" onclick="navigateTo('orders', event)">
-                        <img src="./assets/images/icons/icon-cart.png" alt="logo manager orders" class="logo-dashboard">
+                        <img src="./assets/images/icons/icon-cart.png" alt="logo manager orders" class="icon-while">
                         <span>Quản lý đơn hàng</span>
                     </a>
                 </li>
@@ -167,7 +81,8 @@
                 <!-- THANH NHÀN - Quản lý tồn kho -->
                 <li>
                     <a href="#inventory" class="sidebar-menu-item" onclick="navigateTo('inventory', event)">
-                        <img src="./assets/images/icons/icon-inventory.png" alt="logo icon-inventory" class="logo-dashboard">
+                        <img src="./assets/images/icons/icon-inventory.png" alt="logo icon-inventory"
+                            class="icon-while">
                         <span>Quản lý tồn kho</span>
                     </a>
                 </li>
@@ -175,7 +90,7 @@
                 <!-- HUYỀN TRANG - Quản lý nhập hàng -->
                 <li>
                     <a href="#import" class="sidebar-menu-item" onclick="navigateTo('import', event)">
-                        <img src="./assets/images/icons/icon-import.png" alt="icon-import" class="logo-dashboard">
+                        <img src="./assets/images/icons/icon-import.png" alt="icon-import" class="icon-while">
                         <span>Quản lý nhập hàng</span>
                     </a>
                 </li>
@@ -185,7 +100,7 @@
                 <!-- HỒNG PHÚC - Quản lý giá (Tuần 2) -->
                 <li>
                     <a href="#pricing" class="sidebar-menu-item" onclick="navigateTo('pricing', event)">
-                       <img src="./assets/images/icons/icon-price.png" alt="icon-price" class="logo-dashboard">
+                        <img src="./assets/images/icons/icon-price.png" alt="icon-price" class="icon-while">
                         <span>Quản lý giá</span>
                     </a>
                 </li>
@@ -193,7 +108,8 @@
                 <!-- DUY ĐĂNG - Cài đặt hệ thống -->
                 <li>
                     <a href="#settings" class="sidebar-menu-item" onclick="navigateTo('settings', event)">
-                        <img src="./assets/images/icons/icon-settings.png" alt="logo manager-product" class="logo-dashboard">
+                        <img src="./assets/images/icons/icon-settings.png" alt="logo manager-product"
+                            class="icon-while">
                         <span>Cài đặt</span>
                     </a>
                 </li>
@@ -203,151 +119,63 @@
         <!-- ============DUY ĐĂNG============= -->
         <main class="content-area">
             <!-- DASHBOARD SECTION -->
-            <div id="dashboard-content" class="dashboard-section" style = "display: none">
+            <div id="dashboard-content" class="dashboard-section">
                 <div class="dashboard-header">
                     <h1>Tổng quan</h1>
                     <p>Chào mừng đến với bảng điều khiển quản trị MobileShop</p>
-            <div class="dashboard-stats">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <img src="./assets/images/icons/logo-account.png" alt="logo-account" class="icon-while">
-                    </div>
-                    <div class="stat-content">
-                        <h3>Khách hàng</h3>
-                        <p>1,250</p>
-                    </div>
                 </div>
 
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <img src="./assets/images/icons/manager-product.png" alt="logo manager-product truy cập nhanh" class="icon-while">
-                    </div>
-                    <div class="stat-content">
-                        <h3>Sản phẩm</h3>
-                        <p>320</p>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <img src="./assets/images/icons/icon-cart.png" alt="icon-cart" class="icon-while">
-                    </div>
-                    <div class="stat-content">
-                        <h3>Đơn hàng</h3>
-                        <p>428</p>
-                    </div>
-                </div>
-            </div>
-            <div class = "orders-content">
-                <div class = "orders">
-                    <div class = "title">
-                        <h1>Quản lý đơn hàng</h1>
-                        <p>Quản lý và theo dõi trạng thái đơn hàng</p>
-                    </div>
-                    <div class = "order-search-bar">
-                        <form id = "search-orders-form">
-                            <input type = "search" class = "search-element input-search" id = "search-id-name" placeholder = "Tìm mã đơn hàng, khách hàng">
-                            
-                            <select id = "status-select" class = "search-element">
-                                <option value = "all" selected>Tất cả trạng thái</option>
-                                <option value = "waiting">Chờ xử lý</option>
-                                <option value = "accepted">Đã xác nhận</option>
-                                <option value = "delivery">Đang giao</option>
-                                <option value = "done">Hoàn thành</option>
-                                <option value = "cancel">Đã hủy</option>
-                            </select>
-
-                            <select id = "dictrict-select" class = "search-element">
-                                <option value = "all">Tất cả phường xã</option>
-                            </select>
-                            <button class = "search-btn search-element" type="submit">Lọc</button>
-                            <span class = "info-label">Từ ngày:</span>
-                            <input type = "date" id = "start-date" class = "input-date">
-                            <span>-</span>
-                            <input type = "date" id = "end-date" class = "input-date">
-                        </form>
-                    </div>
-                    <div class = "order-list">
-                        <!-- <div class = "order-item">
-                            <div class = "order-header">
-                                <div class = "order-id order-header-item">
-                                    <p>Mã đơn</p>
-                                    <p class = "header-value">DH001234</p>
-                                </div>
-                                <div class = "order-date order-header-item">
-                                    <p>Ngày đặt</p>
-                                    <p class = "header-value">15/10/2025 14:30</p>
-                                </div>
-                                <div class = "order-address order-header-item">
-                                    <p>Quận/huyện</p>
-                                    <p class = "header-value">Quận 1</p>
-                                </div>
-                                <div class = "order-status waiting-status">
-                                    Chờ xử lý
-                                </div>
-                            </div>
-                            <div class = "wrapper-order-content"> 
-                                <div class = "order-content">
-                                    <div class="customer-info">
-                                        <h3>Thông tin khách hàng</h3>
-                                        <div class="info-line name info-label">Họ tên: <span class = "info-value">Nguyễn Văn A</span></div>
-                                        <div class="info-line phone info-label">Số điện thoại: <span class = "info-value">0912345678</span></div>
-                                        <div class="info-line address info-label"><span class = "info-value">123 Đường ABC, Phường Bến Nghé, Quận 1, TP.HCM</span></div>
-                                    </div>
-                                    <div class = "order-info">
-                                        <h3>Thông tin đơn hàng</h3>
-                                        <div class="info-line info-label">Tổng tiền: <span class="total-price info-value">29.990.000₫</span></div>
-                                        <div class="info-line info-label">Thanh toán: <span class = "info-value">Tiền mặt khi giao hàng</span></div>
-                                        
-                                        <div class="status-update-section">
-                                            <label for="status">Cập nhật trạng thái</label>
-                                            <div class="status-update-form">
-                                                <div class="status-select">Chờ xử lý</div>
-                                                <button class="update-btn">Cập nhật</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class = "order-footer">
-                                    <button class = "detail-bnt">Chi tiết</button>
-                                </div>
-                            </div>
-                        </div> -->
-                    </div>
-                </div>
-                <div class = "content-footer radius-8">
-                    <div class = "page-number info-label">Hiển thị <span>1-5</span> trong tổng số <span>158</span> đơn hàng</div>
-                    <div class = "page-controler">
-                        <div class = "page-item" id = "pre-page-btn">
-                            Trước
-                        </div> 
-                        <div class = "page-numbers">
-                            <!-- <div class = "page-item">
-                                1
-                            </div> -->
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <img src="./assets/images/icons/logo-account.png" alt="logo-account" class="icon-while">
                         </div>
-                        <div class = "page-item" id = "next-page-btn">
-                            Sau
+                        <div class="stat-content">
+                            <h3>Khách hàng</h3>
+                            <p>1,250</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <img src="./assets/images/icons/manager-product.png"
+                                alt="logo manager-product truy cập nhanh" class="icon-while">
+                        </div>
+                        <div class="stat-content">
+                            <h3>Sản phẩm</h3>
+                            <p>320</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <img src="./assets/images/icons/icon-cart.png" alt="icon-cart" class="icon-while">
+                        </div>
+                        <div class="stat-content">
+                            <h3>Đơn hàng</h3>
+                            <p>428</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <img src="./assets/images/icons/icon-price.png" alt="icon-cart" class="icon-while">
+                        </div>
+                        <div class="stat-content">
+                            <h3>Doanh thu</h3>
+                            <p>2.5B đ</p>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-            <!-- OTHER SECTIONS (Placeholder) -->
-            <div id="other-content" class="section-content" style="display: none;">
-                <div class="dashboard-header">
-                    <h1 id="section-title">Quản lý</h1>
-                    <p id="section-desc">Trang này sẽ được phát triển...</p>
+                <!-- OTHER SECTIONS (Placeholder) -->
+                <div id="other-content" style="display: none;">
+                    <div class="dashboard-header">
+                        <h1 id="section-title">Quản lý</h1>
+                        <p id="section-desc">Trang này sẽ được phát triển...</p>
+                    </div>
                 </div>
-            </div>
-                
-
-           
         </main>
-    <script src=".\assets\js\customer.js"></script>
-    <script src=".\assets\js\order.js"></script>
 </body>
-</html>
 
+</html>
