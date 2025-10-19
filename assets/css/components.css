@@ -28,7 +28,7 @@ body {
     /* độ chìm -> me 1000 */
     z-index: 1000;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-       padding: 16px 40px;
+    padding: 16px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -214,39 +214,6 @@ body {
 }
 
 
-/* Mobile nhỏ - dưới 780px */
-@media (max-width:780px) {
-    .header-top {
-        flex-wrap: wrap; 
-        padding: 12px 15px;
-        gap: 15px;
-    }
-
-    .logo {
-        flex-shrink: 0;
-    }
-    /* co dãn thoải mái  */
-    .search-bar {
-        flex: 1; 
-        min-width: 150px;
-    }
-    /* tạo phần tử vô hình cho thanh tìm kiếm không có kích thước  */
-    .search-bar::after {
-        content: '';      
-        flex-basis: 100%; 
-        width: 0;       
-        height: 0;       
-        order: 3;   
-    }
-
-    .main-nav {
-        order: 4;
-    }
-
-    .user-actions {
-        order: 5;
-    }
-}
 /* =================FOOTER================ */
  footer {
     /* background-color: #1a1a1a; */
@@ -406,23 +373,20 @@ body {
     transform: scale(1.2);
     color: #764ba2;
 }
-@media (max-width: 780px) {
-    .footer-section {
-        flex: 1 1 150px;  
-    }
-}
-
-@media (max-width: 480px) {
-    .footer-section {
-        flex: 1 1 100%;  
-    }
-}
 /* ============================= */
 
-.logo-dashboard{
+.icon-while{
     width: 20px;
     height: 20px;
     filter: brightness(0) invert(1);
+}
+.icon-color {
+    width: 20px;
+    height: 20px;
+}
+.icon-stars{
+    width: 12px;
+    height: 12px;
 }
 .admin-info {
     display: flex;
@@ -662,8 +626,38 @@ body {
         padding: 20px;
     }
 }
+/* Mobile nhỏ - dưới 768px */
+@media (max-width:768px) {
+    .header-top {
+        flex-wrap: wrap; 
+        padding: 12px 15px;
+        gap: 15px;
+    }
 
-@media (max-width: 768px) {
+    .logo {
+        flex-shrink: 0;
+    }
+    /* co dãn thoải mái  */
+    .search-bar {
+        flex: 1; 
+        min-width: 150px;
+    }
+    /* tạo phần tử vô hình cho thanh tìm kiếm không có kích thước  */
+    .search-bar::after {
+        content: '';      
+        flex-basis: 100%; 
+        width: 0;       
+        height: 0;       
+        order: 3;   
+    }
+
+    .main-nav {
+        order: 4;
+    }
+
+    .user-actions {
+        order: 5;
+    }
     .main-container {
         flex-direction: column;
     }
@@ -707,6 +701,7 @@ body {
     }
 }
 
+
 /* ===== SCROLLBAR ===== */
 .sidebar::-webkit-scrollbar,
 .content-area::-webkit-scrollbar {
@@ -734,4 +729,26 @@ body {
 
 .content-area::-webkit-scrollbar-thumb:hover {
     background: #999;
+}
+/* =====================HERO BANNER/SLIDER================= */
+.hero-section{
+    position: relative;
+    width: 100%;
+    height: 500px;
+    /* bị tràn là ẩn liền  */
+    overflow: hidden;
+    margin-bottom: 40px;
+}
+.slider-container{
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.slide{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    /* độ đục */
+    opacity: 0;
+    transition: opacity 1s ea;
 }

@@ -50,7 +50,221 @@
           </div>
   </header>
   <main>
+    <!-- Banner/Slider Section -->
+     <!-- nội dung nổi bật rộng lớn  -->
+     <section name="hero-section" >
+      <div class="slider-container">
+        <!-- Slide 1  -->
+        <div class="slide active">
+          <div class="slide-text">
+            <span>
+              <img src="./assets/images/icons/icon-plus.png" alt="icon promotion" class="icon-color">
+              Khuyến Mãi Hot
+            </span>
+            <h1>iPhone 17 Series<br>Giảm giá đến 3.6 triệu</h1>
+            <p>Mẫu mới vừa ra mắt. Ưu đãi đặc biệt cho mua điện thoại đầu tiên!</p>
+            <!-- call to action  -->
+            <a href="#products" class="cta-button">Mua ngay</a>
+          </div>
+          <div class="slide-img">
+            <img src="./assets/images/products/ip17.png" alt="iphone 17 silde ">
+          </div>
+        </div>
+      </div>
+      <!-- ========Sile 2========= -->
+      <div class="slide">
+        <div class="slide-content">
+          <div class="slide-text">
+            <span class="slide-label">
+              <img src="./assets/images/icons/icon-plus.png" alt="Flagship" class="icon-color">
+              Flagship Mới
+            </span>
+            <h1>Samsung Galaxy S25 Ultra<br>Công nghệ AI đột phá</h1>
+            <p>Trải nghiệm tính năng AI thông minh. Giá ưu đãi chỉ có tại PhoneStore.</p>
+            <a href="products" class="cta-button">Khám phá →</a>
+          </div>
+          <div class="slide-img">
+            <img src="./assets/images/products/ip17.png" alt="Samsung Galaxy S25 Ultra">
+          </div>
+        </div>
+        <!-- ================ Sile 3 ================ -->
+        <div class="slide">
+        <div class="slide-content">
+          <div class="slide-text">
+            <span class="slide">
+              <img src="./assets/images/icons/icon-plus.png" alt="Deal" class="icon-color">
+              Deal Đặt Biệt
+            </span>
+            <h1>Xiaomi 15T Pro<br>Giá chỉ 19.360.000đ</h1>
+            <p>Hiệu năng mạnh mẽ, camera đỉnh cao. Trả góp 0% lãi suất.</p>
+            <a href="#products" class="cta-button">Xem ngay →</a>
+          </div>
+        </div>
+        <div class="slide-img">
+          <img src="./assets/images/products/ip17.png" alt="Xiaomi 15T Pro">
+        </div>
+        </div>
+        <button class="slider-arrow prev" onclick="changeSlide(-1)"></button>
+        <button class="slider-arrow next" onclick ="changeSlide(1)"></button>
+        <div class="slider-nav">
+          <span class="slider-dot active" onclick="setSline(0)"></span>
+          <span class="slider-dot" onclick="setSline(1)"></span>
+          <span class="slider-dot" onclick="setSline(2)"></span>
+        </div>
+      </div>
+    </section>
+    <section class="products-section" id="products">
+        <div class="section-header">
+          <h2>Sản phẩm nổi bật</h2>
+        </div>
+        <div class="products-flex">
+          <!-- Product 1 -->
+          <div class="product-card">
+            <img src="./assets/images/products/ip17.png" alt="IPhone 17" class="product-img">
+            <h3 class="product-name">IPhone 17 Pro Max</h3>
+            <div class="product-rating">
+            <span class="rating-text"> 
+              4.6
+              <img src="./assets/images/icons/icon-plus.png" alt="stars" class="icon-stars" >
+              (72 đánh giá)
+            </span>
+            </div>
+            <div class="product-price-wrapper">
+              <div class="product-price">28.990.000₫</div>
+              <div>
+                <span class="product-old-price">32.000.000₫</span>
+                <span class="product-discout">-12%</span>
+              </div>
+            </div>
+            <div class="product-actions">
+              <!-- button(btn) -->
+              <button class="btn-detail">Chi tiết</button>
+              <button class="btn-cart">Mua ngay</button>
+            </div>
+          </div>
+          <!-- Product 2 -->
+          <div class="product-card">
+            <img src="./assets/images/products/ip17.png" alt="Samsung Galaxy S25 Ultra" class="product-img">
+            <h3 class="product-name">Samsung Galaxy S25 Ultra</h3>
+            <div class="product-rating">
+              <span class="rating-text">
+              4.7
+              <img src="./assets/images/icons/icon-plus.png" alt="stars" class="icon-stars" >
+              (83 đánh giá)
+              </span>
+            </div>
+            <div class="product-prict-wrapper">
+              <div class="product-price">28.800.000đ</div>
+              <div>
+                <span class="product-old-price">36.000.000đ</span>
+                <span class="product-dicout">20%</span>
+              </div>
+            </div>
+            <div>
+              <button class="btn-detail">Chi tiết</button>
+              <button class="bnt-cart">Mua ngay</button>
+            </div>
+          </div>
+        </div>
+        <!-- Product 3  -->
+        <div>
+          <div class="product-card">
+            <img src="./assets/images/products/ip17.png" alt="Xiaomi 15T Pro" class="product-img">
+            <h2>Xiaomi 15T Pro</h2>
+            <div class="rating-text">
+              4.6
+              <img src="./assets/images/icons/icon-plus.png" alt="stars" class="icon-stars" >
+              (74 đánh giá)
+            </div>
+            <div class="product-price-wrapper">
+              <div class="product-price">19.360.000đ</div>
+              <div>
+                <span class="product-old-price">23.500.000đ</span>
+                <span class="product-discout">-18%</span>
+              </div>
+            </div>
+            <div class="product-actions">
+              <button class="btn-detail">Chi tiết</button>
+              <button class="btn-cart">Mua ngay</button>
+            </div>
+          </div>
+        </div>
+        <!-- Product 4 -->
+        <div class="product-card">
+            <img src="./assets/images/products/ip17.png" alt="Oppo Find X7 Ultra" class="product-img">
+            <h3 class="product-name">Oppo Find X7 Ultra</h3>
+            <div class="rating-text">
+              4.5
+              <img src="./assets/images/icons/icon-plus.png" alt="stars" class="icon-stars" >
+              (68 đánh giá)
+            </div>
+            <div class="product-price-wrapper">
+                <div class="product-price">22.990.000₫</div>
+                <div>
+                    <span class="product-old-price">25.990.000₫</span>
+                    <span class="product-discount">-12%</span>
+                </div>
+            </div>
+            <div class="product-actions">
+                <button class="btn-detail">Chi tiết</button>
+                <button class="btn-cart">Mua ngay</button>
+            </div>
+        </div>
 
+        <!-- Product 5 -->
+        <div class="product-card">
+            <img src="./assets/images/products/ip17.png" alt="iPhone 16 Pro" class="product-img">
+            <h3 class="product-name">iPhone 14 Pro</h3>
+          <div class="rating-text">
+              4.8
+              <img src="./assets/images/icons/icon-plus.png" alt="stars" class="icon-stars" >
+              (154 đánh giá)
+            </div>
+            <div class="product-price-wrapper">
+                <div class="product-price">24.990.000₫</div>
+                <div>
+                    <span class="product-old-price">28.990.000₫</span>
+                    <span class="product-discount">-14%</span>
+                </div>
+            </div>
+            <div class="product-actions">
+                <button class="btn-detail">Chi tiết</button>
+                <button class="btn-cart">Mua ngay</button>
+            </div>
+        </div>
+
+        <!-- Product 6 -->
+        <div class="product-card">
+            <img src="./assets/images/products/ip17.png" alt="Samsung Galaxy Z Fold 5" class="product-img">
+            <h3 class="product-name">Samsung Galaxy Z Fold 5</h3>
+            <div class="rating-text">
+              4.4
+              <img src="./assets/images/icons/icon-plus.png" alt="stars" class="icon-stars" >
+              (91 đánh giá)
+            </div>
+            <div class="product-price-wrapper">
+                <div class="product-price">33.990.000₫</div>
+                <div>
+                    <span class="product-old-price">36.990.000₫</span>
+                    <span class="product-discount">-8%</span>
+                </div>
+            </div>
+            <div class="product-actions">
+                <button class="btn-detail">Chi tiết</button>
+                <button class="btn-cart">Mua ngay</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+        <button>Trước</button>
+        <span class="active">1</span>
+        <button>2</button>
+        <button>3</button>
+        <button>Sau</button>
+    </div>
+  </section>
   </main>
   <footer>
     <div class="footer-content">
@@ -64,7 +278,7 @@
               <a href="#" title="Twitter">𝕏</a>
               <a href="#" title="Instagram">📷</a>
               <a href="#" title="YouTube">▶</a>
-            </div>        
+            </div>
       </div>
       <!-- linh truy cập nhanh  -->
       <div class="footer-section">
