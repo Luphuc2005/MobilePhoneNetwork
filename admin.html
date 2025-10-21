@@ -213,6 +213,7 @@
                         </form>
                     </div>
                     <div class = "order-list">
+                        <!-- comment -->
                         <!-- <div class = "order-item">
                             <div class = "order-header">
                                 <div class = "order-id order-header-item">
@@ -248,8 +249,15 @@
                                             <label for="status">Cập nhật trạng thái</label>
                                             <div class="status-update-form">
                                                 <div class="status-select">Chờ xử lý</div>
-                                                <button class="update-btn">Cập nhật</button>
+                                                <div class="select-list hidden">
+                                                    <div class="select-item">Chờ xử lý</div>
+                                                    <div class="select-item">Đã xác nhận</div>
+                                                    <div class="select-item">Đang giao</div>
+                                                    <div class="select-item">Hoàn thành</div>
+                                                    <div class="select-item">Đã hủy</div>
+                                                </div>
                                             </div>
+                                            <button class="update-status-order-btn">Cập nhật</button>
                                         </div>
                                     </div>
                                 </div>
@@ -422,7 +430,10 @@
     <scrip src="./assets/js/dataProduct.js"></script>
     <script src="./assets/js/quanlynguoidung.js"></script>
     <script src=".\assets\js\customer.js"></script>
-    <script src=".\assets\js\order.js"></script>
+    <script src=".\assets\js\order-local-storage.js"></script>
+    <script src=".\assets\js\order-search.js"></script>
+    <script src=".\assets\js\order-page-control.js"></script>
+    <script src=".\assets\js\order-modify-orderstatus.js"></script>
     <link href="./assets/css/admin.css" rel="stylesheet">
 </body>
 

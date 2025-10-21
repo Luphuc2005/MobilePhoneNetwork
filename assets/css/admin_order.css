@@ -54,6 +54,10 @@ body {
     background-color: var(--primary-color);
     color: white;
 }
+
+.hidden {
+    display: none;
+}
 /*-------------------*/
 
 .orders-content {
@@ -187,42 +191,6 @@ body {
     color: red;
 }
 
-.status-update-section {
-    margin-top: 16px;
-}
-
-.status-update-section label {
-    font-weight: 1000;
-    color: #212529;
-}
-
-.status-update-form .status-select {
-    margin: 5px;
-    display: inline-block;
-    box-sizing: border-box;
-    border-radius: 8px;
-    padding: 10px;
-    width: 75%;
-    background-color: #eaf6ff;
-    border: 1px solid #eaf6ff;
-}
-
-.status-update-form .update-btn {
-    box-sizing: border-box;
-    padding: 10px 20px;
-    border-radius: 8px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-.status-update-form .update-btn:hover {
-    color: var(--primary-color);
-    background-color: white;
-    border: 2px solid var(--primary-color);
-}
-
 .wrapper-order-content .order-footer {
     box-sizing: border-box;
     padding: 20px;
@@ -274,4 +242,66 @@ body {
 .page-controler .page-item:hover {
     background-color: var(--primary-color);
     color: white;
+}
+
+/*----------drop down select status--------------*/
+.status-update-section {
+    margin-top: 16px;
+}
+
+.status-update-section label {
+    font-weight: 1000;
+    color: #212529;
+}
+
+.status-update-form {
+    display: inline-block;
+    width: calc(75% - 10px);
+    margin: 5px;
+    position: relative;
+}
+
+.status-update-form .status-select {
+    display: inline-block;
+    box-sizing: border-box;
+    border-radius: 8px;
+    padding: 10px;
+    width: 100%;
+    background-color: #eaf6ff;
+    border: 1px solid #eaf6ff;
+}
+
+.status-update-form .select-list {
+    position: absolute;
+    border: 1px black solid;
+    width: 100%;
+    border-radius: 8px;
+    background-color: white;
+}
+
+.select-list .select-item {
+    padding: 10px 20px;
+    border-radius: 8px;
+}
+
+.select-list .select-item:hover {
+    background-color: #eaf6ff;
+}
+
+.status-update-section .update-status-order-btn {
+    box-sizing: border-box;
+    padding: 10px 20px;
+    border-radius: 8px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    border: 2px solid var(--primary-color);
+}
+
+.status-update-section .update-status-order-btn:hover {
+    box-sizing: border-box;
+    color: var(--primary-color);
+    background-color: white;
+    border: 2px solid var(--primary-color);
 }
