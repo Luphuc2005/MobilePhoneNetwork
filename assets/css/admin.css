@@ -322,3 +322,13 @@ modal-content select {
 .table-header > div:hover {
   background-color: #f8f9fa; /* Hover effect */
 }
+.logo-dashboard {
+  width: 20px;
+  height: 20px;
+  filter: none; /* Không áp dụng filter trắng */
+}
+
+/* Riêng cho sidebar */
+.sidebar .logo-dashboard {
+  filter: brightness(0) invert(1); /* Icon trắng trên nền tím */
+}
