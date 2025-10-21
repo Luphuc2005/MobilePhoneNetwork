@@ -180,6 +180,124 @@
                     </div>
                   </div>
                 </div>
+                
+
+                  <!-- HỒNG PHÚC - QUẢN LÝ NGƯỜI DÙNG -->
+            <div id="customers-content" class="section-content" style="display: none;">
+                <div class="user-management">
+                    <!-- Tiêu đề trang -->
+                    <div class="page-title">
+                      <h2>Quản lý người dùng</h2>
+                      <p>Quản lý thông tin và trạng thái người dùng</p>
+                    </div>
+              
+                    <!-- Thanh tìm kiếm và nút thêm -->
+                    <div class="top-bar">
+                      <input
+                        id="userSearchInput"
+                        type="text"
+                        placeholder="Tìm kiếm theo tên, email, SĐT..."
+                        autocomplete="off"
+                      />
+                      <button id="btnAddUser">+ Thêm người dùng</button>
+                    </div>
+              
+                    <!-- Bảng người dùng -->
+                    <div class="user-table">
+                      <!-- Header -->
+                      <div class="table-header">
+                        <div>ID</div>
+                        <div>Họ tên</div>
+                        <div>Email</div>
+                        <div>SĐT</div>
+                        <div>Trạng thái</div>
+                        <div>Đơn hàng</div>
+                        <div>Ngày tham gia</div>
+                        <div>Hành động</div>
+                      </div>
+              
+                      <!-- Dòng dữ liệu -->
+                      <div class="table-row">
+                        <!-- Dữ liệu sẽ được load bằng JavaScript -->
+                      </div>
+                    </div>
+              
+                    <!-- Thông tin số lượng người dùng -->
+                    <div style="margin: 10px 0 0 10px; font-size: 15px; color: #444">
+                      Hiển thị 1-5 trang trong tổng số 50 người
+                    </div>
+                    <!-- Phân trang -->
+                    <div class="pagination">
+                      <button id="prevPage">Trước</button>
+                      <span id="pageNumbers"></span>
+                      <button id="nextPage">Sau</button>
+                    </div>
+                </div>
+          
+                <!-- Modal thêm người dùng -->
+                <div id="modal" class="modal">
+                  <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3>Thêm người dùng mới</h3>
+          
+                    <label>Họ tên</label>
+                    <input type="text" placeholder="Tên người dùng" />
+          
+                    <label>Email</label>
+                    <input type="email" placeholder="Email" />
+          
+                    <label>Số điện thoại</label>
+                    <input type="text" placeholder="Số điện thoại" />
+                    
+                    <!-- <label>Vai trò</label>
+                    <select>
+                      <option value="user">Người dùng</option>
+                      <option value="staff">Nhân viên</option>
+                      <option value="admin">Quản trị viên</option>
+                    </select> -->
+          
+                    <label>Mật khẩu</label>
+                    <input type="password" placeholder="Nhập mật khẩu" />
+          
+                    <div class="modal-actions">
+                      <button class="save">💾 Lưu</button>
+                      <button class="cancel">❌ Hủy</button>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Modal xem/sửa người dùng -->
+                <div id="editModal" class="modal">
+                  <div class="modal-content">
+                    <span class="close close-edit">&times;</span>
+                    <h3 id="editModalTitle">Xem / Sửa người dùng</h3>
+          
+                    <p>Họ tên</p>
+                    <input type="text" id="editName" />
+          
+                    <p>Email</p>
+                    <input type="email" id="editEmail" />
+          
+                    <p>Số điện thoại</p>
+                    <input type="text" id="editPhone" />
+                   <input id="editPassword" type="password" placeholder="Mật khẩu">
+                    <button id="resetPasswordBtn" type="button" style="display: none;">Reset về 123123</button>
+                    <!-- <p>Vai trò</p>
+                    <select id="editRole">
+                      <option>Người dùng</option>
+                      <option>Quản trị viên</option>
+                      <option>Đã khóa</option>
+                    </select> -->
+          
+                    <div class="modal-buttons">
+                      <button class="save-edit">Lưu</button>
+                      <button class="cancel-edit">Hủy</button>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+
 
                 <!-- OTHER SECTIONS (Placeholder) -->
                 <div id="other-content" style="display: none;">
@@ -189,8 +307,10 @@
                     </div>
                 </div>
         </main>
-<script src="./assets/js/productlayout.js"></script>
-<scrip src="./assets/js/dataProduct.js"></script>
+    <script src="./assets/js/productlayout.js"></script>
+    <scrip src="./assets/js/dataProduct.js"></script>
+        <script src="./assets/js/quanlynguoidung.js"></script>
+     <link href="./assets/css/admin.css" rel="stylesheet">
 </body>
 
 </html>
