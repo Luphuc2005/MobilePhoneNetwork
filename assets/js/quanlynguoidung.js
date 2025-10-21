@@ -1,37 +1,32 @@
-document
-  .getElementById("login-form")
-  .addEventListener("submit", function (event) {
-    event.preventDefault(); // Ngăn form gửi đi theo cách mặc định
+function navigateTo(section, event) {
+  event.preventDefault();
 
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-    const errorMessage = document.getElementById("error-message");
+  // Ẩn tất cả phần nội dung
+  document
+    .querySelectorAll("#dashboard-content, #customers-content, #other-content")
+    .forEach((div) => (div.style.display = "none"));
 
-    // Xóa thông báo lỗi cũ
-    errorMessage.textContent = "";
+  // Hiển thị phần tương ứng
+  if (section === "dashboard") {
+    document.getElementById("dashboard-content").style.display = "block";
+  } else if (section === "customers") {
+    document.getElementById("customers-content").style.display = "block";
+  } else {
+    document.getElementById("other-content").style.display = "block";
+  }
+}
 
-    // Validation đơn giản
-    if (username.trim() === "" || password.trim() === "") {
-      errorMessage.textContent =
-        "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.";
-      return;
-    }
-
-    // Giả lập kiểm tra đăng nhập
-    // Trong thực tế, bạn sẽ gửi yêu cầu đến server ở đây
-    if (username === "admin" && password === "123456") {
-      alert("Đăng nhập thành công!");
-      // Chuyển hướng đến trang dashboard
-      // window.location.href = 'dashboard.html';
-    } else {
-      errorMessage.textContent = "Tên đăng nhập hoặc mật khẩu không đúng.";
-    }
-  });
-// ====== TÌM KIẾM NGƯỜI DÙNG ======
 let searchQuery = "";
 const searchInput = document.getElementById("userSearchInput");
 if (searchInput) {
   searchInput.addEventListener("input", (e) => {
+    // Ngăn chặn nếu modal đang mở (tránh conflict focus)
+    if (
+      document.getElementById("modal").style.display === "flex" ||
+      document.getElementById("editModal").style.display === "flex"
+    ) {
+      return;
+    }
     searchQuery = e.target.value.trim().toLowerCase();
     currentPage = 1;
     renderUsers();
@@ -51,7 +46,19 @@ let currentPage = 1; // Trang hiện tại
 const usersPerPage = 5; // Số người dùng mỗi trang
 
 // ====== Sự kiện mở/đóng modal thêm người dùng ======
-btnAdd.onclick = () => (modal.style.display = "flex"); // Mở modal
+btnAdd.onclick = () => {
+  modal.style.display = "flex";
+  // Đặt mặc định trạng thái là "Hoạt động" khi mở modal thêm mới
+  const trangThaiSelect = document.querySelector("#modal select");
+  if (trangThaiSelect) {
+    trangThaiSelect.value = "Hoạt động";
+  }
+  // Focus vào input name đầu tiên để tránh nhảy sang search
+  const nameInput = document.querySelector("#modal input:nth-of-type(1)");
+  if (nameInput) {
+    nameInput.focus();
+  }
+}; // Mở modal
 closeBtn.onclick = () => (modal.style.display = "none"); // Đóng modal
 cancelBtn.onclick = () => (modal.style.display = "none"); // Đóng modal khi bấm hủy
 window.onclick = (e) => {
@@ -62,21 +69,21 @@ window.onclick = (e) => {
 // Hàm lấy dữ liệu từ form modal (thêm/sửa)
 function getUserFormData(modalSelector) {
   const modalEl = document.querySelector(modalSelector);
-  const input = modalEl.querySelectorAll("input");
+  const inputs = modalEl.querySelectorAll("input");
   const select = modalEl.querySelector("select");
   return {
-    name: input[0].value.trim(), // Họ tên
-    email: input[1].value.trim(), // Email
-    phone: input[2].value.trim(), // Số điện thoại
-    role: select ? select.options[select.selectedIndex].text.trim() : "", // Vai trò (lấy text hiển thị)
-    password: input[3] ? input[3].value.trim() : "", // Mật khẩu
+    name: inputs[0].value.trim(), // Họ tên
+    email: inputs[1].value.trim(), // Email
+    phone: inputs[2].value.trim(), // Số điện thoại
+    password: inputs[3] ? inputs[3].value.trim() : "", // Mật khẩu
+    trangthai: select ? select.value : "Hoạt động", // Trạng thái (mặc định Hoạt động)
   };
 }
 
 // ====== Xử lý lưu người dùng mới ======
 saveBtn.onclick = () => {
   // Lấy dữ liệu từ form
-  const { name, email, phone, role, password } = getUserFormData("#modal");
+  const { name, email, phone, password, trangthai } = getUserFormData("#modal");
   // Kiểm tra dữ liệu hợp lệ
   if (!name || !email || !phone || !password) {
     alert("Vui lòng nhập đầy đủ thông tin!");
@@ -88,7 +95,8 @@ saveBtn.onclick = () => {
     name,
     email,
     phone,
-    role,
+    password, // Lưu mật khẩu
+    trangthai: trangthai || "Hoạt động", // Đảm bảo mặc định "Hoạt động"
     orders: 0,
     joinDate: new Date().toLocaleDateString(),
   };
@@ -96,6 +104,10 @@ saveBtn.onclick = () => {
   localStorage.setItem("users", JSON.stringify(users)); // Lưu vào localStorage
   modal.style.display = "none"; // Đóng modal
   document.querySelectorAll("#modal input").forEach((i) => (i.value = "")); // Xóa input
+  const trangThaiSelect = document.querySelector("#modal select");
+  if (trangThaiSelect) {
+    trangThaiSelect.value = "Hoạt động"; // Reset select về mặc định
+  }
   renderUsers(); // Vẽ lại bảng
 };
 
@@ -121,6 +133,13 @@ function renderUsers() {
   const userToShow = filteredUsers.slice(start, end);
   // Vẽ từng dòng người dùng
   userToShow.forEach((user, i) => {
+    const trangthai = user.trangthai || "Hoạt động";
+    const lockIconSrc =
+      trangthai === "Hoạt động"
+        ? "assets/images/icons/khoa.png"
+        : "assets/images/icons/3d-unlocked.png";
+    const lockAlt = trangthai === "Hoạt động" ? "Khóa" : "Mở khóa";
+    const trangthaiColor = trangthai === "Hoạt động" ? "green" : "red"; // Màu xanh cho Hoạt động, đỏ cho Đã khóa
     const newRow = document.createElement("div");
     newRow.classList.add("table-row");
     newRow.innerHTML = `
@@ -128,14 +147,14 @@ function renderUsers() {
       <div>${user.name}</div>
       <div>${user.email}</div>
       <div>${user.phone}</div>
-      <div class="col status active">${user.role}</div>
+      <div style="color: ${trangthaiColor};">${trangthai}</div>
       <div>${user.orders}</div>
       <div>${user.joinDate}</div>
       <div class="col actions">
-        <button><img src="../../images/eye1.png" alt="Xem" /></button>
-        <button><img src="../../images/sua.png" alt="Sửa" /></button>
-        <button><img src="../../images/khoa.png" alt="Khóa" /></button>
-        <button><img src="../../images/xoa.png" alt="Xóa" /></button>
+        <button><img src="assets/images/icons/eye1.png" alt="Xem" /></button>
+        <button><img src="assets/images/icons/sua.png" alt="Sửa" /></button>
+        <button><img src="${lockIconSrc}" alt="${lockAlt}" /></button>
+        <button><img src="assets/images/icons/xoa.png" alt="Xóa" /></button>
       </div>
     `;
     userTable.appendChild(newRow);
@@ -210,7 +229,8 @@ window.onload = () => {
           name: cells[1].textContent,
           email: cells[2].textContent,
           phone: cells[3].textContent,
-          role: cells[4].textContent,
+          password: "", // Mặc định rỗng nếu không có
+          trangthai: cells[4].textContent || "Hoạt động", // Đảm bảo mặc định nếu thiếu
           orders: parseInt(cells[5].textContent) || 0,
           joinDate: cells[6].textContent,
         };
@@ -232,7 +252,8 @@ window.onload = () => {
             name: "Lư Hồng Phúc",
             email: "phucga150625@email.com",
             phone: "0866680197",
-            role: "Quản trị viên",
+            password: "", // Mặc định rỗng
+            trangthai: "Hoạt động", // Mặc định
             orders: 12,
             joinDate: "01/01/2024",
           },
@@ -269,6 +290,58 @@ window.onclick = (e) => {
   if (e.target === editModal) editModal.style.display = "none";
 };
 
+// Nút reset mật khẩu (chỉ trong edit mode)
+const resetPasswordBtn = document.getElementById("resetPasswordBtn");
+if (resetPasswordBtn) {
+  // Làm đẹp nút reset
+  resetPasswordBtn.style.cssText = `
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+  `;
+  resetPasswordBtn.onmouseover = () => {
+    resetPasswordBtn.style.transform = "scale(1.05)";
+    resetPasswordBtn.style.boxShadow = "0 4px 8px rgba(0,0,0,0.3)";
+  };
+  resetPasswordBtn.onmouseout = () => {
+    resetPasswordBtn.style.transform = "scale(1)";
+    resetPasswordBtn.style.boxShadow = "0 2px 4px rgba(0,0,0,0.2)";
+  };
+  resetPasswordBtn.onclick = () => {
+    const editPasswordInput = document.getElementById("editPassword");
+    if (editPasswordInput) {
+      editPasswordInput.value = "123123"; // Reset về mật khẩu mặc định
+      alert("Mật khẩu đã được reset về 123123!");
+    }
+  };
+}
+
+// Nút toggle hiển thị password (mắt)
+const togglePasswordBtn = document.getElementById("togglePasswordBtn");
+if (togglePasswordBtn) {
+  togglePasswordBtn.onclick = () => {
+    const editPasswordInput = document.getElementById("editPassword");
+    if (editPasswordInput) {
+      if (editPasswordInput.type === "password") {
+        editPasswordInput.type = "text";
+        togglePasswordBtn.innerHTML =
+          '<img src="assets/images/icons/eye-off.png" alt="Ẩn" />'; // Giả sử có icon eye-off
+      } else {
+        editPasswordInput.type = "password";
+        togglePasswordBtn.innerHTML =
+          '<img src="assets/images/icons/eye.png" alt="Hiện" />'; // Giả sử có icon eye
+      }
+    }
+  };
+}
+
 // === Xem người dùng ===
 function viewUser(index) {
   editingIndex = index;
@@ -278,19 +351,31 @@ function viewUser(index) {
   document.getElementById("editName").value = u.name;
   document.getElementById("editEmail").value = u.email;
   document.getElementById("editPhone").value = u.phone;
-  // Đặt đúng option cho select role
-  const editRoleSelect = document.getElementById("editRole");
-  if (editRoleSelect) {
-    Array.from(editRoleSelect.options).forEach((opt) => {
-      opt.selected = opt.text.trim() === u.role.trim();
+  const editPasswordInput = document.getElementById("editPassword");
+  editPasswordInput.value = u.password || ""; // Hiển thị mật khẩu cũ (ẩn mặc định)
+  editPasswordInput.type = "password"; // Đảm bảo ẩn khi xem
+  // Reset icon mắt về hiện
+  if (togglePasswordBtn) {
+    togglePasswordBtn.innerHTML =
+      '<img src="assets/images/icons/eye.png" alt="Hiện" />';
+  }
+  // Đặt đúng option cho select trạng thái
+  const editTrangThaiSelect = document.getElementById("editTrangThai");
+  if (editTrangThaiSelect) {
+    Array.from(editTrangThaiSelect.options).forEach((opt) => {
+      opt.selected = opt.value === (u.trangthai || "Hoạt động");
     });
   }
   // Khóa input để chỉ xem
   document
-    .querySelectorAll("#editModal input, #editModal select")
+    .querySelectorAll("#editModal input:not(#editPassword), #editModal select")
     .forEach((el) => {
       el.disabled = true;
     });
+  // Password vẫn có thể toggle để xem (không disabled)
+  editPasswordInput.disabled = false; // Cho phép toggle xem password
+  // Ẩn nút reset khi chỉ xem
+  if (resetPasswordBtn) resetPasswordBtn.style.display = "none";
   saveEdit.style.display = "none";
   editModal.style.display = "flex";
 }
@@ -304,21 +389,36 @@ function editUser(index) {
   document.getElementById("editName").value = u.name;
   document.getElementById("editEmail").value = u.email;
   document.getElementById("editPhone").value = u.phone;
-  // Đặt đúng option cho select role
-  const editRoleSelect = document.getElementById("editRole");
-  if (editRoleSelect) {
-    Array.from(editRoleSelect.options).forEach((opt) => {
-      opt.selected = opt.text.trim() === u.role.trim();
+  const editPasswordInput = document.getElementById("editPassword");
+  editPasswordInput.value = u.password || ""; // Hiển thị password cũ (ẩn mặc định)
+  editPasswordInput.type = "password"; // Ẩn mặc định, có thể toggle
+  // Reset icon mắt về hiện
+  if (togglePasswordBtn) {
+    togglePasswordBtn.innerHTML =
+      '<img src="assets/images/icons/eye.png" alt="Hiện" />';
+  }
+  // Đặt đúng option cho select trạng thái
+  const editTrangThaiSelect = document.getElementById("editTrangThai");
+  if (editTrangThaiSelect) {
+    Array.from(editTrangThaiSelect.options).forEach((opt) => {
+      opt.selected = opt.value === (u.trangthai || "Hoạt động");
     });
   }
-  // Cho phép nhập lại
+  // Cho phép nhập lại (bao gồm password)
   document
     .querySelectorAll("#editModal input, #editModal select")
     .forEach((el) => {
       el.disabled = false;
     });
+  // Hiện nút reset khi edit
+  if (resetPasswordBtn) resetPasswordBtn.style.display = "inline-block";
   saveEdit.style.display = "inline-block";
   editModal.style.display = "flex";
+  // Focus vào input name đầu tiên khi mở edit modal
+  const editNameInput = document.getElementById("editName");
+  if (editNameInput) {
+    editNameInput.focus();
+  }
 }
 
 // === Lưu chỉnh sửa ===
@@ -326,19 +426,21 @@ saveEdit.onclick = () => {
   const name = document.getElementById("editName").value.trim();
   const email = document.getElementById("editEmail").value.trim();
   const phone = document.getElementById("editPhone").value.trim();
-  // Lấy text hiển thị của option được chọn
-  const editRoleSelect = document.getElementById("editRole");
-  const role = editRoleSelect
-    ? editRoleSelect.options[editRoleSelect.selectedIndex].text.trim()
-    : "";
-  if (!name || !email || !phone) {
+  const password = document.getElementById("editPassword").value.trim(); // Lấy mật khẩu mới
+  // Lấy value của option được chọn cho trạng thái
+  const editTrangThaiSelect = document.getElementById("editTrangThai");
+  const trangthai = editTrangThaiSelect
+    ? editTrangThaiSelect.value
+    : "Hoạt động";
+  if (!name || !email || !phone || !password) {
     alert("Vui lòng nhập đầy đủ thông tin!");
     return;
   }
   users[editingIndex].name = name;
   users[editingIndex].email = email;
   users[editingIndex].phone = phone;
-  users[editingIndex].role = role;
+  users[editingIndex].password = password; // Cập nhật mật khẩu
+  users[editingIndex].trangthai = trangthai; // Sử dụng giá trị từ select, fallback "Hoạt động"
   localStorage.setItem("users", JSON.stringify(users));
   renderUsers();
   editModal.style.display = "none";
@@ -347,10 +449,10 @@ saveEdit.onclick = () => {
 // === Khóa / Mở khóa ===
 function toggleLockUser(index) {
   const u = users[index];
-  if (u.role === "Đã khóa") {
-    u.role = "Người dùng";
+  if (u.trangthai === "Đã khóa") {
+    u.trangthai = "Hoạt động";
   } else {
-    u.role = "Đã khóa";
+    u.trangthai = "Đã khóa";
   }
   localStorage.setItem("users", JSON.stringify(users));
   renderUsers();
