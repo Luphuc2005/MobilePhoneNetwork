@@ -522,7 +522,9 @@ body {
     height: 20px;
     flex-shrink: 0;
 }
-
+.sidebar-menu-item span{
+    color: white;
+}
 .sidebar-section-title {
     padding: 15px 20px;
     font-size: 12px;
@@ -848,7 +850,7 @@ body {
     min-height: 40px;
     /* giới hạn văn bản trong 2 dòng  */
     display: -webkit-box;
-    -webkit-line-clamp:2;
+    /* -webkit-line-clamp:2; */
     /* các phần tử con sắp xếp theo chiều dọc  */
     -webkit-box-orient: vertical;
     /* ẩn văn bản thừa đi */
