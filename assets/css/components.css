@@ -1080,10 +1080,11 @@ body {
 }
 /* ==================USER ACCOUNT PAGE/CART PAGE================= */
 .user-account-page{
+    position: relative;
     background-color: #E5E7EB;
     padding-left: 10%;
     padding-right: 10%;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif 
 }
 .user-account-page .btn{
     border: none;
@@ -2385,11 +2386,176 @@ a {
     margin-right: 10px;
     border: 1px solid #9c9c9d !important;
 }
-.user-info{
+
+.background-user-info {
     display: none;
-    padding: 12px 16px;
-    background-color: #f9fafb;
-    border: 1px solid #e5e7eb;  
+    background-color: #51505077;
+    position: absolute;;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 1200px;
 }
 
+/* --- Container chính của Form --- */
+.user-info {
+    
+    width: 100%;
+    max-width: 600px; /* Giới hạn chiều rộng của form */
+    position: absolute;
+    top: 3%;
+    left: 30%;
+    right: 30%;
+    background: #ffffff;
+    padding: 25px 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
 
+.user-info h2 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+.user-info h3 {
+    font-size: 1.15em;
+    color: #444;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    border-top: 1px solid #eee; /* Thêm đường kẻ phân cách */
+    padding-top: 25px;
+}
+
+/* --- Bố cục các trường --- */
+.form-group {
+    margin-bottom: 18px; /* Khoảng cách giữa các trường */
+}
+
+.form-group label {
+    display: block; /* Cho label nằm trên 1 dòng riêng */
+    margin-bottom: 8px; /* Khoảng cách từ label đến input */
+    font-weight: 600;
+    font-size: 14px;
+    color: #555;
+}
+
+/* --- Style cho các ô Input, Select, Textarea --- */
+.form-group input[type="text"],
+.form-group input[type="tel"],
+.form-group input[type="email"],
+.form-group select,
+.form-group textarea {
+    width: 100%; /* Luôn chiếm đầy đủ chiều rộng */
+    padding: 12px 15px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Hiệu ứng khi focus vào ô input */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0,123,255,0.25);
+    outline: none; /* Bỏ viền xanh mặc định */
+}
+
+.form-group textarea {
+    resize: vertical; /* Chỉ cho phép kéo dãn chiều dọc */
+    min-height: 80px;
+}
+
+/* --- CSS cho Custom Radio Button --- */
+.payment-options {
+    margin-bottom: 25px;
+}
+
+.custom-radio {
+    display: block;
+    position: relative;
+    padding: 12px 12px 12px 40px; /* Căn lề cho nội dung */
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    user-select: none;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+/* Làm cho radio nổi bật hơn khi hover */
+.custom-radio:hover {
+    background-color: #f9f9f9;
+}
+
+.custom-radio input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%); /* Căn giữa vòng tròn theo chiều dọc */
+    height: 22px;
+    width: 22px;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+}
+
+.custom-radio input:checked ~ .checkmark {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/* Khi được chọn, làm nổi bật cả khung */
+.custom-radio input:checked ~ {
+    border-color: #007bff;
+    background-color: #f0f8ff;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.custom-radio input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.custom-radio .checkmark:after {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Căn giữa dấu chấm */
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+}
+
+/* --- Nút Submit --- */
+.submit-checkout.btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #007bff; /* Màu xanh */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.submit-checkout.btn:hover {
+    background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+}
