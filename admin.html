@@ -64,7 +64,7 @@
 
                 <!-- HUYỀN TRANG - Quản lý sản phẩm -->
                 <li>
-                    <a href="#products" class="sidebar-menu-item" id="product-link">
+                    <a href="#products" class="sidebar-menu-item" onclick="navigateTo('products', event)">
                         <img src="./assets/images/icons/manager-product.png" alt="logo manager-product"
                             class="icon-while">
                         <span>Quản lý sản phẩm</span>
@@ -304,7 +304,9 @@
                 </div>
             </div>
 
-
+<div id="products-content" style="display:none;">
+    <!-- nội dung phần sản phẩm -->
+</div>
 
                 <!-- QUẢN LÝ GIÁ BÁN -->
                 <div id="pricing-content" class="section-content" style="display: none;">
@@ -430,12 +432,20 @@
                     </div>
                 </div>
         </main>
+<<<<<<< HEAD
+    
+        <script src="./assets/js/quanlynguoidung.js"></script>
+     <link href="./assets/css/admin.css" rel="stylesheet">
+    <script src="./assets/js/dataProduct.js"></script>
+    <script src="./assets/js/productlayout.js"></script>
+=======
     <script src="./assets/js/productlayout.js"></script>
     <script src="./assets/js/dataProduct.js"></script>
 
     <script src="./assets/js/quanlynguoidung.js"></script>
     <script src="./assets/js/pricing.js"></script>
     <link href="./assets/css/admin.css" rel="stylesheet">
+>>>>>>> 18797008a72322da58cf426066810c3cbe069f0b
 </body>
 
 </html>

@@ -6,7 +6,7 @@ const data = [
     gia: 29.99,
     trangthai: true,
     soluong: "40",
-    hinhanh: "https://example.com/iphone15promax.jpg"
+    hinhanh: "/assets/images/products/ip15prm",
   },
   {
     id: 2,
@@ -15,7 +15,7 @@ const data = [
     gia: 25.99,
     trangthai: true,
     soluong: "35",
-    hinhanh: "https://example.com/iphone14pro.jpg"
+    hinhanh: "/assets/images/products/ip14prm.jpg",
   },
   {
     id: 3,
@@ -24,7 +24,7 @@ const data = [
     gia: 19.99,
     trangthai: true,
     soluong: "50",
-    hinhanh: "https://example.com/iphone13.jpg"
+    hinhanh: "/assets/images/products/ip13.jpg",
   },
   {
     id: 4,
@@ -33,7 +33,7 @@ const data = [
     gia: 12.99,
     trangthai: true,
     soluong: "25",
-    hinhanh: "https://example.com/iphonese.jpg"
+    hinhanh: "/assets/images/products/ipse.webp",
   },
   {
     id: 5,
@@ -42,7 +42,7 @@ const data = [
     gia: 27.99,
     trangthai: true,
     soluong: "30",
-    hinhanh: "https://example.com/s24ultra.jpg"
+    hinhanh: "/assets/images/products/samsung-galaxy-s24-ultra.png",
   },
   {
     id: 6,
@@ -51,7 +51,7 @@ const data = [
     gia: 29.49,
     trangthai: true,
     soluong: "20",
-    hinhanh: "https://example.com/zfold5.jpg"
+    hinhanh: "/assets/images/products/samsung-galaxy-z-fold-5.png",
   },
   {
     id: 7,
@@ -60,7 +60,7 @@ const data = [
     gia: 12.49,
     trangthai: true,
     soluong: "45",
-    hinhanh: "https://example.com/a54.jpg"
+    hinhanh: "/assets/images/products/samsung-galaxy-a54.webp",
   },
   {
     id: 8,
@@ -69,7 +69,7 @@ const data = [
     gia: 15.99,
     trangthai: true,
     soluong: "40",
-    hinhanh: "https://example.com/13tpro.jpg"
+    hinhanh: "/assets/images/products/xiaomi-13t-pro.png",
   },
   {
     id: 9,
@@ -78,7 +78,7 @@ const data = [
     gia: 9.99,
     trangthai: true,
     soluong: "60",
-    hinhanh: "https://example.com/redminote12.jpg"
+    hinhanh: "/assets/images/products/xiaomi-redmi-note-12.jpg",
   },
   {
     id: 10,
@@ -87,7 +87,7 @@ const data = [
     gia: 18.49,
     trangthai: true,
     soluong: "25",
-    hinhanh: "https://example.com/findx6pro.jpg"
+    hinhanh: "/assets/images/products/oppo-find-x6-pro.webp",
   },
   {
     id: 11,
@@ -96,7 +96,7 @@ const data = [
     gia: 13.99,
     trangthai: true,
     soluong: "40",
-    hinhanh: "https://example.com/reno10.jpg"
+    hinhanh: "/assets/images/products/oppo-reno-10.png",
   },
   {
     id: 12,
@@ -105,7 +105,7 @@ const data = [
     gia: 11.49,
     trangthai: true,
     soluong: "30",
-    hinhanh: "https://example.com/v29.jpg"
+    hinhanh: "/assets/images/products/vivo-v29.webp",
   },
   {
     id: 13,
@@ -114,7 +114,7 @@ const data = [
     gia: 8.99,
     trangthai: true,
     soluong: "55",
-    hinhanh: "https://example.com/y36.jpg"
+    hinhanh: "/assets/images/products/vivo-y36.webp",
   },
   {
     id: 14,
@@ -123,7 +123,7 @@ const data = [
     gia: 10.49,
     trangthai: true,
     soluong: "35",
-    hinhanh: "https://example.com/realme11pro.jpg"
+    hinhanh: "/assets/images/products/realme-11pro.webp",
   },
   {
     id: 15,
@@ -132,8 +132,8 @@ const data = [
     gia: 7.99,
     trangthai: true,
     soluong: "50",
-    hinhanh: "https://example.com/nokiag50.jpg"
-  }
+    hinhanh: "/assets/images/products/Nokia-G50.jpg",
+  },
 ];
 
 localStorage.setItem("product", JSON.stringify(data));
