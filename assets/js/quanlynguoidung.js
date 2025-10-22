@@ -11,6 +11,8 @@ function navigateTo(section, event) {
     document.getElementById("dashboard-content").style.display = "block";
   } else if (section === "customers") {
     document.getElementById("customers-content").style.display = "block";
+  } else if (section === "orders") {
+    document.getElementById("orders-id").style.display = "block";
   } else {
     document.getElementById("other-content").style.display = "block";
   }

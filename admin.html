@@ -82,7 +82,7 @@
 
                 <!-- THANH NHÀN - Quản lý đơn hàng -->
                 <li>
-                    <a href="#orders" class="sidebar-menu-item" onclick="navigateTo('orders', event)">
+                    <a href="#orders-id" class="sidebar-menu-item" onclick="navigateTo('orders', event)">
                         <img src="./assets/images/icons/icon-cart.png" alt="logo manager orders" class="icon-while">
                         <span>Quản lý đơn hàng</span>
                     </a>
@@ -132,7 +132,7 @@
         <!-- ============DUY ĐĂNG============= -->
         <main class="content-area">
             <!-- DASHBOARD SECTION -->
-            <div id="dashboard-content" class="dashboard-section" style="display: none;">
+            <div id="dashboard-content" class="dashboard-section">
                 <div class="dashboard-header">
                     <h1>Tổng quan</h1>
                     <p>Chào mừng đến với bảng điều khiển quản trị MobileShop</p>
@@ -183,7 +183,7 @@
                 
             </div>
                 
-            <div class = "orders-content">
+            <div id="orders-id" class = "orders-content" style="display: none;">
                 <div class = "orders">
                     <div class = "title">
                         <h1>Quản lý đơn hàng</h1>
@@ -286,6 +286,41 @@
                     </div>
                 </div>
             </div> 
+            <div class="detail-order-wrapper" style = "display: none;">
+                <div class="detail-content">
+                    <span class="close-btn">&times;</span>
+                    <div class="order-info">
+                        <div class = "info-wrapper">
+                            <p class = "detail-order-id-label"><strong>Mã đơn hàng:</strong> <span id="detail-order-id"></span></p>
+                            <p><strong>Ngày đặt:</strong> <span id="detail-date"></span></p>
+                            <p><strong>Địa chỉ:</strong> <span id="detail-address"></span></p>
+                            <p><strong>Trạng thái:</strong> <span id="detail-status"></span></p>
+                        </div>
+                        <div class = "detail-product-list">
+                            <p id = "detail-product-list-title"><strong>Sản phẩm:</strong></p>
+                            <ul id="detail-products">
+                                <li class = "detail-product-item">
+                                    <div class = "detail-product-img-wrapper"> 
+                                        <img src="./assets/images/products/samsung-galaxy-s25-ultra.png" alt="Samsung Galaxy S25 Ultra" align = "center">
+                                    </div>
+                                    <div class = "detail-product-info">
+                                        <p class = "detail-type-product">Samsung</p>
+                                        <p class = "detail-product-name">Samsung galazy s25 ultra</p> 
+                                        <p class = "detail-product-quantity">x1</p> 
+                                    </div>
+                                    <div class = "detail-product-price">
+                                        200$
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class = "payment-wrapper">
+                            <p><strong>Phương thức thanh toán:</strong> <span id="detail-payment"></span></p>
+                            <p><strong>Tổng tiền:</strong> <span id="detail-total"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
                   <!-- HỒNG PHÚC - QUẢN LÝ NGƯỜI DÙNG -->
             <div id="customers-content" class="section-content" style="display: none;">
                 <div class="user-management">
@@ -430,10 +465,10 @@
     <scrip src="./assets/js/dataProduct.js"></script>
     <script src="./assets/js/quanlynguoidung.js"></script>
     <script src=".\assets\js\customer.js"></script>
+    <script src=".\assets\js\order-modify-orderstatus.js"></script>
     <script src=".\assets\js\order-local-storage.js"></script>
     <script src=".\assets\js\order-search.js"></script>
     <script src=".\assets\js\order-page-control.js"></script>
-    <script src=".\assets\js\order-modify-orderstatus.js"></script>
     <link href="./assets/css/admin.css" rel="stylesheet">
 </body>
 

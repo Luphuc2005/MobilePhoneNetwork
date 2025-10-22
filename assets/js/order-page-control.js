@@ -1,6 +1,7 @@
 let currentPageOrder = 1;
 let totalOrders = allOrder.length; 
 let numberOrderPerPage = 5;
+let totalPages = Math.floor((totalOrders + numberOrderPerPage - 1)/numberOrderPerPage);
 
 //----------- function---------------------//
 function processStatus(status) {
@@ -34,6 +35,13 @@ function addPageButton(page, numberOrderPerPage, allOrders, allCustomers, totalO
         renderOrders((page - 1) * numberOrderPerPage, numberOrderPerPage, allOrders, allCustomers, totalOrders, page);
     });
     document.getElementsByClassName('page-numbers')[0].appendChild(btn);
+}
+
+function addEllipsis() {
+    const span = document.createElement('span');
+    span.textContent = '...';
+    span.classList.add('ellipsis');
+    document.getElementsByClassName('page-numbers')[0].appendChild(span);
 }
 
 function renderOrders(startOrder, numberOrderPerPage, allOrders, allCustomers, totalOrders) {
@@ -73,7 +81,7 @@ function renderOrders(startOrder, numberOrderPerPage, allOrders, allCustomers, t
                             <div class="info-line info-label">Tổng tiền: <span class="total-price info-value">${allOrders[i].amount}₫</span></div>
                             <div class="info-line info-label">Thanh toán: <span class = "info-value">${allOrders[i].purchase}</span></div>
                             
-                            <div class="status-update-section">
+                            <div class="status-update-section" data-id-order = "${allOrders[i].order_id}">
                                 <label for="status">Cập nhật trạng thái</label>
                                 <div class="status-update-form">
                                     <div class="status-select">${processStatus(allOrders[i].status)}</div>
@@ -98,28 +106,44 @@ function renderOrders(startOrder, numberOrderPerPage, allOrders, allCustomers, t
         `;
     }
     
-    let maxVisible = 5;
-    let currentPageOrder2 = (startOrder/numberOrderPerPage) + 1;
-    let totalPages = (totalOrders + numberOrderPerPage - 1)/numberOrderPerPage;
-    let start = Math.max(1, currentPageOrder2 - Math.floor(maxVisible / 2));
+    let maxVisible = 4;
+    let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
     let end = Math.min(totalPages, start + maxVisible - 1);
+
+
+    if (end - start < maxVisible - 1) {
+        start = Math.max(1, end - maxVisible + 1);
+    }
+    if (start > 1) {
+        addPageButton(1, numberOrderPerPage, allOrders, allCustomers, totalOrders);
+        if (start > 2) addEllipsis();
+    }
 
     for (let i = start; i <= end; i++) {
         addPageButton(i, numberOrderPerPage, allOrders, allCustomers, totalOrders);
     } 
+
+    if (end < totalPages) {
+        if (end < totalPages - 1) addEllipsis();
+        addPageButton(totalPages, numberOrderPerPage, allOrders, allCustomers, totalOrders);
+    }
+
     document.getElementById('now-page').innerHTML = `${startOrder + 1} - ${startOrder + numberOrderPerPage}`;
     document.getElementById('all-page').innerHTML = `${totalOrders}`;
+    initDropdown();
 }
 
 document.getElementById('pre-page-btn').addEventListener('click', function () {
-    if (currentPageOrder <= 1) return;
-    currentPageOrder -= 1;
-    renderOrders((currentPageOrder - 1) * numberOrderPerPage, numberOrderPerPage, allOrders, allCustomers, totalOrders)
+    if (currentPageOrder > 1) {
+        currentPageOrder -= 1;
+        renderOrders((currentPageOrder - 1) * numberOrderPerPage, numberOrderPerPage, allOrders, allCustomers, totalOrders)
+    }
 })
 document.getElementById('next-page-btn').addEventListener('click', function () {
-    if (currentPageOrder > (totalOrders + numberOrderPerPage - 1)/(numberOrderPerPage)) return;
-    currentPageOrder += 1;
-    renderOrders((currentPageOrder - 1) * numberOrderPerPage, numberOrderPerPage, allOrders, allCustomers, totalOrders)
+    if (currentPageOrder < totalPages) {
+        currentPageOrder += 1;
+        renderOrders((currentPageOrder - 1) * numberOrderPerPage, numberOrderPerPage, allOrders, allCustomers, totalOrders)
+    }
 })
 
 preProcessing(5, allOrder, customerData, allOrder.length);

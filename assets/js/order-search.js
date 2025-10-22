@@ -63,12 +63,19 @@ document.getElementById('search-orders-form').addEventListener("submit", functio
                             <div class="info-line info-label">Tổng tiền: <span class="total-price info-value">${order.amount}₫</span></div>
                             <div class="info-line info-label">Thanh toán: <span class = "info-value">${order.purchase}</span></div>
                             
-                            <div class="status-update-section">
+                            <div class="status-update-section" data-id-order = "${order.order_id}">
                                 <label for="status">Cập nhật trạng thái</label>
                                 <div class="status-update-form">
                                     <div class="status-select">${processStatus(order.status)}</div>
-                                    <button class="update-btn">Cập nhật</button>
+                                    <div class="select-list hidden">
+                                        <div class="select-item">Chờ xử lý</div>
+                                        <div class="select-item">Đã xác nhận</div>
+                                        <div class="select-item">Đang giao</div>
+                                        <div class="select-item">Hoàn thành</div>
+                                        <div class="select-item">Đã hủy</div>
+                                    </div>
                                 </div>
+                                <button class="update-status-order-btn">Cập nhật</button>
                             </div>
                         </div>
                     </div>
@@ -81,4 +88,5 @@ document.getElementById('search-orders-form').addEventListener("submit", functio
         `;
         });
     }
+    initDropdown();
 });

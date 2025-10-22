@@ -226,9 +226,6 @@ let allOrders = [
     }
 ]
 
-let allOrder = getAllOrders();
-let customerData = getAllCustomer();
-
 // Lưu vào local storage 
 function storeOrderInLocalStorage() {
     // Lấy khách hàng hiện có
@@ -243,6 +240,9 @@ function storeOrderInLocalStorage() {
 function getAllOrders() {
     return JSON.parse(localStorage.getItem('allOrders'));
 }
+
+let allOrder = getAllOrders();
+let customerData = getAllCustomer();
 
 //---------------Main---------------------//
 storeOrderInLocalStorage();
