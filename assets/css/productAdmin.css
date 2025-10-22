@@ -314,14 +314,7 @@ label[for="editImageFile"]:hover {
   display: flex;
   z-index: 999;
 }
-.edit-form-content {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  width: 600px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  animation: pop 0.3s ease;
-}
+
 @keyframes pop {
   from {
     transform: scale(0.9);
@@ -409,4 +402,62 @@ textarea {
 
 #addProductBtn:hover {
   background: #009da4;
+}
+Pagination container */
+#pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+/* Pagination button chung */
+#pagination button {
+  background: #f3f4f6;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* Hover đẹp */
+#pagination button:hover:not(:disabled) {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(37, 99, 235, 0.3);
+}
+
+/* Trang đang chọn */
+#pagination button.active {
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  border-color: #2563eb;
+}
+
+/* Nút bị disable */
+#pagination button:disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  border-color: #d1d5db;
+  cursor: not-allowed;
+}
+
+/* Hiệu ứng click */
+#pagination button:active:not(:disabled) {
+  transform: scale(0.96);
+}.edit-form-content {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  width: 600px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  animation: pop 0.3s ease;
 }

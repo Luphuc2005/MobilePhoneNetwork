@@ -64,7 +64,7 @@
 
                 <!-- HUYỀN TRANG - Quản lý sản phẩm -->
                 <li>
-                    <a href="#products" class="sidebar-menu-item" id="product-link">
+                    <a href="#products" class="sidebar-menu-item" onclick="navigateTo('products', event)">
                         <img src="./assets/images/icons/manager-product.png" alt="logo manager-product"
                             class="icon-while">
                         <span>Quản lý sản phẩm</span>
@@ -297,7 +297,9 @@
                 </div>
             </div>
 
-
+<div id="products-content" style="display:none;">
+    <!-- nội dung phần sản phẩm -->
+</div>
 
                 <!-- OTHER SECTIONS (Placeholder) -->
                 <div id="other-content" style="display: none;">
@@ -307,10 +309,11 @@
                     </div>
                 </div>
         </main>
-    <script src="./assets/js/productlayout.js"></script>
-    <scrip src="./assets/js/dataProduct.js"></script>
+    
         <script src="./assets/js/quanlynguoidung.js"></script>
      <link href="./assets/css/admin.css" rel="stylesheet">
+    <script src="./assets/js/dataProduct.js"></script>
+    <script src="./assets/js/productlayout.js"></script>
 </body>
 
 </html>
