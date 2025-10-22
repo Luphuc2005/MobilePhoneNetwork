@@ -3,6 +3,12 @@ body {
   background-color: #fafafa;
   margin: 0;
   padding: 20px;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 /* Tiêu đề trang */
@@ -31,6 +37,7 @@ body {
   align-items: center;
   margin-bottom: 20px;
   gap: 20px;
+  flex-wrap: wrap;
 }
 .top-bar input {
   flex: 1;
@@ -67,6 +74,7 @@ body {
 .user-table {
   width: 100%;
   font-size: 14px;
+  overflow-x: auto;
 }
 .table-header,
 .table-row {
@@ -74,6 +82,7 @@ body {
   grid-template-columns: 40px 160px 230px 100px 140px 100px 160px 200px;
   align-items: center;
   padding: 10px 0;
+  min-width: 1130px;
 }
 .table-header {
   background-color: #f3f4f6;
@@ -160,6 +169,7 @@ body {
   position: relative;
   background: #ffffff;
   width: 420px;
+  max-width: 90%;
   padding: 30px 30px 25px;
   border-radius: 18px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
@@ -248,6 +258,49 @@ body {
   background-color: #e5e7eb;
 }
 
+/* Modal buttons container */
+.modal-buttons,
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+/* Nút lưu trong edit modal */
+.modal-content button.save-edit {
+  background-color: #2563eb;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.modal-content button.save-edit:hover {
+  background-color: #1d4ed8;
+}
+
+/* Nút hủy trong edit modal */
+.modal-content button.cancel-edit {
+  background-color: #f3f4f6;
+  color: #374151;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.modal-content button.cancel-edit:hover {
+  background-color: #e5e7eb;
+}
+
 /* === Hiệu ứng === */
 @keyframes fadeInBg {
   from {
@@ -299,9 +352,6 @@ modal-content select {
 }
 
 /* Section content wrapper */
-.section-content {
-  padding: 20px;
-}
 .table-header > div {
   position: relative;
   padding-right: 20px; /* Để chừa chỗ cho icon */
@@ -331,4 +381,454 @@ modal-content select {
 /* Riêng cho sidebar */
 .sidebar .logo-dashboard {
   filter: brightness(0) invert(1); /* Icon trắng trên nền tím */
+}
+/* Responsive cho mobile và tablet */
+@media screen and (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .section-content {
+    padding: 0px;
+  }
+
+  .page-title {
+    padding: 8px 15px;
+  }
+
+  .page-title h2 {
+    font-size: 18px;
+  }
+
+  .page-title p {
+    font-size: 12px;
+  }
+
+  .top-bar {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .top-bar input,
+  .top-bar button {
+    width: 100%;
+  }
+
+  .user-table {
+    font-size: 12px;
+  }
+
+  .modal-content {
+    width: 95%;
+    max-width: 95%;
+    padding: 20px 15px;
+  }
+
+  .modal-content h3 {
+    font-size: 18px;
+  }
+
+  .pagination {
+    gap: 5px;
+    margin-right: 0;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .pagination button {
+    padding: 5px 8px;
+    font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  body {
+    padding: 5px;
+  }
+
+  .page-title {
+    padding: 6px 10px;
+  }
+
+  .page-title h2 {
+    font-size: 16px;
+  }
+
+  .page-title p {
+    font-size: 11px;
+  }
+
+  .modal-content {
+    padding: 15px 10px;
+  }
+
+  .top-bar input {
+    font-size: 14px;
+    padding: 8px 35px 8px 35px;
+  }
+
+  .top-bar button {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .section-content {
+    padding: 0px;
+  }
+}
+
+/* ====== QUẢN LÝ GIÁ BÁN ====== */
+.pricing-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+}
+
+.tab-btn:hover {
+  color: #2563eb;
+  background-color: #f8fafc;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Profit sections */
+.profit-section {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profit-section h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  color: #1f2937;
+}
+
+/* Profit form */
+.profit-form {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.profit-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.profit-form label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 14px;
+}
+
+.profit-form input,
+.profit-form select {
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+  height: 42px;
+  box-sizing: border-box;
+}
+
+.profit-form input:focus,
+.profit-form select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+/* Common button styles for pricing section */
+.profit-form button,
+.lookup-form button {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  height: 42px;
+  min-width: 80px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.profit-form button:hover,
+.lookup-form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* Specific button colors */
+.lookup-form button {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+.lookup-form button:hover {
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* Profit table */
+.profit-table-section {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profit-table-section h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  color: #1f2937;
+}
+
+.profit-table {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.profit-table .table-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  background: #f8fafc;
+  font-weight: 600;
+  color: #374151;
+}
+
+.profit-table .table-header > div {
+  padding: 12px 15px;
+  border-right: 1px solid #e5e7eb;
+}
+
+.profit-table .table-header > div:last-child {
+  border-right: none;
+}
+
+.profit-table .table-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s;
+}
+
+.profit-table .table-row:hover {
+  background-color: #f9fafb;
+}
+
+.profit-table .table-row > div {
+  padding: 12px 15px;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+}
+
+.profit-table .table-row > div:last-child {
+  border-right: none;
+}
+
+.profit-table .table-row .actions {
+  gap: 8px;
+}
+
+.profit-table .table-row .actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.profit-table .table-row .actions button:hover {
+  background-color: #e5e7eb;
+}
+
+.profit-table .table-row .actions img {
+  width: 16px;
+  height: 16px;
+}
+
+/* Lookup section */
+.lookup-section {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.lookup-section h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  color: #1f2937;
+}
+
+/* Lookup form */
+.lookup-form {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.lookup-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.lookup-form label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 14px;
+}
+
+.lookup-form input,
+.lookup-form select {
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+  height: 42px;
+  box-sizing: border-box;
+}
+
+.lookup-form input:focus,
+.lookup-form select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+/* Price result */
+.price-result {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: 12px;
+  padding: 25px;
+  border: 1px solid #0ea5e9;
+}
+
+.price-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #bae6fd;
+}
+
+.price-item:last-child {
+  border-bottom: none;
+}
+
+.price-item.highlight {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  margin: 0 -25px;
+  padding: 15px 25px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.price-label {
+  font-weight: 600;
+  color: #374151;
+}
+
+.price-item.highlight .price-label {
+  color: white;
+}
+
+.price-result span:last-child {
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.price-item.highlight span:last-child {
+  color: white;
+  font-size: 20px;
+}
+
+/* Responsive cho pricing */
+@media screen and (max-width: 768px) {
+  .profit-form,
+  .lookup-form {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  .profit-form .form-group,
+  .lookup-form .form-group {
+    min-width: auto;
+  }
+
+  .profit-form button,
+  .lookup-form button {
+    width: 100%;
+    min-width: auto;
+    height: 42px;
+  }
+
+  .profit-table .table-header,
+  .profit-table .table-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .profit-table .table-header > div,
+  .profit-table .table-row > div {
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .profit-table .table-header > div:last-child,
+  .profit-table .table-row > div:last-child {
+    border-bottom: none;
+  }
 }

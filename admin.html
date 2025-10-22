@@ -280,14 +280,21 @@
           
                     <p>Số điện thoại</p>
                     <input type="text" id="editPhone" />
-                   <input id="editPassword" type="password" placeholder="Mật khẩu">
-                    <button id="resetPasswordBtn" type="button" style="display: none;">Reset về 123123</button>
-                    <!-- <p>Vai trò</p>
-                    <select id="editRole">
-                      <option>Người dùng</option>
-                      <option>Quản trị viên</option>
-                      <option>Đã khóa</option>
-                    </select> -->
+                    
+                   <p>Mật khẩu</p>
+                    <div style="display: flex; gap: 8px; align-items: stretch;">
+                      <input id="editPassword" type="password" placeholder="Mật khẩu" style="flex: 1; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px;">
+                      <button id="togglePasswordBtn" type="button" style="padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; background: white; cursor: pointer; display: flex; align-items: center; justify-content: center; min-width: 44px;">
+                        <img src="assets/images/icons/eye.png" alt="Hiện" style="width: 20px; height: 20px;">
+                      </button>
+                    </div>
+                    <button id="resetPasswordBtn" type="button" style="display: none; margin-top: 8px;">Reset về 123123</button>
+                    
+                    <p>Trạng thái</p>
+                    <select id="editTrangThai">
+                      <option value="Hoạt động">Hoạt động</option>
+                      <option value="Đã khóa">Đã khóa</option>
+                    </select>
           
                     <div class="modal-buttons">
                       <button class="save-edit">Lưu</button>
@@ -301,6 +308,122 @@
     <!-- nội dung phần sản phẩm -->
 </div>
 
+                <!-- QUẢN LÝ GIÁ BÁN -->
+                <div id="pricing-content" class="section-content" style="display: none;">
+                    <div class="page-title">
+                        <h2> Quản lý giá bán</h2>
+                        <p>Thiết lập % lợi nhuận và tra cứu giá sản phẩm</p>
+                    </div>
+
+                    <!-- Tabs -->
+                    <div class="pricing-tabs">
+                        <button class="tab-btn active" data-tab="profit">% Lợi nhuận</button>
+                        <button class="tab-btn" data-tab="lookup">Tra cứu giá</button>
+                    </div>
+
+                    <!-- Tab % Lợi nhuận -->
+                    <div id="profit-tab" class="tab-content active">
+                        <!-- Theo loại sản phẩm -->
+                        <div class="profit-section">
+                            <h3>📊 % Lợi nhuận theo loại sản phẩm</h3>
+                            <div class="profit-form">
+                                <div class="form-group">
+                                    <label>Loại sản phẩm:</label>
+                                    <select id="categorySelect">
+                                        <option value="">Chọn loại sản phẩm</option>
+                                        <option value="Iphone">iPhone</option>
+                                        <option value="Samsung">Samsung</option>
+                                        <option value="Xiaomi">Xiaomi</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>% Lợi nhuận:</label>
+                                    <input type="number" id="categoryProfit" placeholder="Nhập % lợi nhuận" min="0" max="100" step="0.1">
+                                </div>
+                                <button id="saveCategoryBtn">💾 Lưu</button>
+                            </div>
+                        </div>
+
+                        <!-- Theo từng sản phẩm -->
+                        <div class="profit-section">
+                            <h3>📱 % Lợi nhuận theo sản phẩm</h3>
+                            <div class="profit-form">
+                                <div class="form-group">
+                                    <label>Sản phẩm:</label>
+                                    <select id="productSelect">
+                                        <option value="">Chọn sản phẩm</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>% Lợi nhuận:</label>
+                                    <input type="number" id="productProfit" placeholder="Nhập % lợi nhuận" min="0" max="100" step="0.1">
+                                </div>
+                                <button id="saveProductBtn">💾 Lưu</button>
+                            </div>
+                        </div>
+
+                        <!-- Bảng hiển thị % lợi nhuận -->
+                        <div class="profit-table-section">
+                            <h3>📋 Danh sách % lợi nhuận</h3>
+                            <div class="profit-table">
+                                <div class="table-header">
+                                    <div>Loại/Sản phẩm</div>
+                                    <div>% Lợi nhuận</div>
+                                    <div>Hành động</div>
+                                </div>
+                                <div id="profitTableBody"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Tra cứu giá -->
+                    <div id="lookup-tab" class="tab-content">
+                        <div class="lookup-section">
+                            <h3>🔍 Tra cứu giá sản phẩm</h3>
+                            <div class="lookup-form">
+                                <div class="form-group">
+                                    <label>Giá vốn:</label>
+                                    <input type="number" id="costPrice" placeholder="Nhập giá vốn" min="0" step="1000">
+                                </div>
+                                <div class="form-group">
+                                    <label>% Lợi nhuận:</label>
+                                    <input type="number" id="profitPercent" placeholder="Nhập % lợi nhuận" min="0" max="100" step="0.1">
+                                </div>
+                                <button id="calculateBtn">🧮 Tính giá</button>
+                            </div>
+                            
+                            <!-- Ví dụ tính giá -->
+                            <div class="example-section">
+                                <h4>📋 Ví dụ tính giá:</h4>
+                                <div class="example-buttons">
+                                    <button onclick="setExample(29990000, 20)">iPhone: 30M + 20%</button>
+                                    <button onclick="setExample(27990000, 15)">Samsung: 28M + 15%</button>
+                                    <button onclick="setExample(12990000, 12)">Xiaomi: 13M + 12%</button>
+                                </div>
+                            </div>
+                            
+                            <div class="price-result">
+                                <div class="price-item">
+                                    <span class="price-label"> Giá vốn:</span>
+                                    <span id="costDisplay">0 ₫</span>
+                                </div>
+                                <div class="price-item">
+                                    <span class="price-label"> % Lợi nhuận:</span>
+                                    <span id="profitDisplay">0%</span>
+                                </div>
+                                <div class="price-item highlight">
+                                    <span class="price-label"> Giá bán:</span>
+                                    <span id="sellPriceDisplay">0 ₫</span>
+                                </div>
+                                <div class="price-item">
+                                    <span class="price-label"> Lợi nhuận:</span>
+                                    <span id="profitAmountDisplay">0 ₫</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- OTHER SECTIONS (Placeholder) -->
                 <div id="other-content" style="display: none;">
                     <div class="dashboard-header">
@@ -309,11 +432,20 @@
                     </div>
                 </div>
         </main>
+<<<<<<< HEAD
     
         <script src="./assets/js/quanlynguoidung.js"></script>
      <link href="./assets/css/admin.css" rel="stylesheet">
     <script src="./assets/js/dataProduct.js"></script>
     <script src="./assets/js/productlayout.js"></script>
+=======
+    <script src="./assets/js/productlayout.js"></script>
+    <script src="./assets/js/dataProduct.js"></script>
+
+    <script src="./assets/js/quanlynguoidung.js"></script>
+    <script src="./assets/js/pricing.js"></script>
+    <link href="./assets/css/admin.css" rel="stylesheet">
+>>>>>>> 18797008a72322da58cf426066810c3cbe069f0b
 </body>
 
 </html>
