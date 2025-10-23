@@ -3,7 +3,9 @@ function navigateTo(section, event) {
 
   // Ẩn tất cả phần nội dung
   document
-    .querySelectorAll("#dashboard-content, #customers-content, #other-content")
+    .querySelectorAll(
+      "#dashboard-content, #customers-content, #pricing-content, #other-content"
+    )
     .forEach((div) => (div.style.display = "none"));
 
   // Hiển thị phần tương ứng
@@ -11,6 +13,14 @@ function navigateTo(section, event) {
     document.getElementById("dashboard-content").style.display = "block";
   } else if (section === "customers") {
     document.getElementById("customers-content").style.display = "block";
+  } else if (section === "pricing") {
+    document.getElementById("pricing-content").style.display = "block";
+    // Initialize pricing module
+    setTimeout(() => {
+      if (typeof initializePricing === "function") {
+        initializePricing();
+      }
+    }, 100);
   } else {
     document.getElementById("other-content").style.display = "block";
   }
@@ -315,33 +325,48 @@ if (resetPasswordBtn) {
     resetPasswordBtn.style.boxShadow = "0 2px 4px rgba(0,0,0,0.2)";
   };
   resetPasswordBtn.onclick = () => {
-    const editPasswordInput = document.getElementById("editPassword");
-    if (editPasswordInput) {
-      editPasswordInput.value = "123123"; // Reset về mật khẩu mặc định
-      alert("Mật khẩu đã được reset về 123123!");
-    }
+    showConfirmDialog(
+      "Xác nhận Reset Mật khẩu",
+      "Bạn có chắc chắn muốn reset mật khẩu về <strong>123123</strong> không?",
+      () => {
+        const editPasswordInput = document.getElementById("editPassword");
+        if (editPasswordInput) {
+          const newPassword = "123123";
+          editPasswordInput.value = newPassword;
+          // Cập nhật vào users array
+          if (editingIndex !== null) {
+            users[editingIndex].password = newPassword;
+            localStorage.setItem("users", JSON.stringify(users));
+          }
+          showSuccessNotification(
+            "✅ Reset Mật khẩu Thành công!",
+            `Mật khẩu mới: <strong>${newPassword}</strong><br>Vui lòng lưu lại thông tin này.`
+          );
+        }
+      }
+    );
   };
 }
 
-// Nút toggle hiển thị password (mắt)
+// Nút toggle hiển thị password
 const togglePasswordBtn = document.getElementById("togglePasswordBtn");
 if (togglePasswordBtn) {
-  togglePasswordBtn.onclick = () => {
+  togglePasswordBtn.onclick = (e) => {
+    e.preventDefault(); // Ngăn submit form
     const editPasswordInput = document.getElementById("editPassword");
     if (editPasswordInput) {
       if (editPasswordInput.type === "password") {
         editPasswordInput.type = "text";
         togglePasswordBtn.innerHTML =
-          '<img src="assets/images/icons/eye-off.png" alt="Ẩn" />'; // Giả sử có icon eye-off
+          '<img src="assets/images/icons/eyeoff.png" alt="Ẩn" style="width: 20px; height: 20px;" />';
       } else {
         editPasswordInput.type = "password";
         togglePasswordBtn.innerHTML =
-          '<img src="assets/images/icons/eye.png" alt="Hiện" />'; // Giả sử có icon eye
+          '<img src="assets/images/icons/eye.png" alt="Hiện" style="width: 20px; height: 20px;" />';
       }
     }
   };
 }
-
 // === Xem người dùng ===
 function viewUser(index) {
   editingIndex = index;
@@ -352,12 +377,12 @@ function viewUser(index) {
   document.getElementById("editEmail").value = u.email;
   document.getElementById("editPhone").value = u.phone;
   const editPasswordInput = document.getElementById("editPassword");
-  editPasswordInput.value = u.password || ""; // Hiển thị mật khẩu cũ (ẩn mặc định)
-  editPasswordInput.type = "password"; // Đảm bảo ẩn khi xem
-  // Reset icon mắt về hiện
+  editPasswordInput.value = u.password || ""; // Hiển thị mật khẩu
+  editPasswordInput.type = "password"; // Ẩn mật khẩu mặc định
+  // Reset icon mắt về hiện (để admin có thể click xem)
   if (togglePasswordBtn) {
     togglePasswordBtn.innerHTML =
-      '<img src="assets/images/icons/eye.png" alt="Hiện" />';
+      '<img src="assets/images/icons/eye.png" alt="Hiện" style="width: 20px; height: 20px;" />';
   }
   // Đặt đúng option cho select trạng thái
   const editTrangThaiSelect = document.getElementById("editTrangThai");
@@ -395,7 +420,7 @@ function editUser(index) {
   // Reset icon mắt về hiện
   if (togglePasswordBtn) {
     togglePasswordBtn.innerHTML =
-      '<img src="assets/images/icons/eye.png" alt="Hiện" />';
+      '<img src="assets/images/icons/eye.png" alt="Hiện" style="width: 20px; height: 20px;" />';
   }
   // Đặt đúng option cho select trạng thái
   const editTrangThaiSelect = document.getElementById("editTrangThai");
@@ -449,20 +474,240 @@ saveEdit.onclick = () => {
 // === Khóa / Mở khóa ===
 function toggleLockUser(index) {
   const u = users[index];
-  if (u.trangthai === "Đã khóa") {
-    u.trangthai = "Hoạt động";
-  } else {
-    u.trangthai = "Đã khóa";
-  }
-  localStorage.setItem("users", JSON.stringify(users));
-  renderUsers();
+  const isLocked = u.trangthai === "Đã khóa";
+  const action = isLocked ? "mở khóa" : "khóa";
+  const actionIcon = isLocked ? "🔓" : "🔒";
+
+  showConfirmDialog(
+    `Xác nhận ${action.charAt(0).toUpperCase() + action.slice(1)} Tài khoản`,
+    `Bạn có chắc chắn muốn <strong>${action}</strong> tài khoản của <strong>${u.name}</strong> không?<br><small>Email: ${u.email}</small>`,
+    () => {
+      if (isLocked) {
+        u.trangthai = "Hoạt động";
+        showSuccessNotification(
+          `${actionIcon} Mở khóa Thành công!`,
+          `Tài khoản <strong>${u.name}</strong> đã được kích hoạt lại.`
+        );
+      } else {
+        u.trangthai = "Đã khóa";
+        showSuccessNotification(
+          `${actionIcon} Khóa Tài khoản Thành công!`,
+          `Tài khoản <strong>${u.name}</strong> đã bị khóa. Người dùng không thể đăng nhập.`
+        );
+      }
+      localStorage.setItem("users", JSON.stringify(users));
+      renderUsers();
+    }
+  );
 }
 
 // === Xóa ===
 function deleteUser(index) {
-  if (confirm("Bạn có chắc muốn xóa người dùng này không?")) {
-    users.splice(index, 1);
-    localStorage.setItem("users", JSON.stringify(users));
-    renderUsers();
-  }
+  const u = users[index];
+  showConfirmDialog(
+    "⚠️ Xác nhận Xóa Người dùng",
+    `Bạn có chắc chắn muốn <strong>xóa vĩnh viễn</strong> người dùng <strong>${u.name}</strong> không?<br><small>Email: ${u.email}</small><br><br><span style="color: red;">Hành động này không thể hoàn tác!</span>`,
+    () => {
+      users.splice(index, 1);
+      localStorage.setItem("users", JSON.stringify(users));
+      renderUsers();
+      showSuccessNotification(
+        "🗑️ Xóa Thành công!",
+        `Người dùng <strong>${u.name}</strong> đã được xóa khỏi hệ thống.`
+      );
+    }
+  );
 }
+
+// ====== HỘP THOẠI XÁC NHẬN (CONFIRM DIALOG) ======
+function showConfirmDialog(title, message, onConfirm) {
+  // Tạo overlay
+  const overlay = document.createElement("div");
+  overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.2s ease;
+  `;
+
+  // Tạo dialog box
+  const dialog = document.createElement("div");
+  dialog.style.cssText = `
+    background: white;
+    border-radius: 16px;
+    padding: 25px 30px;
+    max-width: 450px;
+    width: 90%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.3s ease;
+  `;
+
+  dialog.innerHTML = `
+    <h3 style="margin: 0 0 15px 0; font-size: 20px; color: #1f2937;">${title}</h3>
+    <p style="margin: 0 0 25px 0; font-size: 15px; color: #4b5563; line-height: 1.6;">${message}</p>
+    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+      <button id="confirmCancel" style="
+        background: #f3f4f6;
+        color: #374151;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+      ">Hủy</button>
+      <button id="confirmOk" style="
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+      ">Xác nhận</button>
+    </div>
+  `;
+
+  overlay.appendChild(dialog);
+  document.body.appendChild(overlay);
+
+  // Xử lý sự kiện
+  const btnCancel = dialog.querySelector("#confirmCancel");
+  const btnOk = dialog.querySelector("#confirmOk");
+
+  btnCancel.onclick = () => {
+    overlay.remove();
+  };
+
+  btnOk.onclick = () => {
+    overlay.remove();
+    if (onConfirm) onConfirm();
+  };
+
+  // Đóng khi click overlay
+  overlay.onclick = (e) => {
+    if (e.target === overlay) overlay.remove();
+  };
+
+  // Hover effects
+  btnCancel.onmouseover = () => {
+    btnCancel.style.background = "#e5e7eb";
+  };
+  btnCancel.onmouseout = () => {
+    btnCancel.style.background = "#f3f4f6";
+  };
+  btnOk.onmouseover = () => {
+    btnOk.style.transform = "scale(1.05)";
+  };
+  btnOk.onmouseout = () => {
+    btnOk.style.transform = "scale(1)";
+  };
+}
+
+// ====== THÔNG BÁO THÀNH CÔNG (SUCCESS NOTIFICATION) ======
+function showSuccessNotification(title, message) {
+  // Tạo notification box
+  const notification = document.createElement("div");
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 20px 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+    z-index: 10000;
+    max-width: 400px;
+    animation: slideInRight 0.4s ease;
+  `;
+
+  notification.innerHTML = `
+    <div style="display: flex; align-items: start; gap: 12px;">
+      <div style="font-size: 24px;">✓</div>
+      <div style="flex: 1;">
+        <h4 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 700;">${title}</h4>
+        <p style="margin: 0; font-size: 14px; opacity: 0.95; line-height: 1.5;">${message}</p>
+      </div>
+      <button id="closeNotification" style="
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+        opacity: 0.8;
+        transition: 0.2s;
+      ">×</button>
+    </div>
+  `;
+
+  document.body.appendChild(notification);
+
+  // Nút đóng
+  const closeBtn = notification.querySelector("#closeNotification");
+  closeBtn.onclick = () => {
+    notification.style.animation = "slideOutRight 0.3s ease";
+    setTimeout(() => notification.remove(), 300);
+  };
+  closeBtn.onmouseover = () => {
+    closeBtn.style.opacity = "1";
+  };
+  closeBtn.onmouseout = () => {
+    closeBtn.style.opacity = "0.8";
+  };
+
+  // Tự động đóng sau 5 giây
+  setTimeout(() => {
+    if (document.body.contains(notification)) {
+      notification.style.animation = "slideOutRight 0.3s ease";
+      setTimeout(() => notification.remove(), 300);
+    }
+  }, 5000);
+}
+
+// ====== KEYFRAMES CHO ANIMATIONS ======
+const style = document.createElement("style");
+style.textContent = `
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(100px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  @keyframes slideOutRight {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(100px);
+    }
+  }
+`;
+document.head.appendChild(style);

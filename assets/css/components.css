@@ -1080,3 +1080,1484 @@ body {
         font-size: 12px;
     }
 }
+/* ==================USER ACCOUNT PAGE/CART PAGE================= */
+.user-account-page{
+    position: relative;
+    background-color: #E5E7EB;
+    padding-left: 10%;
+    padding-right: 10%;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif 
+}
+.user-account-page .btn{
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+.user-account-page .header{
+    margin-left: 1%;
+    margin-right: 1%;
+}
+.user-account-page .header p{
+    font-size: 12px;
+    margin: 0px 0;
+    color: #666666;
+}
+.user-account-page .header h2{
+    margin-bottom: 0px;
+}
+
+
+.content{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-left: 1%;
+    margin-right: 1%;
+    gap:20px;
+} 
+.cart-container{
+    padding: 0px;
+    width: 70%;
+    align-items: left;
+    border-spacing: 0px;
+}
+.product{
+    width: 50%;
+    text-align: left;
+}
+.price {
+    width: 15%;
+    margin: auto;
+}
+.quantity{
+    width: 10%;
+}
+.total{
+    width: 20%;
+    margin: auto;
+}
+.action{
+    width: 5%;
+}
+
+.cart-header{
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 2px solid #E5E7EB;
+    margin: 10px 0;
+}
+.cart-container th{
+    color: #888888;
+}
+.cart-item{
+    display: flex;
+    justify-content: space-between;
+    justify-items: center;
+    border-bottom: 1px solid #EEEEEE;
+    background-color: white;
+    text-align: center;
+    padding: 5px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    box-shadow: 0 1px 3px rgba(125, 112, 112, 0.08);
+    /* border-radius: 0px 0px 8px 8px; */
+
+}
+
+.cart-item .cart-col{
+    margin: auto;
+}
+.cart-item:last-child{
+    border-bottom: none;
+    border: #000000;
+}
+.item-name-container{
+    display: flex;
+    align-items:flex-start;
+    width: 50%;
+}
+.item-name-container img{
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+.item-name{
+    font-weight: bold;
+    font-size: 15px;
+    margin:auto 0px;
+}
+.item-price{
+    color: #888888;
+}
+.remove-item{
+    background-color: #FF4D4D;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+.remove-item:hover{
+    background-color: #FF1A1A;
+}
+.item-quantity-container{
+    display: flex;
+    justify-content:space;  
+    align-items: center;     
+    border-radius: 4px;
+    border: 1px solid #CCCCCC;
+    margin: 20px 0px;
+}
+
+.item-quantity{
+    margin: 0px auto;
+    border: none;
+    text-align: center;     
+    font-size: 16px;
+    outline: none;           
+    border-left: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+    width: 40%;
+}
+.increase, .decrease{
+   padding-left: 10%;
+   padding-right: 10%;
+}
+
+.item-remove a{
+    cursor: pointer;
+}
+.item-remove a img{
+    width: 20px;
+    height: 20px;
+}
+
+.cart-summary{
+    width: 29%;
+}
+.summary-box{
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+.summary-box h2{
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+.tam-tinh, .shipping, .total-price{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.checkout-button{
+    width: 100%;
+    background-color: #2563EB;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+.discount-container{
+    display: flex;
+    justify-content: space-between; 
+}
+.apply-discount{
+    width: 30%;
+}
+
+
+
+.discount-input{
+    width: 55%;
+    padding: 8px;
+    border: 1px solid #CCCCCC;
+    border-radius: 8px;
+    margin-right: 10px;
+    outline: none;           
+} 
+
+
+
+
+
+.item-image img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #e5e7eb;
+}
+
+.item-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: #111827;
+}
+
+
+
+/* ========== TÓM TẮT ĐƠN HÀNG ========== */
+.cart-summary {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.summary-box {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.summary-box h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.summary-box div {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 16px 0;
+}
+
+.discount-code {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 10px;
+}
+
+.discount-container {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    margin-top: 6px;
+}
+
+.discount-input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    outline: none;
+    font-size: 14px;
+}
+
+.discount-input:focus {
+    border-color: #06B6D4;
+}
+
+.btn {
+    background-color: #06B6D4;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 8px 14px;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.btn:hover {
+    background-color: #0891b2;
+}
+
+.checkout-button {
+    width: 100%;
+    font-weight: 600;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.policy {
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 10px;
+    line-height: 1;
+}
+
+/* Ưu đãi đặc biệt */
+.special-offer {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 13px;
+    color: #0369a1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+.cart-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.continue-shopping, .delete-all-item {
+    background-color: #E5E7EB;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 10px;
+    margin-right: 10px;
+    border: 1px solid #9c9c9d !important;
+}
+
+.content{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-left: 1%;
+    margin-right: 1%;
+    gap:20px;
+} 
+.cart-container{
+    padding: 0px;
+    width: 70%;
+    align-items: left;
+    border-spacing: 0px;
+}
+.product{
+    width: 50%;
+    text-align: left;
+}
+.price {
+    width: 15%;
+    margin: auto;
+}
+.quantity{
+    width: 10%;
+}
+.total{
+    width: 20%;
+    margin: auto;
+}
+.action{
+    width: 5%;
+}
+
+.cart-header{
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 2px solid #E5E7EB;
+    margin: 10px 0;
+}
+.cart-container th{
+    color: #888888;
+}
+.cart-item{
+    display: flex;
+    justify-content: space-between;
+    justify-items: center;
+    border-bottom: 1px solid #EEEEEE;
+    background-color: white;
+    text-align: center;
+    padding: 5px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    box-shadow: 0 1px 3px rgba(125, 112, 112, 0.08);
+    /* border-radius: 0px 0px 8px 8px; */
+
+}
+
+.cart-item .cart-col{
+    margin: auto;
+}
+.cart-item:last-child{
+    border-bottom: none;
+    border: #000000;
+}
+.item-name-container{
+    display: flex;
+    align-items:flex-start;
+    width: 50%;
+}
+.item-name-container img{
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+.item-name{
+    font-weight: bold;
+    font-size: 15px;
+    margin:auto 0px;
+}
+.item-price{
+    color: #888888;
+}
+.remove-item{
+    background-color: #FF4D4D;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+.remove-item:hover{
+    background-color: #FF1A1A;
+}
+.item-quantity-container{
+    display: flex;
+    justify-content:space;  
+    align-items: center;     
+    border-radius: 4px;
+    border: 1px solid #CCCCCC;
+    margin: 20px 0px;
+}
+
+.item-quantity{
+    margin: 0px auto;
+    border: none;
+    text-align: center;     
+    font-size: 16px;
+    outline: none;           
+    border-left: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+    width: 40%;
+}
+.increase, .decrease{
+   padding-left: 10%;
+   padding-right: 10%;
+}
+
+.item-remove a{
+    cursor: pointer;
+}
+.item-remove a img{
+    width: 20px;
+    height: 20px;
+}
+
+.cart-summary{
+    width: 29%;
+}
+.summary-box{
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+.summary-box h2{
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+.tam-tinh, .shipping, .total-price{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.checkout-button{
+    width: 100%;
+    background-color: #2563EB;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+.discount-container{
+    display: flex;
+    justify-content: space-between; 
+}
+.apply-discount{
+    width: 30%;
+}
+
+
+
+.discount-input{
+    width: 55%;
+    padding: 8px;
+    border: 1px solid #CCCCCC;
+    border-radius: 8px;
+    margin-right: 10px;
+    outline: none;           
+} 
+
+
+
+
+
+.item-image img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #e5e7eb;
+}
+
+.item-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: #111827;
+}
+
+
+
+/* ========== TÓM TẮT ĐƠN HÀNG ========== */
+.cart-summary {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.summary-box {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.summary-box h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.summary-box div {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 16px 0;
+}
+
+.discount-code {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 10px;
+}
+
+.discount-container {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    margin-top: 6px;
+}
+
+.discount-input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    outline: none;
+    font-size: 14px;
+}
+
+.discount-input:focus {
+    border-color: #06B6D4;
+}
+
+.btn {
+    background-color: #06B6D4;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 8px 14px;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.btn:hover {
+    background-color: #0891b2;
+}
+
+.checkout-button {
+    width: 100%;
+    font-weight: 600;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.policy {
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 10px;
+    line-height: 1;
+}
+
+/* Ưu đãi đặc biệt */
+.special-offer {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 13px;
+    color: #0369a1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+.cart-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.continue-shopping, .delete-all-item {
+    background-color: #E5E7EB;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 10px;
+    margin-right: 10px;
+    border: 1px solid #9c9c9d !important;
+}
+
+.content{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-left: 1%;
+    margin-right: 1%;
+    gap:20px;
+} 
+.cart-container{
+    padding: 0px;
+    width: 70%;
+    align-items: left;
+    border-spacing: 0px;
+}
+.product{
+    width: 50%;
+    text-align: left;
+}
+.price {
+    width: 15%;
+    margin: auto;
+}
+.quantity{
+    width: 10%;
+}
+.total{
+    width: 20%;
+    margin: auto;
+}
+.action{
+    width: 5%;
+}
+
+.cart-header{
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 2px solid #E5E7EB;
+    margin: 10px 0;
+}
+.cart-container th{
+    color: #888888;
+}
+.cart-item{
+    display: flex;
+    justify-content: space-between;
+    justify-items: center;
+    border-bottom: 1px solid #EEEEEE;
+    background-color: white;
+    text-align: center;
+    padding: 5px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    box-shadow: 0 1px 3px rgba(125, 112, 112, 0.08);
+    /* border-radius: 0px 0px 8px 8px; */
+
+}
+
+.cart-item .cart-col{
+    margin: auto;
+}
+.cart-item:last-child{
+    border-bottom: none;
+    border: #000000;
+}
+.item-name-container{
+    display: flex;
+    align-items:flex-start;
+    width: 50%;
+}
+.item-name-container img{
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+.item-name{
+    font-weight: bold;
+    font-size: 15px;
+    margin:auto 0px;
+}
+.item-price{
+    color: #888888;
+}
+.remove-item{
+    background-color: #FF4D4D;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+.remove-item:hover{
+    background-color: #FF1A1A;
+}
+.item-quantity-container{
+    display: flex;
+    justify-content:space;  
+    align-items: center;     
+    border-radius: 4px;
+    border: 1px solid #CCCCCC;
+    margin: 20px 0px;
+}
+
+.item-quantity{
+    margin: 0px auto;
+    border: none;
+    text-align: center;     
+    font-size: 16px;
+    outline: none;           
+    border-left: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+    width: 40%;
+}
+.increase, .decrease{
+   padding-left: 10%;
+   padding-right: 10%;
+}
+
+.item-remove a{
+    cursor: pointer;
+}
+.item-remove a img{
+    width: 20px;
+    height: 20px;
+}
+
+.cart-summary{
+    width: 29%;
+}
+.summary-box{
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+.summary-box h2{
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+.tam-tinh, .shipping, .total-price{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.checkout-button{
+    width: 100%;
+    background-color: #2563EB;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+.discount-container{
+    display: flex;
+    justify-content: space-between; 
+}
+.apply-discount{
+    width: 30%;
+}
+
+
+
+.discount-input{
+    width: 55%;
+    padding: 8px;
+    border: 1px solid #CCCCCC;
+    border-radius: 8px;
+    margin-right: 10px;
+    outline: none;           
+} 
+
+
+
+
+
+.item-image img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #e5e7eb;
+}
+
+.item-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: #111827;
+}
+
+
+
+/* ========== TÓM TẮT ĐƠN HÀNG ========== */
+.cart-summary {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.summary-box {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.summary-box h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.summary-box div {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 16px 0;
+}
+
+.discount-code {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 10px;
+}
+
+.discount-container {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    margin-top: 6px;
+}
+
+.discount-input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    outline: none;
+    font-size: 14px;
+}
+
+.discount-input:focus {
+    border-color: #06B6D4;
+}
+
+.btn {
+    background-color: #06B6D4;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 8px 14px;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.btn:hover {
+    background-color: #0891b2;
+}
+
+.checkout-button {
+    width: 100%;
+    font-weight: 600;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.policy {
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 10px;
+    line-height: 1;
+}
+
+/* Ưu đãi đặc biệt */
+.special-offer {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 13px;
+    color: #0369a1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+.cart-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.continue-shopping, .delete-all-item {
+    background-color: #E5E7EB;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 10px;
+    margin-right: 10px;
+    border: 1px solid #9c9c9d !important;
+}
+
+
+.content{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-left: 1%;
+    margin-right: 1%;
+    gap:20px;
+} 
+.cart-container{
+    padding: 0px;
+    width: 70%;
+    align-items: left;
+    border-spacing: 0px;
+}
+.product{
+    width: 50%;
+    text-align: left;
+}
+.price {
+    width: 15%;
+    margin: auto;
+}
+.quantity{
+    width: 10%;
+}
+.total{
+    width: 20%;
+    margin: auto;
+}
+.action{
+    width: 5%;
+}
+
+.cart-header{
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    font-size: 10px;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 2px solid #E5E7EB;
+    margin: 10px 0;
+}
+.cart-container th{
+    color: #888888;
+}
+.cart-item{
+    display: flex;
+    justify-content: space-between;
+    justify-items: center;
+    border-bottom: 1px solid #EEEEEE;
+    background-color: white;
+    text-align: center;
+    padding: 5px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    box-shadow: 0 1px 3px rgba(125, 112, 112, 0.08);
+    /* border-radius: 0px 0px 8px 8px; */
+
+}
+
+.cart-item .cart-col{
+    margin: auto;
+}
+.cart-item:last-child{
+    border-bottom: none;
+    border: #000000;
+}
+.item-name-container{
+    display: flex;
+    align-items:flex-start;
+    width: 50%;
+}
+.item-name-container img{
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+.item-name{
+    font-weight: bold;
+    font-size: 15px;
+    margin:auto 0px;
+}
+.item-price{
+    color: #888888;
+}
+.remove-item{
+    background-color: #FF4D4D;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+.remove-item:hover{
+    background-color: #FF1A1A;
+}
+.item-quantity-container{
+    display: flex;
+    justify-content:space;  
+    align-items: center;     
+    border-radius: 4px;
+    border: 1px solid #CCCCCC;
+    margin: 20px 0px;
+}
+
+.item-quantity{
+    margin: 0px auto;
+    border: none;
+    text-align: center;     
+    font-size: 16px;
+    outline: none;           
+    border-left: 1px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+    width: 40%;
+}
+.increase, .decrease{
+   padding-left: 10%;
+   padding-right: 10%;
+}
+
+.item-remove a{
+    cursor: pointer;
+}
+.item-remove a img{
+    width: 20px;
+    height: 20px;
+}
+
+.cart-summary{
+    width: 29%;
+}
+.summary-box{
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+}
+.summary-box h2{
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+.tam-tinh, .shipping, .total-price{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.checkout-button{
+    width: 100%;
+    background-color: #2563EB;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+.discount-container{
+    display: flex;
+    justify-content: space-between; 
+}
+.apply-discount{
+    width: 30%;
+}
+
+
+
+.discount-input{
+    width: 55%;
+    padding: 8px;
+    border: 1px solid #CCCCCC;
+    border-radius: 8px;
+    margin-right: 10px;
+    outline: none;           
+} 
+
+
+
+
+
+.item-image img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #e5e7eb;
+}
+
+.item-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: #111827;
+}
+
+
+
+/* ========== TÓM TẮT ĐƠN HÀNG ========== */
+.cart-summary {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.summary-box {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.summary-box h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.summary-box div {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 16px 0;
+}
+
+.discount-code {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 10px;
+}
+
+.discount-container {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    margin-top: 6px;
+}
+
+.discount-input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    outline: none;
+    font-size: 14px;
+}
+
+.discount-input:focus {
+    border-color: #06B6D4;
+}
+
+.btn {
+    background-color: #06B6D4;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 8px 14px;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.btn:hover {
+    background-color: #0891b2;
+}
+
+.checkout-button {
+    width: 100%;
+    font-weight: 600;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.policy {
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 10px;
+    line-height: 1;
+}
+
+/* Ưu đãi đặc biệt */
+.special-offer {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 13px;
+    color: #0369a1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+.cart-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.continue-shopping, .delete-all-item {
+    background-color: #E5E7EB;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 10px;
+    margin-right: 10px;
+    border: 1px solid #9c9c9d !important;
+}
+
+.background-user-info {
+    display: none;
+    background-color: #51505077;
+    position: absolute;;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 1200px;
+}
+
+/* --- Container chính của Form --- */
+.user-info {
+    
+    width: 100%;
+    max-width: 600px; /* Giới hạn chiều rộng của form */
+    position: absolute;
+    top: 3%;
+    left: 30%;
+    right: 30%;
+    background: #ffffff;
+    padding: 25px 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.user-info h2 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+.user-info h3 {
+    font-size: 1.15em;
+    color: #444;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    border-top: 1px solid #eee; /* Thêm đường kẻ phân cách */
+    padding-top: 25px;
+}
+
+/* --- Bố cục các trường --- */
+.form-group {
+    margin-bottom: 18px; /* Khoảng cách giữa các trường */
+}
+
+.form-group label {
+    display: block; /* Cho label nằm trên 1 dòng riêng */
+    margin-bottom: 8px; /* Khoảng cách từ label đến input */
+    font-weight: 600;
+    font-size: 14px;
+    color: #555;
+}
+
+/* --- Style cho các ô Input, Select, Textarea --- */
+.form-group input[type="text"],
+.form-group input[type="tel"],
+.form-group input[type="email"],
+.form-group select,
+.form-group textarea {
+    width: 100%; /* Luôn chiếm đầy đủ chiều rộng */
+    padding: 12px 15px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Hiệu ứng khi focus vào ô input */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0,123,255,0.25);
+    outline: none; /* Bỏ viền xanh mặc định */
+}
+
+.form-group textarea {
+    resize: vertical; /* Chỉ cho phép kéo dãn chiều dọc */
+    min-height: 80px;
+}
+
+/* --- CSS cho Custom Radio Button --- */
+.payment-options {
+    margin-bottom: 25px;
+}
+
+.custom-radio {
+    display: block;
+    position: relative;
+    padding: 12px 12px 12px 40px; /* Căn lề cho nội dung */
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    user-select: none;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+/* Làm cho radio nổi bật hơn khi hover */
+.custom-radio:hover {
+    background-color: #f9f9f9;
+}
+
+.custom-radio input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%); /* Căn giữa vòng tròn theo chiều dọc */
+    height: 22px;
+    width: 22px;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+}
+
+.custom-radio input:checked ~ .checkmark {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/* Khi được chọn, làm nổi bật cả khung */
+.custom-radio input:checked ~ {
+    border-color: #007bff;
+    background-color: #f0f8ff;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.custom-radio input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.custom-radio .checkmark:after {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Căn giữa dấu chấm */
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+}
+
+/* --- Nút Submit --- */
+.submit-checkout.btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #007bff; /* Màu xanh */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.submit-checkout.btn:hover {
+    background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+}
