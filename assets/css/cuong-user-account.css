@@ -1479,3 +1479,283 @@ a {
 .submit-checkout.btn:hover {
     background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
 }
+
+/* ================================================== */
+/* ========== MEDIA QUERIES (RESPONSIVE) ========== */
+/* ================================================== */
+
+/* --- Dành cho MÁY TÍNH BẢNG (Tablets) --- */
+/* (Áp dụng cho màn hình từ 992px trở xuống) */
+@media (max-width: 992px) {
+    .user-account-page {
+        /* Giảm padding hai bên cho tablet */
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+    .content {
+        /* Vẫn giữ layout 2 cột nhưng giảm khoảng cách */
+        gap: 15px;
+    }
+
+    .cart-container {
+        width: 65%;
+    }
+    
+    /* .cart-summary đã có flex: 1 nên nó sẽ tự chiếm không gian còn lại,
+       hoặc bạn có thể set width cụ thể như sau: */
+    .cart-summary {
+        width: 35%; 
+        /* Hoặc giữ flex: 1 nếu định nghĩa sau cùng của bạn là vậy */
+        flex-basis: 300px; /* Đảm bảo nó không bị co quá nhỏ */
+    }
+
+    /* Căn giữa form popup tốt hơn */
+    .user-info {
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        max-width: 550px; /* Vẫn giữ max-width */
+        right: auto; /* Ghi đè right: 30% */
+        top: 2%; /* Nâng lên cao 1 chút */
+    }
+}
+
+
+/* --- Dành cho ĐIỆN THOẠI (Mobile) --- */
+/* (Áp dụng cho màn hình từ 768px trở xuống) */
+@media (max-width: 768px) {
+    .user-account-page {
+        /* Giảm padding tối đa cho điện thoại */
+        padding-left: 15px;
+        padding-right: 15px;
+        padding-bottom: 20px;
+    }
+
+    .user-account-page .header h2 {
+        font-size: 22px; /* Giảm cỡ chữ tiêu đề */
+    }
+
+    .content {
+        /* Chuyển sang layout 1 cột */
+        flex-direction: column;
+        margin-top: 10px;
+        gap: 25px; /* Tăng khoảng cách khi xếp chồng */
+    }
+
+    .cart-container,
+    .cart-summary {
+        /* Cả 2 thành phần chiếm 100% chiều rộng */
+        width: 100%;
+        flex: none; /* Reset flex-1 */
+    }
+    
+    .cart-summary {
+        width: 29%; /* Reset lại width này về 100% */
+        width: 100%;
+    }
+
+    /* --- Style lại GIỎ HÀNG cho mobile --- */
+
+    /* Ẩn header của bảng giỏ hàng */
+    .cart-header {
+        display: none;
+    }
+
+    .cart-item {
+        /* Chuyển item sang layout cột */
+        flex-direction: column;
+        align-items: flex-start; /* Căn lề trái */
+        padding: 15px;
+        gap: 12px; /* Khoảng cách giữa các phần tử con */
+        position: relative; /* Để định vị nút xóa */
+        box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+        border-radius: 8px;
+        border: none;
+        margin-bottom: 15px; /* Khoảng cách giữa các item */
+    }
+    .cart-item:last-child{
+        border-bottom: none; /* Đảm bảo không có border */
+    }
+
+    /* Cần đảm bảo các cột con chiếm đủ chiều rộng */
+    .item-name-container {
+        width: 100%;
+        align-items: center; /* Căn giữa hình ảnh và tên */
+    }
+    .item-name {
+        font-size: 16px; /* Cho chữ to rõ hơn */
+    }
+
+    /* Các cột còn lại cũng 100% và căn lề trái */
+    .cart-item .cart-col {
+        width: 100%;
+        text-align: left;
+        margin: 0; /* Reset margin 'auto' */
+        padding: 5px 0;
+        display: flex; /* Dùng flex để căn lề nhãn và giá trị */
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px dashed #eee;
+    }
+    .item-quantity-container{
+        justify-content:space-between !important;  
+    }
+    .item-name-container.cart-col{
+        border-top: none; /* Không thêm gạch ngang cho mục đầu tiên */
+        padding-top: 0;
+    }
+
+    .item-quantity-container {
+         margin: 0; /* Reset margin 20px 0px */
+         width: 130px; /* Giới hạn chiều rộng của thanh tăng giảm SL */
+         justify-content: space-between;
+    }
+
+    /* Thêm nhãn cho các cột (vì đã ẩn header) */
+    /* Chúng ta sẽ dùng pseudo-element ::before để thêm nhãn */
+    .cart-item .item-price::before {
+        content: "Đơn giá:";
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .cart-item .quantity.cart-col::before {
+        content: "Số lượng:";
+        font-weight: 600;
+        color: #333;
+    }
+
+    .cart-item .total.cart-col::before {
+        content: "Tổng cộng:";
+        font-weight: 600;
+        color: #333;
+    }
+    
+    /* Căn lại giá trị cho đẹp */
+    .item-price, .total {
+        font-weight: 600;
+        font-size: 16px;
+    }
+
+    /* Di chuyển nút xóa lên góc phải */
+    .cart-item .item-remove {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: auto; /* Reset width 100% */
+        border-top: none; /* Bỏ gạch ngang */
+        padding: 0;
+    }
+    .item-remove a img {
+        width: 24px; /* Cho icon to hơn 1 chút */
+        height: 24px;
+        opacity: 0.7;
+    }
+    .item-quantity-container{
+        margin: 0 !important;
+        border: 0px !important;
+    }
+    .item-quantity{
+        margin: 0px auto;
+        border: none;
+        text-align: center;     
+        font-size: 16px;
+        outline: none;           
+        border-left: 1px solid #CCCCCC;
+        border-right: 1px solid #CCCCCC;
+        width: 40%;
+    }
+    .increase, .decrease{
+        width: 15%;
+       padding-left: 10%;
+       padding-right: 10%;
+    }
+
+    /* --- Style lại TÓM TẮT ĐƠN HÀNG & NÚT --- */
+    .cart-actions {
+        flex-direction: column; /* Xếp chồng 2 nút */
+        gap: 10px;
+    }
+
+    .cart-actions .btn,
+    .continue-shopping, 
+    .delete-all-item {
+        width: 100%;
+        margin-right: 0;
+        margin-top: 0;
+        text-align: center;
+    }
+
+    .discount-container {
+        /* Định nghĩa lại từ đầu do có nhiều khai báo */
+        display: flex;
+        flex-direction: column; /* Xếp chồng ô input và nút */
+        gap: 10px;
+        width: 100%;
+        margin-top: 6px;
+    }
+
+    .discount-input {
+        width: 100%;
+        margin-right: 0;
+        flex: 1; /* Reset flex: 1 */
+    }
+
+    /* Áp dụng cho cả 2 kiểu nút bạn đã định nghĩa */
+    .apply-discount,
+    .discount-container .btn {
+        width: 100%; /* Nút Apply cũng 100% */
+    }
+
+
+    /* --- Style lại FORM POPUP --- */
+    .background-user-info {
+        /* Đảm bảo lớp nền phủ hết và cố định */
+        height: 100%;
+        position: fixed;
+        overflow-y: scroll; /* Cho phép cuộn cả lớp nền */
+    }
+
+    .user-info {
+        width: 95%;
+        left: 2.5%;
+        right: 2.5%;
+        top: 10px; /* Khoảng cách nhỏ từ đỉnh */
+        transform: none; /* Reset transform */
+        padding: 20px 15px;
+        margin-bottom: 20px; /* Thêm margin dưới để không bị dính */
+    }
+    
+    .user-info h2 {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+
+    .user-info h3 {
+        font-size: 18px;
+        margin-top: 20px;
+        padding-top: 20px;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="tel"],
+    .form-group input[type="email"],
+    .form-group select,
+    .form-group textarea {
+        padding: 10px 12px;
+        font-size: 15px;
+    }
+
+    .custom-radio {
+        padding: 10px 10px 10px 35px;
+        font-size: 15px;
+    }
+    .checkmark {
+        left: 8px;
+        height: 20px;
+        width: 20px;
+    }
+
+
+}
