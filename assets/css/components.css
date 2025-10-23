@@ -538,6 +538,7 @@ body {
     flex: 1; /* Chiếm phần còn lại của không gian */
     padding: 30px;
     overflow-y: auto; /* Scroll dọc nếu content dài */
+    position: relative;
 }
 
 .dashboard-header {

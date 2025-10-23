@@ -6,7 +6,8 @@ let allOrders = [
         customer_id: 1,
         status: "waiting",
         amount: 29990000, 
-        purchase: "Tiền mặt khi giao hàng"
+        purchase: "Tiền mặt khi giao hàng",
+        product_list: [[1, 2], [2, 1], [3, 2]]
     }, 
     {
         order_id: "DH001235",
@@ -15,7 +16,8 @@ let allOrders = [
         customer_id: 2,
         status: "accepted",
         amount: 29990000, 
-        purchase: "Tiền mặt khi giao hàng"
+        purchase: "Tiền mặt khi giao hàng",
+        product_list: [[2, 1], [4, 2]]
     },
     {
         order_id: "DH001236",
@@ -24,7 +26,8 @@ let allOrders = [
         customer_id: 3,
         status: "done",
         amount: 29990000, 
-        purchase: "Tiền mặt khi giao hàng"
+        purchase: "Tiền mặt khi giao hàng",
+        product_list: [[11, 1], [12, 3], [14, 5]]
     },
     {
         order_id: "DH001237",
@@ -33,7 +36,8 @@ let allOrders = [
         customer_id: 4,
         status: "delivery",
         amount: 29990000, 
-        purchase: "Tiền mặt khi giao hàng"
+        purchase: "Tiền mặt khi giao hàng", 
+        product_list: [[5, 2], [14, 1]]
     },
     {
         order_id: "DH001239",
@@ -42,7 +46,8 @@ let allOrders = [
         customer_id: 5,
         status: "cancel",
         amount: 29990000, 
-        purchase: "Tiền mặt khi giao hàng"
+        purchase: "Tiền mặt khi giao hàng",
+        product_list: [[4, 5], [14, 3], [15, 1]]
     },
     {
         order_id: "DH001240",
@@ -51,7 +56,8 @@ let allOrders = [
         customer_id: 5,
         status: "waiting",
         amount: 15990000, 
-        purchase: "Chuyển khoản ngân hàng"
+        purchase: "Chuyển khoản ngân hàng",
+        product_list: [[7, 2], [10, 3], [11, 8]]
     },
     {
         order_id: "DH001241",
@@ -60,7 +66,8 @@ let allOrders = [
         customer_id: 5,
         status: "accepted",
         amount: 25990000, 
-        purchase: "Tiền mặt khi giao hàng"
+        purchase: "Tiền mặt khi giao hàng",
+        product_list: [[5, 1], [6, 1], [7, 1], [8, 1]]
     },
     {
         order_id: "DH001242",
@@ -69,7 +76,8 @@ let allOrders = [
         customer_id: 4,
         status: "delivery",
         amount: 18990000, 
-        purchase: "Chuyển khoản ngân hàng"
+        purchase: "Chuyển khoản ngân hàng",
+        product_list: [[8, 2], [9, 3], [10, 1]]
     },
     {
         order_id: "DH001243",
@@ -78,7 +86,8 @@ let allOrders = [
         customer_id: 4,
         status: "done",
         amount: 9990000, 
-        purchase: "Ví điện tử"
+        purchase: "Ví điện tử", 
+        product_list: [[2, 1], [4, 1], [6, 1]]
     },
     {
         order_id: "DH001244",
@@ -87,7 +96,8 @@ let allOrders = [
         customer_id: 3,
         status: "cancel",
         amount: 2990000, 
-        purchase: "Tiền mặt khi giao hàng"
+        purchase: "Tiền mặt khi giao hàng",
+        product_list: [[8, 1], [9, 1], [10, 1], [11, 1], [12, 1]]
     },
     {
         order_id: "DH001245",
@@ -96,7 +106,8 @@ let allOrders = [
         customer_id: 2,
         status: "waiting",
         amount: 45990000, 
-        purchase: "Chuyển khoản ngân hàng"
+        purchase: "Chuyển khoản ngân hàng",
+        product_list: [[4, 1], [2, 1], [11, 1]]
     },
     {
         order_id: "DH001246",
@@ -105,7 +116,8 @@ let allOrders = [
         customer_id: 1,
         status: "accepted",
         amount: 31990000, 
-        purchase: "Tiền mặt khi giao hàng"
+        purchase: "Tiền mặt khi giao hàng",
+        product_list: [[1, 1], [3, 1], [14, 1], [15, 1]]
     },
     {
         order_id: "DH001247",
@@ -114,7 +126,8 @@ let allOrders = [
         customer_id: 1,
         status: "delivery",
         amount: 27990000, 
-        purchase: "Ví điện tử"
+        purchase: "Ví điện tử", 
+        product_list: [[5, 1], [14, 1]]
     },
     {
         order_id: "DH001248",
@@ -123,7 +136,8 @@ let allOrders = [
         customer_id: 4,
         status: "done",
         amount: 19990000, 
-        purchase: "Chuyển khoản ngân hàng"
+        purchase: "Chuyển khoản ngân hàng",
+        product_list: [[5, 1], [14, 1], [15, 1]]
     },
     {
         order_id: "DH001249",
@@ -132,7 +146,8 @@ let allOrders = [
         customer_id: 5,
         status: "waiting",
         amount: 15990000, 
-        purchase: "Tiền mặt khi giao hàng"
+        purchase: "Tiền mặt khi giao hàng",
+        product_list: [[3, 1], [4, 1], [5, 1]]
     }, 
     {
         order_id: "DH001250",
@@ -141,7 +156,8 @@ let allOrders = [
         customer_id: 2,
         status: "accepted",
         amount: 24990000,
-        purchase: "Chuyển khoản ngân hàng"
+        purchase: "Chuyển khoản ngân hàng",
+        product_list: [[4, 1], [7, 1], [8, 1]]
     },
     {
         order_id: "DH001251",
@@ -150,7 +166,8 @@ let allOrders = [
         customer_id: 3,
         status: "delivery",
         amount: 18990000,
-        purchase: "Tiền mặt khi giao hàng"
+        purchase: "Tiền mặt khi giao hàng",
+        product_list: [[9, 1], [10, 1], [11, 1]]
     },
     {
         order_id: "DH001252",
@@ -159,7 +176,8 @@ let allOrders = [
         customer_id: 4,
         status: "waiting",
         amount: 20990000,
-        purchase: "Chuyển khoản ngân hàng"
+        purchase: "Chuyển khoản ngân hàng",
+        product_list: [[2, 1], [14, 1], [12, 1]]
     },
     {
         order_id: "DH001253",
@@ -168,7 +186,8 @@ let allOrders = [
         customer_id: 5,
         status: "done",
         amount: 27990000,
-        purchase: "Ví điện tử"
+        purchase: "Ví điện tử",
+        product_list: [[15, 1], [14, 1]]
     },
     {
         order_id: "DH001254",
@@ -177,7 +196,8 @@ let allOrders = [
         customer_id: 2,
         status: "cancel",
         amount: 9990000,
-        purchase: "Tiền mặt khi giao hàng"
+        purchase: "Tiền mặt khi giao hàng",
+        product_list: [[5, 1], [14, 1]]
     },
     {
         order_id: "DH001255",
@@ -186,7 +206,8 @@ let allOrders = [
         customer_id: 1,
         status: "delivery",
         amount: 31990000,
-        purchase: "Chuyển khoản ngân hàng"
+        purchase: "Chuyển khoản ngân hàng", 
+        product_list: [[5, 1], [14, 1]]
     },
     {
         order_id: "DH001256",
@@ -195,7 +216,8 @@ let allOrders = [
         customer_id: 3,
         status: "waiting",
         amount: 15990000,
-        purchase: "Ví điện tử"
+        purchase: "Ví điện tử",
+        product_list: [[5, 1], [14, 1]]
     },
     {
         order_id: "DH001257",
@@ -204,7 +226,8 @@ let allOrders = [
         customer_id: 3,
         status: "accepted",
         amount: 25990000,
-        purchase: "Chuyển khoản ngân hàng"
+        purchase: "Chuyển khoản ngân hàng",
+        product_list: [[5, 1], [14, 1]]
     },
     {
         order_id: "DH001258",
@@ -213,7 +236,8 @@ let allOrders = [
         customer_id: 4,
         status: "done",
         amount: 29990000,
-        purchase: "Tiền mặt khi giao hàng"
+        purchase: "Tiền mặt khi giao hàng",
+        product_list: [[5, 1], [14, 1]]
     },
     {
         order_id: "DH001259",
@@ -222,7 +246,8 @@ let allOrders = [
         customer_id: 5,
         status: "cancel",
         amount: 17990000,
-        purchase: "Ví điện tử"
+        purchase: "Ví điện tử", 
+        product_list: [[5, 1], [14, 1]]
     }
 ]
 

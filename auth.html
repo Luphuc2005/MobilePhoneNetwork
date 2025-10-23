@@ -4,96 +4,12 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Thông tin cá nhân</title>
+        <link rel="stylesheet" href="./assets/css/components.css">
         <link rel="stylesheet" href="./assets/css/user.css">
-        <link rel="stylesheet" href="/assets/css/components.css">
         <script src="./assets/js/validation.js"></script>
     </head>
     <body>
-        <!--Form dang ky-->
-        <div id="formDangKy" style="display:none">
-            <div class="background" title="background">
-                <div class="container" title="registerContainer">
-                    <div class="header" title="header">
-                        <img src="./assets/images/icons/auth/reg-icon.svg">
-                        <h1> Tạo tài khoản mới </h1>
-                        <p>Đăng ký để bắt đầu mua sắm</p>
-                    </div>
-                    <form class="form" name="form" autocomplete="on" method="post"> 
-                        <fieldset>
-                            <legend>Họ và tên <span style="color: red">*</span> </legend>
-                            <input id="hoVaTenDangKy" required type="text" name="hoVaTen" placeholder="Nguyễn Văn A">
-                        </fieldset>
-                        <fieldset>
-                            <legend>Email <span style="color: red">*</span></legend>
-                            <input class="email" required type="email"  name="email" placeholder="example@email.com">
-                        </fieldset>
-                        <fieldset>
-                            <legend>Mật khẩu <span style="color: red">*</span></legend>
-                            <input class="matKhau" required type="password" name="password"  placeholder="Ít nhất 8 ký tự">
-                            <div style="height: 1em; display: flex; align-items: center; gap: 0.3em">
-                                <img src="./assets/images/icons/auth/check.svg">
-                                <p name="minLength" style="height: fit-content">Ít nhất 8 ký tự</p>
-                            </div>
-                            <div style="height: 1em; display: flex; align-items: center; gap: 0.3em">
-                                <img src="./assets/images/icons/auth/check.svg">
-                                <p name="passwordPattern">Bao gồm chữ hoa và chữ thường</p>
-                            </div>
-                        </fieldset>
-                        <fieldset>
-                            <legend>Xác nhận mật khẩu <span style="color: red">*</span></legend>
-                            <input class="matKhau" required type="password" name="passwordConfirm" placeholder="Nhập lại mật khẩu">
-                        </fieldset>
-                        <fieldset style="margin-top: 0; margin-bottom: 3%;">
-                            <label style="display: flex; align-items: center; gap: 0.3rem; font-size: small;">
-                                <input type="checkbox" required id="agreement">
-                                Tôi đồng ý với <a href="" style="color: #16A34A">Điều khoản dịch vụ</a> và <a href="" style="color: #16A34A">Chính sách bảo mật</a>
-                            </label>
-                        </fieldset>
-                        <button type="submit" class="submitButton" name="submit" style="background-color: #16A34A;" value="Đăng ký">Đăng ký</button>
-                    </form>
-                    <div class="footer" title="footer" style="text-align: center; margin-bottom: 7%; margin-top: 3%;">
-                        Đã có tài khoản? <a href ="" style="color: #16A34A; font-weight: bold;"> Đăng nhập ngay </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--Form dang nhap-->
-        <div id="formDangNhap" style="display: noe">
-            <div class="background" title="background">
-                <div class="container" title="loginContainer">
-                    <div class="header" title="header">
-                        <img src="./assets/images/icons/auth/log-icon.svg">
-                        <h1>Chào mừng trở lại</h1>
-                        <p>Đăng nhập để tiếp tục mua sắm</p>
-                    </div>
-                    <form class="form" name="form" autocomplete="on" method="post" style="width: 100%;"> 
-                        <fieldset>
-                            <legend>Email <span style="color: red">*</span></legend>
-                            <input class="email" required type="text" name="email" placeholder="Nhập email hoặc tên đăng nhập">
-                        </fieldset>
-                        <fieldset>
-                            <legend>Mật khẩu <span style="color: red">*</span></legend>
-                            <input class="matKhau" required type="password" name="password"  placeholder="Nhập mật khẩu">
-                        </fieldset>
-                        <fieldset style="margin-top: 3%;margin-bottom: 5%;">
-                                <label style="display: flex; align-items: center; gap: 0.3em; font-size: small; width: fit-content; float: left;">
-                                    <input type="checkbox" id="rememberMe">
-                                    Nhớ đăng nhập
-                                </label>
-                                <a href="" style="float:right; color: #2563EB; font-size: small">Quên mật khẩu?</a>
-                        </fieldset>
-                        <button type="submit" class="submitButton" name="submitBtn" value="Đăng ký" style="background-color: #2563EB;">Đăng nhập</button>
-                    </form>
-                    <div class="footer" title="footer" style="display: flex; flex-direction: column; align-items: center;">
-                        <p style="width:fit-content;">Chưa có tài khoản? <a href ="" style="color: #2563EB; font-weight:bold;"> Đăng kí ngay </a></p>
-                        <hr style="border: solid 0.1px #E5E7EB; margin: 0; margin-left: 10%; margin-right: 10%; align-self: normal;">
-                        <p style="font-size:small; text-align: center; margin: 3% 15% ;">Bằng việc đăng nhập, bạn đồng ý với <a href="" style="color: #2563EB">Điều khoản sử dụng</a> và <a href="" style="color: #2563EB">Chính sách bảo mật</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <header class="main-header">
+      <header class="main-header">
       <!-- Phần top của Header -->
       <div class="header-top">
           <!-- Logo -->
@@ -134,5 +50,140 @@
             </div>
           </div>
   </header>
+
+  <main>
+    <div id=thongTinCaNhan>
+        <div class="menuThongTin">
+            <div class="menuHeader">
+                <img src="./assets/images/icons/auth/avatar.svg" style="width: 3em">
+                <div class="userName">Nguyễn Văn A</div>
+            </div>
+            <hr style="width: 100%; margin-top: 7%;">
+            <ul>
+                <li><img src="./assets/images/icons/auth/info.svg"> <button>Thông tin cá nhân</button></li>
+                <li><img src="./assets/images/icons/auth/exit.svg"><button id="logout">Đăng xuất</button></li>
+            </ul>
+        </div>
+        <div class="userInfo">
+            <h2 style="margin-top: 5%;">Thông tin tài khoản</h2>
+            <form class="form">
+                <table style="width: 100%;">
+                    <tr>
+                      <th class="field-label"><label for="hoTen">Họ Tên</label></th>
+                      <th class="field-input"><input type="text" name="hoTen" value="Nguyễn Văn A"></th>
+                    </tr>
+                   
+                    <tr>
+                      <th class="field-label"><label for="email">Email</label></th>
+                      <th class="field-input"><input type="email" name="email" value="example@gmail.com"></th>
+                    </tr>
+
+                    <tr>
+                      <th class="field-label"><label for="sdt">Số điện thoại</label></th>
+                      <th class="field-input"><input type="tel" name="sdt" value="012345678"></th>
+                    </tr>
+
+                    <tr>
+                      <th class="field-label"><label for="address">Địa chỉ</label></th>
+                      <th class="field-input"><input type="text" name="address" placeholder="Chưa có địa chỉ"></th>
+                    </tr>
+                  </table>
+                <span style="width: 100%; display: flex; justify-content: flex-end;">
+                <input type="button" value="LƯU THAY ĐỔI" class="save-button">
+                </span>
+            </form> 
+        </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+
+      <div class="footer-section">
+        <h3>🏪Về PhoneStore</h3>
+        <p>PhoneStore là cửa hàng bán điện thoại uy tín hàng đầu, cung cấp các sản phẩm chính hãng với giá cạnh tranh
+          nhất trên thị trường.</p>
+        <p style="margin-top: 15px; color: #888; font-size: 13px;">Chúng tôi cam kết mang lại những trải nghiệm mua sắm
+          tuyệt vời cho khách hàng.</p>
+        <div class="social-links">
+          <a href="#" title="Facebook">f</a>
+          <a href="#" title="Twitter">𝕏</a>
+          <a href="#" title="Instagram">📷</a>
+          <a href="#" title="YouTube">▶</a>
+        </div>
+      </div>
+      <!-- linh truy cập nhanh  -->
+      <div class="footer-section">
+        <h3>🔗 Liên Kết Nhanh</h3>
+        <ul>
+          <li><a href="index.html">Trang chủ</a></li>
+          <li><a href="index.html#products">Sản phẩm</a></li>
+          <li><a href="#search">Tìm kiếm</a></li>
+          <li><a href="user-account.html#cart">Giỏ hàng</a></li>
+          <li><a href="auth.html">Tài khoản</a></li>
+          <li><a href="#news">Tin tức</a></li>
+        </ul>
+      </div>
+      <!-- dịch vụ khách hàng  -->
+      <div class="footer-section">
+        <h3>Hổ Trợ Khách Hàng</h3>
+        <ul>
+          <li><a href="#">Chính sách bảo hành</a></li>
+          <li><a href="#">Hướng dẫn mua hàng</a></li>
+          <li><a href="#">Chính sách đổi trả</a></li>
+          <li><a href="#">Chính sách vận chuyển</a></li>
+          <li><a href="#">Chính sách bảo mật</a></li>
+          <li><a href="#">Điều khoản sử dụng</a></li>
+        </ul>
+      </div>
+      <!-- thông tin liên lạc  -->
+      <div class="footer-section">
+        <h3>📞 Liên Hệ</h3>
+        <div class="contact-info">
+          <span class="contact-info-icon">📍</span>
+          <span>273 An Dương Vương, Phường Chợ Quán, TP. HCM</span>
+        </div>
+        <div class="contact-info">
+          <span class="contact-info-icon">☎️</span>
+          <span><a href="tel:0123456789">0123 456 789</a></span>
+        </div>
+        <div class="contact-info">
+          <span class="contact-info-icon">✉️</span>
+          <span><a href="mailto:support@phonestore.com">support@phonestore.com</a></span>
+        </div>
+        <div class="contact-info">
+          <span class="contact-info-icon">🕐</span>
+          <span>Thứ 2 - Chủ Nhật: 09:00 - 21:00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Buttom  -->
+    <div class="footer-bottom">
+      <div class="footer-bottom-content">
+        <div class="footer-bottom-left">
+          <p>&copy;2025 <strong>PhoneStore</strong>Bản quyền được bảo vệ</p>
+        </div>
+        <div class="footer-bottom-center">
+          <p>Phương thức thanh toán được chấp nhận</p>
+          <div class="payment-methods">
+            <span class="payment-icon" title="Visa">💳</span>
+            <span class="payment-icon" title="Mastercard">💳</span>
+            <span class="payment-icon" title="Tiền mặt (COD)">💵</span>
+            <span class="payment-icon" title="PayPal">🏦</span>
+            <span class="payment-icon" title="Chuyển khoản">🏧</span>
+          </div>
+        </div>
+        <div class="footer-bottom-right">
+          <p>Thiết kế & Phát triển bởi <strong>PhoneStore</strong> Team</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script type="text/javascript"> 
+    document.getElementById("logout").onclick = () => {
+      location.href="index.html";
+    };
+  </script>
     </body>
 </html> 

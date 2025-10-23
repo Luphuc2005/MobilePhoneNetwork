@@ -99,7 +99,7 @@ function renderOrders(startOrder, numberOrderPerPage, allOrders, allCustomers, t
                     </div>
                     <hr>
                     <div class = "order-footer">
-                        <button class = "detail-bnt">Chi tiết</button>
+                        <button class = "detail-bnt" data-id-order = "${allOrders[i].order_id}">Chi tiết</button>
                     </div>
                 </div>
             </div>
@@ -131,6 +131,7 @@ function renderOrders(startOrder, numberOrderPerPage, allOrders, allCustomers, t
     document.getElementById('now-page').innerHTML = `${startOrder + 1} - ${startOrder + numberOrderPerPage}`;
     document.getElementById('all-page').innerHTML = `${totalOrders}`;
     initDropdown();
+    initDetail();
 }
 
 document.getElementById('pre-page-btn').addEventListener('click', function () {

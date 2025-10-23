@@ -81,7 +81,7 @@ document.getElementById('search-orders-form').addEventListener("submit", functio
                     </div>
                     <hr>
                     <div class = "order-footer">
-                        <button class = "detail-bnt">Chi tiết</button>
+                        <button class = "detail-bnt" data-id-order = "${order.order_id}">Chi tiết</button>
                     </div>
                 </div>
             </div>
@@ -89,4 +89,5 @@ document.getElementById('search-orders-form').addEventListener("submit", functio
         });
     }
     initDropdown();
+    initDetail();
 });
