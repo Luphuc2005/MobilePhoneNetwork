@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
         integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="">
     <title>Trang Chính Admin</title>
 </head>
 
@@ -127,7 +128,7 @@
         <!-- ============DUY ĐĂNG============= -->
         <main class="content-area">
             <!-- DASHBOARD SECTION -->
-            <div id="dashboard-content" class="dashboard-section">
+            <div id="dashboard-content" class="dashboard-section section-content">
                 <div class="dashboard-header">
                     <h1>Tổng quan</h1>
                     <p>Chào mừng đến với bảng điều khiển quản trị MobileShop</p>
@@ -176,10 +177,8 @@
                     </div>
                 </div>
             </div>
-
-
             <!-- HỒNG PHÚC - QUẢN LÝ NGƯỜI DÙNG -->
-            <div id="customers-content" class="section-content" style="display: none;">
+            <div id="customers-content" class="section-content " style="display: none;">
                 <div class="user-management">
                     <!-- Tiêu đề trang -->
                     <div class="page-title">
@@ -207,7 +206,6 @@
                             <div>Ngày tham gia</div>
                             <div>Hành động</div>
                         </div>
-
                         <!-- Dòng dữ liệu -->
                         <div class="table-row">
                             <!-- Dữ liệu sẽ được load bằng JavaScript -->
@@ -299,7 +297,7 @@
                 </div>
             </div>
 
-            <div id="products-content" style="display:none;">
+            <div id="products-content" class="section-content" style="display:none;">
                 <!-- nội dung phần sản phẩm -->
             </div>
 
@@ -421,9 +419,24 @@
                     </div>
                 </div>
             </div>
+            <!-- =============(DUY ĐĂNG) - QUẢN LÝ LOẠI SẢN PHẨM ========== -->
+            <div id="categories-content" class="section-content" style="display: none;">
 
+            </div>
+            <!-- THANH NHÀN - Quản lý đơn hàng -->
+            <div id="orders-content" class="section-content" style="display: none;">
+
+            </div>
+            <!-- THANH NHÀN - Quản lý tồn kho -->
+            <div id="inventory-content" class="section-content" style="display: none;">
+
+            </div>
+            <!-- HUYỀN TRANG - Quản lý nhập hàng -->
+            <div id="import-content" class="section-content" style="display: none;">
+                dfasdfasdfasdfasdfasdfas
+            </div>
             <!-- OTHER SECTIONS (Placeholder) -->
-            <div id="other-content" style="display: none;">
+            <div id="other-content" class="section-content" style="display: none;">
                 <div class="dashboard-header">
                     <h1 id="section-title">Quản lý</h1>
                     <p id="section-desc">Trang này sẽ được phát triển...</p>
@@ -436,6 +449,7 @@
         <script src="./assets/js/productlayout.js"></script>
         <script src="./assets/js/quanlynguoidung.js"></script>
         <script src="./assets/js/pricing.js"></script>
+        <script src="./assets/js/duyddawng-categories.js"></script>
         <link href="./assets/css/admin.css" rel="stylesheet">
 </body>
 
