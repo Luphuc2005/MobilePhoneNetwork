@@ -18,7 +18,8 @@ function renderOrderDetail(order) {
 
     detailProductList.innerHTML = ``;
     for (let [idProduct, quantity] of order.product_list) {
-        let idx = allProducts.findIndex(product => product.di = idProduct);
+        let idx = allProducts.findIndex(product => product.id == idProduct);
+        console.log(idx);
         detailProductList.innerHTML += `
             <li class = "detail-product-item">
                 <div class = "detail-product-img-wrapper"> 
@@ -33,7 +34,7 @@ function renderOrderDetail(order) {
                     ${allProducts[idx].gia}đ
                 </div>
             </li>
-        `
+        `;
     }
 }
 
@@ -44,7 +45,6 @@ function showOrderDetail(order) {
 
 function closeOrderDetail() {
     document.getElementsByClassName("detail-order-wrapper")[0].classList.add("hidden");
-    console.log('close');
 }
 
 function initDetail() {
@@ -58,4 +58,3 @@ function initDetail() {
 
 let closeDetailBtn = document.getElementsByClassName('detail-close-btn')[0];
 closeDetailBtn.addEventListener('click', closeOrderDetail);
-console.log(closeDetailBtn);

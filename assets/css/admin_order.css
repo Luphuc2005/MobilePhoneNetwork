@@ -312,7 +312,7 @@ body {
 
 /* --------------Detail-Order---------------- */
 .detail-order-wrapper {
-    position: absolute;
+    position: absolute  ;
     background-color: white;
     border-radius: 8px;
     top: 0px;
