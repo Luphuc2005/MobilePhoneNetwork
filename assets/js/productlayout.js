@@ -1,38 +1,53 @@
 function navigateTo(section, event) {
-  event.preventDefault();
+  // 🛡 Tránh lỗi nếu event chưa truyền
+  if (event && typeof event.preventDefault === "function") {
+    event.preventDefault();
+  }
 
-  // Ẩn tất cả các phần nội dung
+  // Ẩn tất cả phần nội dung
   document
     .querySelectorAll(
-      "#dashboard-content, #customers-content, #pricing-content, #other-content, #products-content, #import-content"
+      "#dashboard-content, #customers-content, #pricing-content, #other-content, #products-content, #import-content, #categories-content, #orders-content, #inventory-content"
     )
     .forEach((div) => (div.style.display = "none"));
+
+  // Hiển thị đúng section
   switch (section) {
     case "dashboard":
-      document.getElementById("dashboard-content").style.display = "block";
+      showSection("dashboard-content");
       break;
 
     case "customers":
-      document.getElementById("customers-content").style.display = "block";
+      showSection("customers-content");
       break;
 
     case "pricing":
-      document.getElementById("pricing-content").style.display = "block";
+      showSection("pricing-content");
       break;
 
     case "products":
-      document.getElementById("products-content").style.display = "block";
+      showSection("products-content");
 
-      // ✅ Khởi tạo trang sản phẩm nếu chưa có
-      if (!document.getElementById("productTable")) {
-        const productsContent = document.getElementById("products-content");
-        productsContent.innerHTML = page;
-        initProductPage();
+      // ✅ Khởi tạo trang sản phẩm nếu có biến page
+      try {
+        if (!document.getElementById("productTable")) {
+          const productsContent = document.getElementById("products-content");
+          if (typeof page !== "undefined") {
+            productsContent.innerHTML = page;
+          }
+          if (typeof initProductPage === "function") {
+            initProductPage();
+          }
+        }
+      } catch (err) {
+        console.error("Lỗi khi khởi tạo sản phẩm:", err);
       }
       break;
 
     case "import":
-      document.getElementById("import-content").style.display = "block";
+      showSection("import-content");
+
+      // ✅ Gọi initializePricing nếu có
       setTimeout(() => {
         if (typeof initializePricing === "function") {
           initializePricing();
@@ -41,9 +56,15 @@ function navigateTo(section, event) {
       break;
 
     default:
-      document.getElementById("other-content").style.display = "block";
+      showSection("other-content");
       break;
   }
+}
+
+// 🧩 Hàm phụ hiển thị 1 section
+function showSection(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = "block";
 }
 
 // ====================== TEMPLATE PAGE ======================
@@ -220,7 +241,7 @@ function openEditForm(p, onSaved) {
   form.querySelector(".editCategory").value = p.danhmuc;
   form.querySelector(".editPrice").value = p.gia;
   form.querySelector(".editQuantity").value = p.soluong;
-  form.querySelector(".editDescription").value = p.mota || "";
+  form.querySelector(".editDescription").value = p.description || "";
 
   // --- Xử lý preview ảnh cũ ---
   const preview = form.querySelector("#editImagePreview");
@@ -235,8 +256,13 @@ function openEditForm(p, onSaved) {
   // --- Lưu thay đổi ---
   form.querySelector(".save-btn").onclick = (e) => {
     e.preventDefault();
+
+    // ✅ Kiểm tra hợp lệ trước khi lưu
+    if (!validateEditForm(form)) return;
+
     const products = JSON.parse(localStorage.getItem("product")) || [];
     const idx = products.findIndex((x) => x.id === p.id);
+
     if (idx > -1) {
       products[idx] = {
         ...products[idx],
@@ -244,13 +270,14 @@ function openEditForm(p, onSaved) {
         danhmuc: form.querySelector(".editCategory").value,
         gia: +form.querySelector(".editPrice").value,
         soluong: +form.querySelector(".editQuantity").value,
-        mota: form.querySelector(".editDescription").value.trim(),
-        hinhanh: preview.src || p.hinhanh, // ✅ giữ ảnh cũ nếu chưa chọn mới
+        description: form.querySelector(".editDescription").value.trim(),
+        hinhanh: document.querySelector("#editImagePreview")?.src || p.hinhanh, // ✅ giữ ảnh cũ nếu chưa chọn mới
       };
+
       localStorage.setItem("product", JSON.stringify(products));
       alert("✅ Cập nhật thành công!");
       form.style.display = "none";
-      onSaved();
+      onSaved && onSaved();
     }
   };
 }
@@ -266,6 +293,10 @@ function openAddForm(onSaved) {
 
   form.querySelector(".save-btn").onclick = (e) => {
     e.preventDefault();
+
+    // ✅ Gọi hàm kiểm tra
+    if (!validateEditForm(form)) return;
+
     const products = JSON.parse(localStorage.getItem("product")) || [];
     const newProduct = {
       id: products.length ? Math.max(...products.map((x) => x.id)) + 1 : 1,
@@ -273,14 +304,18 @@ function openAddForm(onSaved) {
       danhmuc: form.querySelector(".editCategory").value,
       gia: +form.querySelector(".editPrice").value,
       soluong: +form.querySelector(".editQuantity").value,
-      mota: form.querySelector(".editDescription").value.trim(),
-      hinhanh: preview.src || "https://via.placeholder.com/80",
+      description: form.querySelector(".editDescription").value.trim(),
+      hinhanh:
+        document.querySelector("#editImagePreview")?.src ||
+        "https://via.placeholder.com/80",
     };
+
     products.unshift(newProduct);
     localStorage.setItem("product", JSON.stringify(products));
+
     alert("✅ Thêm sản phẩm thành công!");
     form.style.display = "none";
-    onSaved();
+    onSaved && onSaved();
   };
 }
 
@@ -318,11 +353,11 @@ function renderForm() {
         </div>
         <div class="form-group">
           <label>Giá</label>
-          <input type="number" class="editPrice" placeholder="Nhập giá..." />
+          <input type="number" class="editPrice" placeholder="Nhập giá..." min="1" />
         </div>
         <div class="form-group">
           <label>Số lượng</label>
-          <input type="number" class="editQuantity" placeholder="Nhập số lượng..." />
+          <input type="number" class="editQuantity" placeholder="Nhập số lượng..." min="1"/>
         </div>
 
         <!-- Upload ảnh -->
@@ -353,10 +388,38 @@ function renderForm() {
           <textarea class="editDescription" style="width:100%;min-height:80px;padding:8px;border:1px solid #ddd;border-radius:8px;"></textarea>
         </div>
 
-        <div class="form-group" style="grid-column:span 2;text-align:right;">
-          <button class="cancel-btn">Hủy</button>
-          <button class="save-btn">Lưu thay đổi</button>
+        <div class="form-actions" style="
+          grid-column: span 2;
+          display: flex;
+          justify-content: flex-end;
+          gap: 10px;
+          margin-top: 12px;
+        ">
+          <button class="cancel-btn" style="
+            padding: 8px 18px;
+            border: 1px solid #ccc;
+            background: #f5f5f5;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+          ">
+            Hủy
+          </button>
+          <button class="save-btn" style="
+            padding: 8px 18px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+          ">
+             Lưu thay đổi
+          </button>
         </div>
+
       </div>
     </div>
   `;
@@ -394,4 +457,54 @@ function renderForm() {
         preview.style.display = "none";
       }
     });
+}
+function validateEditForm() {
+  const name = document.querySelector(".editName").value.trim();
+  const category = document.querySelector(".editCategory").value;
+  const price = parseFloat(document.querySelector(".editPrice").value);
+  const quantity = parseInt(document.querySelector(".editQuantity").value);
+  const description = document.querySelector(".editDescription").value.trim();
+  const imageInput = document.querySelector("#editImageFile");
+
+  if (!name) {
+    alert("⚠️ Vui lòng nhập tên sản phẩm!");
+    return false;
+  }
+
+  if (!category) {
+    alert("⚠️ Vui lòng chọn danh mục!");
+    return false;
+  }
+
+  if (isNaN(price) || price <= 0) {
+    alert("⚠️ Giá sản phẩm phải lớn hơn 0!");
+    return false;
+  }
+
+  if (isNaN(quantity) || quantity < 1) {
+    alert("⚠️ Số lượng phải là số nguyên ≥ 1!");
+    return false;
+  }
+
+  if (!description) {
+    alert("⚠️ Vui lòng nhập mô tả sản phẩm!");
+    return false;
+  }
+
+  // Kiểm tra ảnh nếu có upload
+  if (imageInput.files.length > 0) {
+    const file = imageInput.files[0];
+    const fileType = file.type;
+    const fileSize = file.size;
+    if (!fileType.startsWith("image/")) {
+      alert("⚠️ Vui lòng chọn tệp ảnh hợp lệ (PNG, JPG, JPEG).");
+      return false;
+    }
+    if (fileSize > 5 * 1024 * 1024) {
+      alert("⚠️ Ảnh không được vượt quá 5MB!");
+      return false;
+    }
+  }
+
+  return true;
 }
