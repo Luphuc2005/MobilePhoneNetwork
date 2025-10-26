@@ -208,6 +208,73 @@ body {
     filter: brightness(0) invert(1);
 }
 
+/*drop down menu, nho them user-acount-area*/
+.dropdown-menu {
+    border-radius: 15px;
+    min-width: fit-content;
+    min-height: fit-content;
+    width: 200%;
+    right: 0;
+    top: calc(100% + 15px);
+    background-color: white;
+    position: absolute;
+}
+
+.dropdown-menu::after {
+    content: "";
+    position: absolute;
+    right: 25px;
+    top: -15px;
+    border-top: none;
+    border-right: 15px solid transparent;
+    border-left: 15px solid transparent;
+    border-bottom: 15px solid;
+}
+
+.dropdown-menu::before {
+    content: "";
+    position: absolute;
+    top: -15px;
+    width: 100%;
+    height: 15px;
+}
+
+.dropdown-menu ul {
+    list-style-type: none;
+    min-width: fit-content;
+    justify-content: space-evenly;
+    display: flex;
+    padding: 5px 0px;
+    cursor: default;
+}
+
+.dropdown-menu ul li {
+    padding: 5px 10px ;
+}
+
+.dropdown-menu ul li button {
+    border: none;
+    font-size: 14px;
+    font-weight: bold;
+    background: none;
+    min-width: fit-content;
+    padding: 5px 15px;
+    cursor: pointer;
+}
+
+.dropdown-menu ul li #sign-in {
+    border: solid 0.1px;
+    border-radius: 5px;
+    background-color: black;
+    color: white;
+}
+
+
+.dropdown-menu ul li #sign-up {
+    border: solid 0.1px;
+    border-radius: 5px;
+}
+
 .cart-icon a {
     text-decoration: none;
     color: white;
