@@ -327,6 +327,10 @@
                                     <option value="Iphone">iPhone</option>
                                     <option value="Samsung">Samsung</option>
                                     <option value="Xiaomi">Xiaomi</option>
+                                    <option value="Oppo">Oppo</option>
+                                    <option value="Vivo">Vivo</option>
+                                    <option value="Realme">Realme</option>
+                                    <option value="Nokia">Nokia</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -344,9 +348,21 @@
                         <div class="profit-form">
                             <div class="form-group">
                                 <label>Sản phẩm:</label>
-                                <select id="productSelect">
-                                    <option value="">Chọn sản phẩm</option>
-                                </select>
+                                <!-- Custom Select với hình ảnh -->
+                                <div class="custom-select-wrapper" id="productSelectWrapper">
+                                    <select id="productSelect" style="display: none;">
+                                        <option value="">Chọn sản phẩm</option>
+                                    </select>
+                                    <div class="custom-select" id="customProductSelect">
+                                        <div class="custom-select-trigger">
+                                            <span class="selected-value">Chọn sản phẩm</span>
+                                            <span class="arrow">▼</span>
+                                        </div>
+                                        <div class="custom-options" id="customProductOptions">
+                                            <!-- Options sẽ được load bằng JS -->
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label>% Lợi nhuận:</label>

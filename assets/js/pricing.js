@@ -38,6 +38,9 @@ function switchTab(tabName) {
   if (tabName === "profit") {
     loadProfitTable();
     loadProducts();
+  } else if (tabName === "lookup") {
+    // Load products for lookup tab nếu cần
+    loadProducts();
   }
 }
 
@@ -132,8 +135,19 @@ function loadCategories() {
     return;
   }
 
-  // Dữ liệu categories
-  const categories = ["Iphone", "Samsung", "Xiaomi", "Oppo"];
+  // Load products từ localStorage để lấy danh sách categories
+  let categories = [];
+  try {
+    const productsData = JSON.parse(localStorage.getItem("product")) || [];
+    // Lấy danh sách categories duy nhất
+    categories = [
+      ...new Set(productsData.map((p) => p.danhmuc || p.category)),
+    ].filter(Boolean);
+  } catch (e) {
+    console.log("⚠️ Error loading categories from localStorage:", e);
+    // Fallback categories nếu không load được
+    categories = ["Iphone", "Samsung", "Xiaomi", "Oppo"];
+  }
 
   // Xóa options cũ
   categorySelect.innerHTML = '<option value="">Chọn loại sản phẩm</option>';
@@ -149,43 +163,194 @@ function loadCategories() {
   console.log("✅ Categories loaded:", categories.length, "items");
 }
 
+// ====== MIGRATE PRODUCT PROFITS (Clean up old data) ======
+function migrateProductProfits() {
+  // Load lại từ localStorage để đảm bảo có data mới nhất
+  const currentProfits =
+    JSON.parse(localStorage.getItem("productProfits")) || {};
+  const updatedProfits = {};
+
+  // Kiểm tra xem có data cũ không (key là số)
+  const hasOldData = Object.keys(currentProfits).some((key) => !isNaN(key));
+
+  if (hasOldData) {
+    console.log("🔄 Migrating old product profits data...");
+    console.log("Old data:", currentProfits);
+
+    // Load products để map ID sang tên
+    try {
+      const productsData = JSON.parse(localStorage.getItem("product")) || [];
+      const productsMap = productsData.reduce((acc, p) => {
+        acc[p.id] = p.tensanpham || p.name;
+        return acc;
+      }, {});
+
+      // Convert keys từ ID sang product name
+      Object.keys(currentProfits).forEach((key) => {
+        const keyAsNum = parseInt(key);
+        if (!isNaN(keyAsNum) && productsMap[keyAsNum]) {
+          // Là số (ID), convert sang tên sản phẩm
+          updatedProfits[productsMap[keyAsNum]] = currentProfits[key];
+          console.log(
+            `Migrated: ${key} (ID ${keyAsNum}) → ${productsMap[keyAsNum]}`
+          );
+        } else if (isNaN(keyAsNum)) {
+          // Đã là tên sản phẩm, giữ nguyên
+          updatedProfits[key] = currentProfits[key];
+        }
+      });
+
+      // Lưu lại vào localStorage
+      productProfits = updatedProfits;
+      localStorage.setItem("productProfits", JSON.stringify(productProfits));
+
+      console.log("✅ Migration completed! New data:", updatedProfits);
+    } catch (e) {
+      console.log("⚠️ Migration error:", e);
+    }
+  }
+}
+
 // ====== LOAD PRODUCTS ======
 function loadProducts() {
   const productSelect = document.getElementById("productSelect");
-  if (!productSelect) return;
+  const customOptions = document.getElementById("customProductOptions");
+  if (!productSelect || !customOptions) return;
 
-  // Dữ liệu mẫu với 4 sản phẩm
-  const sampleProducts = [
-    { name: "iPhone 15 Pro Max", category: "Iphone", price: 29990000, id: 1 },
-    {
-      name: "Samsung Galaxy S25 Ultra",
-      category: "Samsung",
-      price: 27990000,
-      id: 2,
-    },
-    { name: "Xiaomi 15T Pro", category: "Xiaomi", price: 12990000, id: 3 },
-    { name: "Oppo Find X8", category: "Oppo", price: 18990000, id: 4 },
-  ];
+  let products = [];
+
+  // Load sản phẩm từ localStorage (set bởi dataProduct.js)
+  try {
+    const productsData = JSON.parse(localStorage.getItem("product")) || [];
+
+    // Convert sang format mới nếu cần
+    products = productsData.map((p) => ({
+      name: p.tensanpham || p.name,
+      category: p.danhmuc || p.category,
+      price: p.gia || p.price,
+      image: p.hinhanh || p.image || "assets/images/icons/iphone.png",
+      id: p.id,
+    }));
+
+    console.log(
+      "✅ Loaded products from localStorage:",
+      products.length,
+      "items"
+    );
+  } catch (e) {
+    console.log("⚠️ Error loading products from localStorage:", e);
+    // Fallback products
+    products = [
+      {
+        name: "iPhone 15 Pro Max",
+        category: "Iphone",
+        price: 29990000,
+        image: "assets/images/icons/iphone.png",
+        id: 1,
+      },
+      {
+        name: "Samsung Galaxy S25 Ultra",
+        category: "Samsung",
+        price: 27990000,
+        image: "assets/images/icons/samsung.png",
+        id: 2,
+      },
+      {
+        name: "Xiaomi 15T Pro",
+        category: "Xiaomi",
+        price: 12990000,
+        image: "assets/images/icons/xiaomi.png",
+        id: 3,
+      },
+      {
+        name: "Oppo Find X8",
+        category: "Oppo",
+        price: 18990000,
+        image: "assets/images/icons/oppo.png",
+        id: 4,
+      },
+    ];
+  }
 
   // Xóa options cũ
   productSelect.innerHTML = '<option value="">Chọn sản phẩm</option>';
+  customOptions.innerHTML = "";
 
-  // Thêm products vào select
-  sampleProducts.forEach((product) => {
+  // Thêm products vào select và custom select
+  products.forEach((product) => {
+    // Regular select (hidden)
     const option = document.createElement("option");
     option.value = product.name;
     option.textContent = `${product.name} (${product.category})`;
     productSelect.appendChild(option);
+
+    // Custom select with image
+    const customOption = document.createElement("div");
+    customOption.className = "custom-option";
+    customOption.dataset.value = product.name;
+    customOption.innerHTML = `
+      <img src="${product.image}" alt="${product.name}" onerror="this.src='assets/images/icons/iphone.png'">
+      <div class="custom-option-info">
+        <div class="custom-option-name">${product.name}</div>
+        <div class="custom-option-category">${product.category}</div>
+      </div>
+    `;
+    customOption.onclick = () => selectProduct(product.name, product.image);
+    customOptions.appendChild(customOption);
   });
 
-  console.log("✅ Products loaded:", sampleProducts.length, "items");
+  console.log("✅ Products loaded:", products.length, "items");
+}
 
-  // TODO: Sau này sẽ load từ JSON
-  // fetch("./data/products.json")
-  //   .then((response) => response.json())
-  //   .then((data) => {
-  //     // Load products từ JSON
-  //   });
+// ====== SETUP CUSTOM SELECT ======
+let customSelectInitialized = false;
+
+function setupCustomSelect() {
+  const customSelect = document.getElementById("customProductSelect");
+  if (!customSelect) return;
+
+  // Chỉ setup events một lần
+  if (customSelectInitialized) return;
+  customSelectInitialized = true;
+
+  // Toggle dropdown
+  customSelect.addEventListener("click", (e) => {
+    e.stopPropagation();
+    customSelect.classList.toggle("open");
+  });
+
+  // Close when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!customSelect.contains(e.target)) {
+      customSelect.classList.remove("open");
+    }
+  });
+
+  console.log("✅ Custom select initialized");
+}
+
+// ====== SELECT PRODUCT ======
+function selectProduct(productName, productImage) {
+  const productSelect = document.getElementById("productSelect");
+  const customSelect = document.getElementById("customProductSelect");
+  const customOptions = document.getElementById("customProductOptions");
+
+  // Update regular select
+  if (productSelect) {
+    productSelect.value = productName;
+  }
+
+  // Update custom select display
+  if (customSelect) {
+    const selectedValue = customSelect.querySelector(".selected-value");
+    selectedValue.innerHTML = `
+      <img src="${productImage}" alt="${productName}" onerror="this.src='assets/images/icons/iphone.png'">
+      <span>${productName}</span>
+    `;
+    customSelect.classList.remove("open");
+  }
+
+  console.log("✅ Selected product:", productName);
 }
 
 // ====== CONFIRM MODAL ======
@@ -355,9 +520,53 @@ function saveCategoryProfit() {
     title,
     message,
     () => {
-      // Lưu vào localStorage
+      // Lưu % lợi nhuận category vào localStorage
       categoryProfits[category] = profit;
       localStorage.setItem("categoryProfits", JSON.stringify(categoryProfits));
+
+      // Cập nhật giá cho các sản phẩm trong category, TRỪ các sản phẩm đã có productProfit riêng
+      try {
+        let productsData = JSON.parse(localStorage.getItem("product")) || [];
+        let updatedCount = 0;
+        let skippedCount = 0;
+
+        productsData.forEach((p) => {
+          const productName = p.tensanpham || p.name;
+          const productCategory = p.danhmuc || p.category;
+
+          // Chỉ update nếu thuộc category và KHÔNG có productProfit riêng
+          if (productCategory === category && !productProfits[productName]) {
+            const oldPrice = p.gia;
+            const costPrice = p.giaVon || p.gia / 1.2;
+
+            p.giaVon = costPrice;
+            p.gia = costPrice * (1 + profit / 100);
+
+            updatedCount++;
+            console.log(
+              `💰 Updated ${productName}: ${oldPrice} → ${p.gia.toFixed(
+                2
+              )} triệu`
+            );
+          } else if (
+            productCategory === category &&
+            productProfits[productName]
+          ) {
+            skippedCount++;
+            console.log(`⏭️ Skipped ${productName} (has individual profit)`);
+          }
+        });
+
+        // Lưu lại nếu có thay đổi
+        if (updatedCount > 0) {
+          localStorage.setItem("product", JSON.stringify(productsData));
+          console.log(
+            `✅ Updated ${updatedCount} products, skipped ${skippedCount} products`
+          );
+        }
+      } catch (e) {
+        console.log("⚠️ Error updating product prices:", e);
+      }
 
       // Reset form với animation
       categorySelect.style.transition = "all 0.3s ease";
@@ -412,6 +621,14 @@ function saveProductProfit() {
   const product = productSelect.value.trim();
   const profit = parseFloat(productProfitInput.value);
 
+  // Lấy thông tin sản phẩm để tính giá bán mới
+  let productsData = [];
+  try {
+    productsData = JSON.parse(localStorage.getItem("product")) || [];
+  } catch (e) {
+    console.log("⚠️ Error loading products:", e);
+  }
+
   console.log("🔍 Debug saveProductProfit:", {
     product,
     profit,
@@ -462,9 +679,36 @@ function saveProductProfit() {
     title,
     message,
     () => {
-      // Lưu vào localStorage
+      // Lưu % lợi nhuận vào localStorage
       productProfits[product] = profit;
       localStorage.setItem("productProfits", JSON.stringify(productProfits));
+
+      // Tìm sản phẩm trong danh sách và tính lại giá bán
+      const productData = productsData.find(
+        (p) => (p.tensanpham || p.name) === product
+      );
+
+      if (productData) {
+        // Tính lại giá bán dựa trên % lợi nhuận mới
+        // Giá bán mới = Giá vốn × (1 + % lợi nhuận/100)
+        const oldPrice = productData.gia;
+        const costPrice = productData.giaVon || productData.gia / 1.2; // Nếu chưa có giá vốn, tính ngược
+
+        productData.giaVon = costPrice; // Đảm bảo có giá vốn
+        productData.gia = costPrice * (1 + profit / 100);
+
+        // Lưu lại vào localStorage
+        localStorage.setItem("product", JSON.stringify(productsData));
+
+        console.log(`💰 Updated price for ${product}:`);
+        console.log(`  - Giá vốn: ${costPrice} triệu`);
+        console.log(`  - % Lợi nhuận: ${profit}%`);
+        console.log(
+          `  - Giá bán cũ: ${oldPrice} triệu → Giá bán mới: ${productData.gia.toFixed(
+            2
+          )} triệu`
+        );
+      }
 
       // Reset form với animation
       productSelect.style.transition = "all 0.3s ease";
@@ -505,7 +749,14 @@ function saveProductProfit() {
 // ====== LOAD PROFIT TABLE ======
 function loadProfitTable() {
   const tableBody = document.getElementById("profitTableBody");
-  if (!tableBody) return;
+  if (!tableBody) {
+    console.log("⚠️ profitTableBody not found!");
+    return;
+  }
+
+  console.log("📊 Loading profit table...");
+  console.log("Category profits:", categoryProfits);
+  console.log("Product profits:", productProfits);
 
   tableBody.innerHTML = "";
 
@@ -524,6 +775,12 @@ function loadProfitTable() {
     const row = createProfitRow(product, productProfits[product], "product");
     tableBody.appendChild(row);
   });
+
+  console.log(
+    `✅ Added ${
+      Object.keys(categoryProfits).length + Object.keys(productProfits).length
+    } rows to table`
+  );
 
   // Hiển thị thông báo nếu không có dữ liệu
   if (
@@ -546,21 +803,60 @@ function createProfitRow(name, profit, type) {
   const row = document.createElement("div");
   row.classList.add("table-row");
 
-  row.innerHTML = `
-    <div>
-      <span class="profit-type">${type === "category" ? "📊" : "📱"}</span>
+  // Tạo structure với createElement thay vì innerHTML để tránh XSS
+  const nameDiv = document.createElement("div");
+
+  if (type === "product") {
+    // Load hình ảnh sản phẩm
+    let productImage = "assets/images/icons/iphone.png"; // Default image
+    try {
+      const productsData = JSON.parse(localStorage.getItem("product")) || [];
+      const product = productsData.find(
+        (p) => (p.tensanpham || p.name) === name
+      );
+      if (product && (product.hinhanh || product.image)) {
+        productImage = product.hinhanh || product.image;
+      }
+    } catch (e) {
+      console.log("⚠️ Error loading product image:", e);
+    }
+
+    nameDiv.innerHTML = `
+      <img src="${productImage}" alt="${name}" onerror="this.src='assets/images/icons/iphone.png'" class="product-thumbnail">
+      <div class="product-info">
+        <span class="profit-type">📱</span>
+        <span>${name}</span>
+      </div>
+    `;
+  } else {
+    nameDiv.innerHTML = `
+      <span class="profit-type">📊</span>
       <span>${name}</span>
-    </div>
-    <div><strong>${profit}%</strong></div>
-    <div class="actions">
-      <button onclick="editProfit('${name}', ${profit}, '${type}')" title="Sửa">
-        <img src="assets/images/icons/sua.png" alt="Sửa" />
-      </button>
-      <button onclick="deleteProfit('${name}', '${type}')" title="Xóa">
-        <img src="assets/images/icons/xoa.png" alt="Xóa" />
-      </button>
-    </div>
-  `;
+    `;
+  }
+
+  const profitDiv = document.createElement("div");
+  profitDiv.innerHTML = `<strong>${profit}%</strong>`;
+
+  const actionsDiv = document.createElement("div");
+  actionsDiv.className = "actions";
+
+  const editBtn = document.createElement("button");
+  editBtn.title = "Sửa";
+  editBtn.onclick = () => editProfit(name, profit, type);
+  editBtn.innerHTML = `<img src="assets/images/icons/sua.png" alt="Sửa" />`;
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.title = "Xóa";
+  deleteBtn.onclick = () => deleteProfit(name, type);
+  deleteBtn.innerHTML = `<img src="assets/images/icons/xoa.png" alt="Xóa" />`;
+
+  actionsDiv.appendChild(editBtn);
+  actionsDiv.appendChild(deleteBtn);
+
+  row.appendChild(nameDiv);
+  row.appendChild(profitDiv);
+  row.appendChild(actionsDiv);
 
   return row;
 }
@@ -875,8 +1171,14 @@ document.head.appendChild(pricingStyle);
 function initializePricing() {
   console.log("🚀 Initializing pricing module...");
 
+  // Migrate old data first
+  migrateProductProfits();
+
   // Setup event listeners
   setupEventListeners();
+
+  // Setup custom select (chỉ một lần)
+  setupCustomSelect();
 
   // Load dữ liệu
   loadProfitTable();
@@ -891,6 +1193,9 @@ function initializePricing() {
       Samsung: 15,
       Xiaomi: 12,
       Oppo: 18,
+      Vivo: 16,
+      Realme: 14,
+      Nokia: 10,
     };
     localStorage.setItem("categoryProfits", JSON.stringify(categoryProfits));
     loadProfitTable();
