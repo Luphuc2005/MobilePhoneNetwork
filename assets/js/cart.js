@@ -1,5 +1,6 @@
 const cartItems = document.querySelectorAll('.cart-item');
 const checkoutButton = document.getElementById('checkout-button');
+var listItemCart 
 
 cartItems.forEach(item => {
     const increaseBtn = item.querySelector('.increase');
@@ -47,3 +48,40 @@ checkoutButton.addEventListener('click', () => {
     userInfoContainer.style.display = 'block';
     backgroundUserInfo.style.display = 'block';
 });
+
+var btnCart=document.getElementsByClassName('btn-cart');
+for(let i=0;i<btnCart.length;i++){
+    btnCart[i].addEventListener('click',function(){
+        //lay du lieu tu localStorage de hien thi gio hang
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        let listItemCart = '';
+        cart.forEach(item => {
+            listItemCart += `
+            <div class="cart-item">
+                <div class="item-info">
+                    <img src="${item.hinhanh}" alt="${item.tensanpham}" class="item-img" />
+                    <div class="item-details">
+                        <h4 class="item-name">${item.tensanpham}</h4>
+                        <p class="item-price">$${item.gia}</p>
+                    </div>
+                </div>
+                <div class="item-actions">
+                    <div class="quantity-control">
+                        <button class="decrease">-</button>
+                        <input type="text" class="item-quantity" value="${item.quantity}" readonly />
+                        <button class="increase">+</button>
+                    </div>
+                    <p class="item-total">$${(item.gia * item.quantity).toFixed(2)}</p>
+                    <button class="item-remove">Xóa</button>
+                </div>
+            </div>
+            `;      
+        let cartContainer = document.getElementsByClassName('cart-container')[0];
+        cartContainer.innerHTML = listItemCart; 
+    });
+}
+}
+
+
+// Re-run cart item event bindings after rendering
+// (In a real application, consider using event delegation instead)
