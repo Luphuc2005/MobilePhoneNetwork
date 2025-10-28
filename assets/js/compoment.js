@@ -3,48 +3,68 @@ let currentSlide = 0;
 const slides = document.querySelectorAll('.slide');
 const dots = document.querySelectorAll('.slider-dot');
 let autoSlideInterval;
-//hiển thị sile 
-function showSlide(n){
-    //xóa active
-    slides.forEach(slides => slides.classList.remove('active'));
-    dots.forEach(dots => dots.classList.remove('active'));
-    //không cho vượt qua tổng sile
+
+// Hiển thị slide
+function showSlide(n) {
+    // Xóa active
+    slides.forEach(slide => slide.classList.remove('active'));
+    dots.forEach(dot => dot.classList.remove('active'));
+    
+    // Không cho vượt quá tổng slide
     currentSlide = (n + slides.length) % slides.length;
-    //cho hiển thị (active)
+    
+    // Cho hiển thị (active)
     slides[currentSlide].classList.add('active');
     dots[currentSlide].classList.add('active');
 }
-//thây đổi theo hướng
-function changeSlide(direction){
-    showSlide(currentSlide+direction);
-    resetAutoSilde();
+
+// Thay đổi theo hướng
+function changeSlide(direction) {
+    showSlide(currentSlide + direction);
+    resetAutoSlide();
 }
-//auto tiến lên 1 
-function autoSlide(){
+
+// Auto tiến lên 1
+function autoSlide() {
     changeSlide(1);
 }
-//nút set Sile
-function setSlide(n){
+
+// Nút set Slide
+function setSlide(n) {
     showSlide(n);
-    resetAutoSilde();
+    resetAutoSlide();
 }
-// tạo vé giữ đồ 
-autoSlideInterval = setInterval(autoSlide);
-function resetAutoSilde(){
-    // trả lại vé 
-    clearInterval(autoSlideInterval);
-    // lấy vé mới
-    autoSlideInterval =setInterval(autoSlide,3600);
+
+// Khởi động auto slide
+function startAutoSlide() {
+    autoSlideInterval = setInterval(autoSlide, 3600);
 }
-// không cần ALL vì chỉ có 1 
-const sliderContainer = document.querySelector('slider-container');
-//addEventListener(kiểu nghe, người nghe , option)
-sliderContainer.addEventListener('mouseenter',() => {
+
+// Reset auto slide
+function resetAutoSlide() {
     clearInterval(autoSlideInterval);
-});
-// bỏ chuột ra quay lại mặt định 
-sliderContainer.addEventListener('moveleave',()=>{
-    autoSlideInterval = setInterval(autoSlide,3600);
-})
+    autoSlideInterval = setInterval(autoSlide, 3600);
+}
+
+// THÊM DẤU CHẤM VÀ KIỂM TRA NULL
+const sliderContainer = document.querySelector('.slider-container');
+
+
+if (sliderContainer) {
+    // Dừng auto slide khi hover
+    sliderContainer.addEventListener('mouseenter', () => {
+        clearInterval(autoSlideInterval);
+    });
+
+    // Tiếp tục auto slide khi rời chuột
+    sliderContainer.addEventListener('mouseleave', () => {
+        autoSlideInterval = setInterval(autoSlide, 3600);
+    });
+    
+    // Khởi động auto slide
+    startAutoSlide();
+} else {
+    console.warn('Không tìm thấy .slider-container');
+}
 
 // ================Product==============
