@@ -122,7 +122,7 @@ const data = [
     danhmuc: "Realme",
     gia: 10.49,
     trangthai: true,
-    soluong: "35",
+    soluong: "0",
     hinhanh: "https://example.com/realme11pro.jpg"
   },
   {
@@ -131,7 +131,7 @@ const data = [
     danhmuc: "Nokia",
     gia: 7.99,
     trangthai: true,
-    soluong: "50",
+    soluong: "9",
     hinhanh: "https://example.com/nokiag50.jpg"
   }
 ];

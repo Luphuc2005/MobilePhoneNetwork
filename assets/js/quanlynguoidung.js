@@ -23,6 +23,8 @@ function navigateTo(section, event) {
         initializePricing();
       }
     }, 100);
+  } else if(section === "inventory") {
+    document.getElementById("inventory-content").style.display = "block";
   } else {
     document.getElementById("other-content").style.display = "block";
   }
