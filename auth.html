@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Thông tin cá nhân</title>
-        <link rel="stylesheet" href="./assets/css/components.css">
+        <link rel="stylesheet" href="./assets/css/duyddawng-components.css">
         <link rel="stylesheet" href="./assets/css/user.css">
         <script src="./assets/js/validation.js"></script>
     </head>
@@ -43,7 +43,7 @@
             </div>
             <!-- Tài khoản (Tuấn Khôi) -->
             <div class="user-acount-area">
-                  <a href="auth.html" class="acount-icon">
+                  <a class="acount-icon">
                       <img src="./assets/images/icons/logo-account.png" alt="logo account" class="logo">
                       <span>Tài khoản</span>
                   </a>
@@ -184,6 +184,89 @@
     document.getElementById("logout").onclick = () => {
       location.href="index.html";
     };
+
+    const account = document.querySelector('.acount-icon');
+    const usernameHeader = account.querySelector("span");
+    let dropdownMenu = document.createElement("div");
+    dropdownMenu.setAttribute("class", "dropdown-menu")
+    dropdownMenu.style.visibility="hidden";
+    drawDropdownMenu();
+    function drawDropdownMenu() 
+    {                     
+        if (sessionStorage.getItem("login-status") != null)
+        {
+            dropdownMenu.innerHTML = `
+                        <ul>
+                            <li><button>Thông tin cá nhân</button></li>
+                            <li><button>Đổi mật khẩu</button></li>
+                            <li><button id="sign-out">Đăng xuất</button></li>
+                        </ul>`;
+            let list = dropdownMenu.querySelector("ul");
+            let listItems = dropdownMenu.querySelectorAll("li");
+            let authLink = dropdownMenu.querySelector("a");
+            listItems.forEach((li) => {
+                li.style.width="fit-content";
+            });
+            list.style.flexDirection="column";
+            list.style.alignItems="flex-end";
+            dropdownMenu.style.minWidth="fit-content";
+            dropdownMenu.style.width="150%";
+            account.appendChild(dropdownMenu);
+            usernameHeader.textContent = "Nguyễn Văn A";
+
+            const signout = document.getElementById("sign-out");
+            if (signout !== null)
+            {
+                signout.addEventListener("click", (event) => {
+                console.log("sign out");
+                sessionStorage.removeItem("login-status");
+                console.log(sessionStorage.getItem("login-status"));
+                drawDropdownMenu();
+                });
+            }
+        }
+        else
+        {
+            console.log("get in");
+            dropdownMenu.innerHTML=`
+                            <ul>
+                                <li><button id="sign-in">Đăng nhập</button></li>
+                                <li><button id="sign-up">Đăng ký</button></li>
+                            </ul>
+                            `;
+            account.appendChild(dropdownMenu);
+            usernameHeader.textContent = "Tài khoản";
+            const signin = document.getElementById("sign-in");
+            if (signin != null)
+            {
+                signin.addEventListener("click", (event) => {
+                    console.log("sign in");
+                    // sessionStorage.setItem("login-status", "true"); 
+                    drawFormDangNhap();
+                    drawDropdownMenu();
+                });
+            }
+
+            const signup = document.getElementById("sign-up");
+            if (signup != null)
+            {
+                signup.addEventListener("click", (event) => {
+                    console.log("sign up");
+                    // sessionStorage.setItem("login-status", "true"); 
+                    drawFormDangKy();
+                    drawDropdownMenu();
+                });
+            }
+        }
+    }
+
+    account.addEventListener("mouseover", (event) => {
+        dropdownMenu.style.visibility="visible";
+    });
+
+    account.addEventListener("mouseout", (event) => {
+        dropdownMenu.style.visibility="hidden";
+    });
   </script>
     </body>
 </html> 

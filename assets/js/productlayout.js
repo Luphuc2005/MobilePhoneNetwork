@@ -1,26 +1,48 @@
-// ====================== NAVIGATION ======================
 function navigateTo(section, event) {
-  event?.preventDefault();
+  event.preventDefault();
 
+  // Ẩn tất cả các phần nội dung
   document
     .querySelectorAll(
-      "#dashboard-content, #customers-content, #products-content, #other-content"
+      "#dashboard-content, #customers-content, #pricing-content, #other-content, #products-content, #import-content"
     )
     .forEach((div) => (div.style.display = "none"));
+  switch (section) {
+    case "dashboard":
+      document.getElementById("dashboard-content").style.display = "block";
+      break;
 
-  if (section === "products") {
-    const productsContent = document.getElementById("products-content");
+    case "customers":
+      document.getElementById("customers-content").style.display = "block";
+      break;
 
-    // Lần đầu load trang products mới khởi tạo
-    if (!productsContent.dataset.loaded) {
-      productsContent.innerHTML = page;
-      initProductPage();
-      productsContent.dataset.loaded = "true";
-    }
+    case "pricing":
+      document.getElementById("pricing-content").style.display = "block";
+      break;
 
-    productsContent.style.display = "block";
-  } else {
-    document.getElementById(`${section}-content`).style.display = "block";
+    case "products":
+      document.getElementById("products-content").style.display = "block";
+
+      // ✅ Khởi tạo trang sản phẩm nếu chưa có
+      if (!document.getElementById("productTable")) {
+        const productsContent = document.getElementById("products-content");
+        productsContent.innerHTML = page;
+        initProductPage();
+      }
+      break;
+
+    case "import":
+      document.getElementById("import-content").style.display = "block";
+      setTimeout(() => {
+        if (typeof initializePricing === "function") {
+          initializePricing();
+        }
+      }, 100);
+      break;
+
+    default:
+      document.getElementById("other-content").style.display = "block";
+      break;
   }
 }
 
@@ -57,7 +79,6 @@ let page = `
 // ====================== PRODUCT PAGE ======================
 function initProductPage() {
   renderForm();
-
   const table = document.getElementById("productTable");
   const pagination = document.getElementById("pagination");
   const input = document.getElementById("inputSearch");
