@@ -31,6 +31,7 @@
                 Đăng xuất
             </button>
         </div>
+
     </header>
     <!-- ============MAIN CONTAINER========== -->
     <div class="main-container">
@@ -422,7 +423,44 @@
             </div>
             <!-- =============(DUY ĐĂNG) - QUẢN LÝ LOẠI SẢN PHẨM ========== -->
             <div id="categories-content" class="section-content" style="display: none;">
+                <div class="page-title">
+                    <h2>
+                        <img src="./assets/images/icons/icon-plus.png" class="icon-color">
+                        Quản lý loại sản phẩm
+                    </h2>
+                    <p>Quản lý danh mục và phân loại sản phẩm</p>
+                </div>
+                <div class="top-bar">
+                    <!-- thanh tìm kiếm  -->
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm loại sản phẩm...">
+                    <button id="btnAddCategory">
+                        <span>+ Thêm loại sản phẩm</span>
+                    </button>
 
+                </div>
+                <!-- Table Header  -->
+                <div class="category-table">
+                    <div class="table-header-cate">
+                        <div>ID</div>
+                        <div>Icon</div>
+                        <div>Tên loại</div>
+                        <div>Số sản phẩm</div>
+                        <div>Trạng thái</div>
+                        <div>Hành động</div>
+                    </div>
+                    <!-- Table-Body -->
+                    <div id="categoryTableBody">
+                        <!-- Rows sẽ sẽ lấy từ js -->
+                    </div>
+                </div>
+                <div class="pagination-controls">
+                    <div id="paginationInfo" class="pagination-info">
+                        Hiển thị 0-0 trong tổng số 0 loại sản phẩm
+                    </div>
+                    <div class="pagination" id="paginationContainer">
+                        <!-- nút sẽ hiện bởi js  -->
+                    </div>
+                </div>
             </div>
             <!-- THANH NHÀN - Quản lý đơn hàng -->
             <div id="orders-content" class="section-content" style="display: none;">
@@ -448,11 +486,62 @@
                 </div>
             </div>
         </main>
-
-
-        
+        <!-- Modal add Category  -->
+        <div id="categoryModal" class="modal">
+            <div class="modal-content">
+                <!-- Close Button -->
+                <span id="modalClose">&times;</span>
+                <h3 id="modalTitle">Thêm loại sản phẩm mới</h3>
+                <label>Icon(Tải ảnh) <span style="color: red;">*</span></label>
+                <label for="categoryIconUpload" class="btn-upload">
+                    <img src="./assets/images/icons/icon-plus.png" class="icon-color">
+                    <span>Tải ảnh</span>
+                </label>
+                <input type="file" id="categoryIconUpload" accept="image/*">
+                <!-- Image Preview  -->
+                <div id="imagePreview">
+                    <img src="" id="previewImg" alt="Xem trước icon">
+                    <button type="button" id="removeImage">
+                        <img src="./assets/images/icons/icon-plus.png" class="icon-color">
+                        <span>Xóa ảnh</span>
+                    </button>
+                </div>
+                <!-- Category Name -->
+                <label for="categoryName">Tên loại sản phẩm <span style="color: red;">*</span></label>
+                <input type="text" id="categoryName" placeholder="Ex: IPhone, SamSung, Xiaomi">
+                <!-- Category Description  -->
+                <label for="categoryDescription">Mô tả</label>
+                <textarea id="categoryDescription" rows="3" placeholder="Mô tả ngắn gọn về sản phẩm"></textarea>
+                <!-- Status(for edit) -->
+                <div id="statusContainer" style="display: none;">
+                    <label for="categoryStatus">Trạng thái</label>
+                    <select id="categoryStatus">
+                        <option value="hoat-dong">Hoạt động</option>
+                        <option value="an">Ẩn</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button class="cancel" id="cancelBtn">
+                        <img src="./assets/images/icons/icon-plus.png" class="icon-color">
+                        <span>Hủy</span>
+                    </button>
+                    <button class="save" id="saveBtn">
+                        <img src="./assets/images/icons/icon-plus.png" class="icon-color">
+                        <span>Lưu</span>
+                    </button>
+                </div>
+            </div>
+            <div id="toast" class="toast">
+                <img src="./assets/images/icons/icon-plus.png" class="icon-color" id="toastIcon">
+                <span id="toastMessage"></span>
+            </div>
+        </div>
+        <!--=============== PHẢI ĐỂ ĐẦU ================-->
+        <script src="./assets/js/storage-config.js"></script>
+        <!-- ========================================== -->  
         <script src="./assets/js/quanlynguoidung.js"></script>
         <script src="./assets/js/pricing.js"></script>
+        <script src="./assets/js/duyddawng-navgateTo.js"></script>
         <script src="./assets/js/duyddawng-categories.js"></script>
         <link href="./assets/css/admin.css" rel="stylesheet">
         <script src="./assets/js/dataProduct.js"></script>
