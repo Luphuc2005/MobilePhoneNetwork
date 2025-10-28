@@ -464,6 +464,134 @@
             <!-- THANH NHÀN - Quản lý đơn hàng -->
             <div id="orders-content" class="section-content" style="display: none;">
 
+<<<<<<< HEAD
+=======
+                            <select id = "dictrict-select" class = "search-element">
+                                <option value = "all">Tất cả phường xã</option>
+                            </select>
+                            <button class = "search-btn search-element" type="submit">Lọc</button>
+                            <span class = "info-label">Từ ngày:</span>
+                            <input type = "date" id = "start-date" class = "input-date">
+                            <span>-</span>
+                            <input type = "date" id = "end-date" class = "input-date">
+                        </form>
+                    </div>
+                    <div class = "order-list">
+                        <!-- comment -->
+                        <!-- <div class = "order-item">
+                            <div class = "order-header">
+                                <div class = "order-id order-header-item">
+                                    <p>Mã đơn</p>
+                                    <p class = "header-value">DH001234</p>
+                                </div>
+                                <div class = "order-date order-header-item">
+                                    <p>Ngày đặt</p>
+                                    <p class = "header-value">15/10/2025 14:30</p>
+                                </div>
+                                <div class = "order-address order-header-item">
+                                    <p>Quận/huyện</p>
+                                    <p class = "header-value">Quận 1</p>
+                                </div>
+                                <div class = "order-status waiting-status">
+                                    Chờ xử lý
+                                </div>
+                            </div>
+                            <div class = "wrapper-order-content"> 
+                                <div class = "order-content">
+                                    <div class="customer-info">
+                                        <h3>Thông tin khách hàng</h3>
+                                        <div class="info-line name info-label">Họ tên: <span class = "info-value">Nguyễn Văn A</span></div>
+                                        <div class="info-line phone info-label">Số điện thoại: <span class = "info-value">0912345678</span></div>
+                                        <div class="info-line address info-label"><span class = "info-value">123 Đường ABC, Phường Bến Nghé, Quận 1, TP.HCM</span></div>
+                                    </div>
+                                    <div class = "order-info">
+                                        <h3>Thông tin đơn hàng</h3>
+                                        <div class="info-line info-label">Tổng tiền: <span class="total-price info-value">29.990.000₫</span></div>
+                                        <div class="info-line info-label">Thanh toán: <span class = "info-value">Tiền mặt khi giao hàng</span></div>
+                                        
+                                        <div class="status-update-section">
+                                            <label for="status">Cập nhật trạng thái</label>
+                                            <div class="status-update-form">
+                                                <div class="status-select">Chờ xử lý</div>
+                                                <div class="select-list hidden">
+                                                    <div class="select-item">Chờ xử lý</div>
+                                                    <div class="select-item">Đã xác nhận</div>
+                                                    <div class="select-item">Đang giao</div>
+                                                    <div class="select-item">Hoàn thành</div>
+                                                    <div class="select-item">Đã hủy</div>
+                                                </div>
+                                            </div>
+                                            <button class="update-status-order-btn">Cập nhật</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class = "order-footer">
+                                    <button class = "detail-bnt">Chi tiết</button>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+                <div class = "content-footer radius-8">
+                    <div class = "page-number info-label">Hiển thị <span style = "margin: 0px 5px;" id = "now-page">1-5</span> trong tổng số <span style = "margin: 0px 5px;" id = "all-page">158</span> đơn hàng</div>
+                    <div class = "page-controler">
+                        <div class = "page-item" id = "pre-page-btn">
+                            Trước
+                        </div> 
+                        <div class = "page-numbers">
+                            <!-- <div class = "page-item">
+                                1
+                            </div> -->
+                        </div>
+                        <div class = "page-item" id = "next-page-btn">
+                            Sau
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="detail-order-wrapper hidden">
+                <div class="detail-content">
+                    <div class = "detail-header"> 
+                        <div class = "detail-close-btn">
+                            <img src = "./assets/images/icons/back-icon.png">
+                        </div>
+                        <div class = "detail-title">
+                            <h2>Chi tiết đơn hàng</h2>
+                        </div>
+                    </div> 
+                    <div class="order-info">
+                        <div class = "info-wrapper">
+                            <p class = "detail-order-id-label"><strong>Mã đơn hàng:</strong> <span id="detail-order-id"></span></p>
+                            <p><strong>Ngày đặt:</strong> <span id="detail-date"></span></p>
+                            <p><strong>Địa chỉ:</strong> <span id="detail-address"></span></p>
+                            <p><strong>Trạng thái:</strong> <span id="detail-status"></span></p>
+                        </div>
+                        <div class = "detail-product-list">
+                            <p id = "detail-product-list-title"><strong>Sản phẩm:</strong></p>
+                            <ul id="detail-products">
+                                <!-- <li class = "detail-product-item">
+                                    <div class = "detail-product-img-wrapper"> 
+                                        <img src="./assets/images/products/samsung-galaxy-s25-ultra.png" alt="Samsung Galaxy S25 Ultra" align = "center">
+                                    </div>
+                                    <div class = "detail-product-info">
+                                        <p class = "detail-type-product">Samsung</p>
+                                        <p class = "detail-product-name">Samsung galaxy s25 ultra</p> 
+                                        <p class = "detail-product-quantity">x1</p> 
+                                    </div>
+                                    <div class = "detail-product-price">
+                                        200$
+                                    </div>
+                                </li> -->
+                            </ul>
+                        </div>
+                        <div class = "payment-wrapper">
+                            <p><strong>Phương thức thanh toán:</strong> <span id="detail-payment"></span></p>
+                            <p><strong>Tổng tiền:</strong> <span id="detail-total"></span></p>
+                        </div>
+                    </div>
+                </div>
+>>>>>>> nt_nhan-detail-order
             </div>
             <!-- THANH NHÀN - Quản lý tồn kho -->
             <div id="inventory-content" class="section-content" style="display: none;">
