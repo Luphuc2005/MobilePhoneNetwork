@@ -135,7 +135,6 @@ body {
 }
 
 .search-bar input {
-    width: 100%;
     padding: 12px 16px;
     /* xóa border và bo tròn gốc */
     border: none;
@@ -715,6 +714,7 @@ body {
     flex: 1; /* Chiếm phần còn lại của không gian */
     padding: 30px;
     overflow-y: auto; /* Scroll dọc nếu content dài */
+    position: relative;
 }
 
 .dashboard-header {
