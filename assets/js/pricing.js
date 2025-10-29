@@ -1,58 +1,13 @@
 // ====== QUẢN LÝ GIÁ BÁN ======
-// Pattern: Sử dụng StorageHelper để đồng bộ tự động (theo chuẩn DuyDang)
 
-// Storage Keys (Dùng từ storage-config.js)
-const STORAGE_KEY_PRODUCTS = STORAGE_KEYS.PRODUCTS;
-const STORAGE_KEY_CATEGORY_PROFITS = STORAGE_KEYS.CATEGORY_PROFITS;
-const STORAGE_KEY_PRODUCT_PROFITS = STORAGE_KEYS.PRODUCT_PROFITS;
+// Biến toàn cục
+let products = JSON.parse(localStorage.getItem("product")) || [];
+let categoryProfits = JSON.parse(localStorage.getItem("categoryProfits")) || {};
+let productProfits = JSON.parse(localStorage.getItem("productProfits")) || {};
 
-// Source identifier để tránh loop khi sync
-const SOURCE_PRICING = STORAGE_KEY_CATEGORY_PROFITS + "-page";
-
-// ====== MIGRATION: Chuyển dữ liệu từ key CŨ sang MỚI ======
-function migrateProductData() {
-  const oldKey = "product";
-  const newKey = STORAGE_KEY_PRODUCTS;
-
-  // Kiểm tra nếu key mới chưa có dữ liệu NHƯNG key cũ có
-  const newData = localStorage.getItem(newKey);
-  const oldData = localStorage.getItem(oldKey);
-
-  if (!newData && oldData) {
-    console.log(
-      '📦 [Pricing Migration] Đang chuyển dữ liệu từ "product" → "phonestore_products"...'
-    );
-
-    try {
-      const products = JSON.parse(oldData);
-      localStorage.setItem(newKey, oldData); // Copy nguyên dữ liệu
-      console.log(
-        `✅ [Pricing Migration] Đã chuyển ${products.length} sản phẩm thành công!`
-      );
-      console.log(
-        'ℹ️  Key cũ "product" vẫn còn để tương thích ngược. Sẽ tự động xóa sau.'
-      );
-    } catch (e) {
-      console.error("❌ [Pricing Migration] Lỗi:", e);
-    }
-  } else if (newData && oldData) {
-    // Cả 2 key đều có → Dùng key mới, xóa key cũ
-    console.log("🔄 [Pricing Migration] Key mới đã có dữ liệu, xóa key cũ...");
-    // localStorage.removeItem(oldKey); // Tạm comment để an toàn
-  }
-}
-
-// Chạy migration trước khi load
-migrateProductData();
-
-// Biến local cache (sau migration)
-let products = StorageHelper.load(STORAGE_KEY_PRODUCTS, []);
-let categoryProfits = StorageHelper.load(STORAGE_KEY_CATEGORY_PROFITS, {});
-let productProfits = StorageHelper.load(STORAGE_KEY_PRODUCT_PROFITS, {});
-
-// ====== HELPER: LƯU PRODUCTS    ======
+// ====== HELPER: LƯU PRODUCTS ======
 function saveProductsToStorage() {
-  return StorageHelper.save(STORAGE_KEY_PRODUCTS, products, SOURCE_PRICING);
+  localStorage.setItem("product", JSON.stringify(products));
 }
 
 // ====== CALCULATE PROFIT (LỢI NHUẬN) ======
@@ -1018,7 +973,7 @@ function applyCategoryProfitToPrice() {
         }
       });
 
-      // Lưu vào localStorage với StorageHelper
+      // Lưu vào localStorage
       saveProductsToStorage();
 
       // Broadcast
@@ -1212,7 +1167,7 @@ function applyProductProfitToPrice() {
       product.oldPrice = discountPercent > 0 ? listPrice : 0; // Giá niêm yết (nếu có KM)
       product.discount = discountPercent > 0 ? -discountPercent : 0; // % KM (âm)
 
-      // Lưu vào localStorage với StorageHelper
+      // Lưu vào localStorage
       const productIndex = products.findIndex((p) => p.id === productId);
       products[productIndex] = product;
       saveProductsToStorage();
@@ -1555,13 +1510,9 @@ function saveCategoryProfit() {
     title,
     message,
     () => {
-      // Lưu vào localStorage với StorageHelper
+      // Lưu vào localStorage
       categoryProfits[category] = profit;
-      StorageHelper.save(
-        STORAGE_KEY_CATEGORY_PROFITS,
-        categoryProfits,
-        SOURCE_PRICING
-      );
+      localStorage.setItem("categoryProfits", JSON.stringify(categoryProfits));
 
       // Reset form với animation
       categorySelect.style.transition = "all 0.3s ease";
@@ -1670,13 +1621,9 @@ function saveProductProfit() {
     title,
     message,
     () => {
-      // Lưu theo TÊN sản phẩm, không phải ID với StorageHelper
+      // Lưu theo TÊN sản phẩm, không phải ID
       productProfits[productName] = profit;
-      StorageHelper.save(
-        STORAGE_KEY_PRODUCT_PROFITS,
-        productProfits,
-        SOURCE_PRICING
-      );
+      localStorage.setItem("productProfits", JSON.stringify(productProfits));
 
       // Reset form với animation
       productSelect.style.transition = "all 0.3s ease";
@@ -1734,11 +1681,7 @@ function cleanupInvalidProfitEntries() {
   // Cập nhật lại nếu có thay đổi
   if (hasInvalidEntries) {
     productProfits = validProductProfits;
-    StorageHelper.save(
-      STORAGE_KEY_PRODUCT_PROFITS,
-      productProfits,
-      SOURCE_PRICING
-    );
+    localStorage.setItem("productProfits", JSON.stringify(productProfits));
     console.log("✅ Đã dọn dẹp các % lợi nhuận không hợp lệ");
 
     // Hiển thị thông báo cho user
@@ -1840,18 +1783,10 @@ function editProfit(name, currentProfit, type) {
 
   if (type === "category") {
     categoryProfits[name] = profit;
-    StorageHelper.save(
-      STORAGE_KEY_CATEGORY_PROFITS,
-      categoryProfits,
-      SOURCE_PRICING
-    );
+    localStorage.setItem("categoryProfits", JSON.stringify(categoryProfits));
   } else {
     productProfits[name] = profit;
-    StorageHelper.save(
-      STORAGE_KEY_PRODUCT_PROFITS,
-      productProfits,
-      SOURCE_PRICING
-    );
+    localStorage.setItem("productProfits", JSON.stringify(productProfits));
   }
 
   loadProfitTable();
@@ -1868,18 +1803,10 @@ function deleteProfit(name, type) {
 
   if (type === "category") {
     delete categoryProfits[name];
-    StorageHelper.save(
-      STORAGE_KEY_CATEGORY_PROFITS,
-      categoryProfits,
-      SOURCE_PRICING
-    );
+    localStorage.setItem("categoryProfits", JSON.stringify(categoryProfits));
   } else {
     delete productProfits[name];
-    StorageHelper.save(
-      STORAGE_KEY_PRODUCT_PROFITS,
-      productProfits,
-      SOURCE_PRICING
-    );
+    localStorage.setItem("productProfits", JSON.stringify(productProfits));
   }
 
   loadProfitTable();
@@ -2166,11 +2093,7 @@ function initializePricing() {
       Xiaomi: 12,
       Oppo: 18,
     };
-    StorageHelper.save(
-      STORAGE_KEY_CATEGORY_PROFITS,
-      categoryProfits,
-      SOURCE_PRICING
-    );
+    localStorage.setItem("categoryProfits", JSON.stringify(categoryProfits));
     loadProfitTable();
   }
 
@@ -2391,22 +2314,20 @@ function setupReportEventListeners() {
   }
 }
 
-// ====== ĐỒNG BỘ ĐA TAB    ======
+// ====== ĐỒNG BỘ ĐA TAB ======
 function setupPricingSync() {
   console.log("[Pricing] Khởi động Pricing Sync...");
 
   // Lắng nghe thay đổi từ tab khác (storage event)
   window.addEventListener("storage", (e) => {
     // Reload profit data khi có thay đổi từ tab khác
-    if (
-      e.key === STORAGE_KEY_CATEGORY_PROFITS ||
-      e.key === STORAGE_KEY_PRODUCT_PROFITS
-    ) {
+    if (e.key === "categoryProfits" || e.key === "productProfits") {
       console.log("[Pricing] Phát hiện thay đổi từ tab khác!");
 
       // Reload data từ storage
-      categoryProfits = StorageHelper.load(STORAGE_KEY_CATEGORY_PROFITS, {});
-      productProfits = StorageHelper.load(STORAGE_KEY_PRODUCT_PROFITS, {});
+      categoryProfits =
+        JSON.parse(localStorage.getItem("categoryProfits")) || {};
+      productProfits = JSON.parse(localStorage.getItem("productProfits")) || {};
 
       // Reload table để hiển thị
       loadProfitTable();
@@ -2419,40 +2340,9 @@ function setupPricingSync() {
     }
 
     // Reload products khi có thay đổi
-    if (e.key === STORAGE_KEY_PRODUCTS) {
+    if (e.key === "product") {
       console.log("[Pricing] Phát hiện thay đổi sản phẩm từ tab khác!");
-      products = StorageHelper.load(STORAGE_KEY_PRODUCTS, []);
-      loadAdjustedProducts();
-      loadProfitReport();
-    }
-  });
-
-  // Lắng nghe trong cùng tab (phonestore-sync event)
-  window.addEventListener("phonestore-sync", (e) => {
-    const { key, source } = e.detail;
-
-    // Bỏ qua nếu event này do chính trang này trigger (tránh loop)
-    if (source === SOURCE_PRICING) {
-      return;
-    }
-
-    // Reload profit data
-    if (
-      key === STORAGE_KEY_CATEGORY_PROFITS ||
-      key === STORAGE_KEY_PRODUCT_PROFITS
-    ) {
-      console.log("[Pricing] Nhận cập nhật trong cùng tab!");
-
-      categoryProfits = StorageHelper.load(STORAGE_KEY_CATEGORY_PROFITS, {});
-      productProfits = StorageHelper.load(STORAGE_KEY_PRODUCT_PROFITS, {});
-
-      loadProfitTable();
-    }
-
-    // Reload products
-    if (key === STORAGE_KEY_PRODUCTS) {
-      console.log("[Pricing] Sản phẩm được cập nhật trong cùng tab!");
-      products = StorageHelper.load(STORAGE_KEY_PRODUCTS, []);
+      products = JSON.parse(localStorage.getItem("product")) || [];
       loadAdjustedProducts();
       loadProfitReport();
     }
@@ -2461,23 +2351,23 @@ function setupPricingSync() {
   console.log("[Pricing] Pricing Sync sẵn sàng!");
 }
 
-// ====== DEBUG HELPER    ======
+// ====== DEBUG HELPER ======
 window.pricingDebug = {
   getCategoryProfits: () => categoryProfits,
   getProductProfits: () => productProfits,
   getProducts: () => products,
   reload: () => {
-    products = StorageHelper.load(STORAGE_KEY_PRODUCTS, []);
-    categoryProfits = StorageHelper.load(STORAGE_KEY_CATEGORY_PROFITS, {});
-    productProfits = StorageHelper.load(STORAGE_KEY_PRODUCT_PROFITS, {});
+    products = JSON.parse(localStorage.getItem("product")) || [];
+    categoryProfits = JSON.parse(localStorage.getItem("categoryProfits")) || {};
+    productProfits = JSON.parse(localStorage.getItem("productProfits")) || {};
     loadProfitTable();
     loadAdjustedProducts();
     console.log("🔄 Đã reload pricing data");
   },
   reset: () => {
     if (confirm("Xóa toàn bộ dữ liệu lợi nhuận?")) {
-      StorageHelper.save(STORAGE_KEY_CATEGORY_PROFITS, {}, SOURCE_PRICING);
-      StorageHelper.save(STORAGE_KEY_PRODUCT_PROFITS, {}, SOURCE_PRICING);
+      localStorage.setItem("categoryProfits", JSON.stringify({}));
+      localStorage.setItem("productProfits", JSON.stringify({}));
       categoryProfits = {};
       productProfits = {};
       loadProfitTable();
@@ -2490,11 +2380,10 @@ window.pricingDebug = {
     console.log("Category Profits:", categoryProfits);
     console.log("Product Profits:", productProfits);
     console.log("Storage Keys:", {
-      PRODUCTS: STORAGE_KEY_PRODUCTS,
-      CATEGORY_PROFITS: STORAGE_KEY_CATEGORY_PROFITS,
-      PRODUCT_PROFITS: STORAGE_KEY_PRODUCT_PROFITS,
+      PRODUCTS: "product",
+      CATEGORY_PROFITS: "categoryProfits",
+      PRODUCT_PROFITS: "productProfits",
     });
-    console.log("Source:", SOURCE_PRICING);
   },
 };
 
