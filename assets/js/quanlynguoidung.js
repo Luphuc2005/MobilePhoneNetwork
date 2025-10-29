@@ -4,7 +4,8 @@ function navigateTo(section, event) {
   // Ẩn tất cả phần nội dung
   document
     .querySelectorAll(
-      "#dashboard-content, #customers-content, #pricing-content, #other-content"
+      "#dashboard-content, #customers-content, #pricing-content, #other-content", "#products-content",
+      "#import-content"
     )
     .forEach((div) => (div.style.display = "none"));
 
@@ -15,6 +16,10 @@ function navigateTo(section, event) {
     document.getElementById("customers-content").style.display = "block";
   } else if (section === "pricing") {
     document.getElementById("pricing-content").style.display = "block";
+    } else if (section === "products") {
+    document.getElementById("products-content").style.display = "block";
+  } else if (section === "import") {
+    document.getElementById("import-content").style.display = "block";
     // Initialize pricing module
     setTimeout(() => {
       if (typeof initializePricing === "function") {
