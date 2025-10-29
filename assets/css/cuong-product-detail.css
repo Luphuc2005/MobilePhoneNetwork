@@ -1,11 +1,4 @@
-/* --- CÀI ĐẶT CHUNG & FONT --- */
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: #f4f4f7; /* Nền xám nhạt bên ngoài */
-    color: #1d1d1f;
-    margin: 0;
-    padding: 20px;
-}
+
 
 * {
     box-sizing: border-box; /* Giúp việc tính toán kích thước dễ dàng hơn */
@@ -13,12 +6,14 @@ body {
 
 /* --- CONTAINER CHÍNH (THẺ TRẮNG) --- */
 .product-container {
+    display: none;
     max-width: 1200px;
     margin: 0 auto;
     padding: 24px;
     background-color: #ffffff;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 40px;
 }
 
 /* --- LAYOUT 2 CỘT CHÍNH --- */
@@ -245,12 +240,12 @@ body {
 .btn-add-to-cart:hover {
     background-color: #f5faff;
 }
-.btn-buy-now {
+.btn-continue-shopping {
     background-color: #0071e3;
     color: #fff;
     border: 1px solid #0071e3;
 }
-.btn-buy-now:hover {
+.btn-continue-shopping:hover {
     background-color: #005bb5;
 }
 
