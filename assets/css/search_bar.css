@@ -1,0 +1,35 @@
+.advanced-search {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+}
+
+.advanced-search input,
+.advanced-search select {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  font-size: 14px;
+  width: calc(100%/3 - 7px);
+}
+
+.advanced-search button {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.advanced-search button:hover {
+  background: #0056b3;
+}
+
+.advanced-search #search-name {
+    width: 100%;
+}
