@@ -7,7 +7,6 @@
   <title>Trang Chính Của Web Bán Điện Thoại</title>
   <link rel="stylesheet" href="./assets/css/duyddawng-components.css">
   <link rel="stylesheet" href="./assets/css/user.css">
-  <link rel="stylesheet" href="./assets/css/components.css">
   <link rel="stylesheet" href="./assets/css/search_bar.css">
 </head>
 
@@ -22,16 +21,8 @@
       </div>
       <!-- Thanh tìm kiếm (Thanh Nhàn) -->
       <div class="search-bar">
-        <form class="advanced-search">
-          <input type="text" id="search-name" placeholder="Nhập tên sản phẩm...">
-
-          <select id="search-type">
-            <option value="">-- Chọn loại --</option>
-          </select>
-
-          <input type="number" id="min-price" placeholder="Giá tối thiểu">
-          <input type="number" id="max-price" placeholder="Giá tối đa">
-        </form>
+        <input class="search-bar-inp" type="text" placeholder="Tìm kiếm sản phẩm...">
+        <button class="search-bar-btn">Tìm kiếm</button>
       </div>
       <!-- Menu điều hướng chính -->
       <nav class="main-nav">
@@ -176,6 +167,70 @@
         
       </div>
     </section>
+
+     <!--====================== search product===============================-->
+    <div class="search-product-wrapper">
+      <div class="search-product-header">
+        <h2>Tìm kiếm sản phẩm</h2>
+      </div>
+      
+      <div class="search-product-content-wrapper">
+        <div class="search-product-navbar">
+          <div class="filter-section">
+              <div class="filter-group">
+                  <h3>Hãng sản xuất</h3>
+                  <div class="filter-options">
+                      <label><input type="checkbox" value="Apple"> Apple</label>
+                      <label><input type="checkbox" value="Samsung"> Samsung</label>
+                      <label><input type="checkbox" value="Xiaomi"> Xiaomi</label>
+                      <label><input type="checkbox" value="OPPO"> OPPO</label>
+                      <label><input type="checkbox" value="Vivo"> Vivo</label>
+                      <label><input type="checkbox" value="Realme"> Realme</label>
+                  </div>
+              </div>
+
+              <div class="filter-group">
+                  <h3>Khoảng giá</h3>
+                  <div class="filter-options">
+                      <label><input type="checkbox" value="0-5"> Dưới 5 triệu</label>
+                      <label><input type="checkbox" value="5-10"> 5 - 10 triệu</label>
+                      <label><input type="checkbox" value="10-15"> 10 - 15 triệu</label>
+                      <label><input type="checkbox" value="15-20"> 15 - 20 triệu</label>
+                      <label><input type="checkbox" value="20-30"> 20 - 30 triệu</label>
+                      <label><input type="checkbox" value="30+"> Trên 30 triệu</label>
+                  </div>
+              </div>
+
+              <div class="filter-group">
+                  <h3>Bộ nhớ trong</h3>
+                  <div class="filter-options">
+                      <label><input type="checkbox" value="64GB"> 64GB</label>
+                      <label><input type="checkbox" value="128GB"> 128GB</label>
+                      <label><input type="checkbox" value="256GB"> 256GB</label>
+                      <label><input type="checkbox" value="512GB"> 512GB</label>
+                      <label><input type="checkbox" value="1TB"> 1TB</label>
+                  </div>
+              </div>
+
+              <div class="filter-group">
+                  <h3>Đánh giá</h3>
+                  <div class="filter-options">
+                      <label><input type="checkbox" value="5"> ⭐⭐⭐⭐⭐ trở lên</label>
+                      <label><input type="checkbox" value="4"> ⭐⭐⭐⭐ trở lên</label>
+                      <label><input type="checkbox" value="3"> ⭐⭐⭐ trở lên</label>
+                  </div>
+              </div>
+
+              <button class="apply-filter">Áp dụng bộ lọc</button>
+          </div>
+        </div>
+        <div class="search-product-content">
+          
+        </div>
+        <div class="search-product-pagination"></div> 
+      </div>
+    </div>
+
   </main>
   <footer>
     <div class="footer-content">
@@ -265,11 +320,14 @@
   <!--=============== PHẢI ĐỂ ĐẦU ================-->
   <script src="./assets/js/storage-config.js"></script>
   <!-- ========================================== -->
+      <script src="./assets/js/compoment.js"></script>
+    <script src="./assets/js/listProductIndex.js"></script>
   <script src="./assets/js/compoment.js"></script>
   <script src="./assets/js/duyddawng-category-sync.js"></script>
   <script src="./assets/js/validation.js"></script>
   <script src="./assets/js/product-detail.js"></script>
   <script src="./assets/js/cart.js"></script>
+  <script src="./assets/js/search_bar.js"></script>
 </body>
 
 </html>

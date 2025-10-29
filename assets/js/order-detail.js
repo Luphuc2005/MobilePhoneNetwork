@@ -52,9 +52,27 @@ function initDetail() {
     detailButtons.forEach(btn =>  {
         btn.addEventListener('click', () => {
             showOrderDetail(allOrder.find(o => o.order_id == btn.dataset.idOrder));
+            console.log("hihihihihihi");
         });
     }) 
 }
 
 let closeDetailBtn = document.getElementsByClassName('detail-close-btn')[0];
 closeDetailBtn.addEventListener('click', closeOrderDetail);
+
+function openDetail(html) {
+  const detailWrapper = document.querySelector('.detail-order-wrapper');
+  const detailContent = detailWrapper?.querySelector('.detail-content');
+  if (!detailWrapper || !detailContent) return;
+  detailContent.innerHTML = html;
+  detailWrapper.classList.remove('hidden');
+  // khóa scroll trang phía sau
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDetail() {
+  const detailWrapper = document.querySelector('.detail-order-wrapper');
+  if (!detailWrapper) return;
+  detailWrapper.classList.add('hidden');
+  document.body.style.overflow = '';
+}
