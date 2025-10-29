@@ -311,12 +311,151 @@
 
                 <!-- Tabs -->
                 <div class="pricing-tabs">
-                    <button class="tab-btn active" data-tab="profit">% Lợi nhuận</button>
-                    <button class="tab-btn" data-tab="lookup">Tra cứu giá</button>
+                    <button class="tab-btn active" data-tab="adjusted">📦 Sản phẩm đã điều chỉnh</button>
+                    <button class="tab-btn" data-tab="report">📊 Báo cáo lợi nhuận</button>
+                    <button class="tab-btn" data-tab="profit">⚡ Áp dụng % Lợi nhuận</button>
+                    <button class="tab-btn" data-tab="lookup">🔍 Tra cứu giá</button>
                 </div>
 
-                <!-- Tab % Lợi nhuận -->
-                <div id="profit-tab" class="tab-content active">
+                <!-- Tab Sản phẩm đã điều chỉnh -->
+                <div id="adjusted-tab" class="tab-content active">
+                    <div class="adjusted-section">
+                        <!-- Hướng dẫn -->
+                        <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-left: 4px solid #3b82f6; padding: 14px; border-radius: 8px; margin-bottom: 16px;">
+                            <h4 style="margin: 0 0 6px 0; color: #1e3a8a; font-size: 14px;">📱 Sản phẩm đã điều chỉnh giá</h4>
+                            <p style="margin: 0; font-size: 12px; color: #1e40af; line-height: 1.5;">
+                                <strong>Tab này hiển thị:</strong><br>
+                                ✅ Sản phẩm có <strong>khuyến mãi</strong> (discount ≠ 0)<br>
+                                ✅ Sản phẩm đã áp dụng <strong>% lợi nhuận</strong> (giá bán > giá vốn)<br>
+                                💡 Mỗi card hiển thị chi tiết: Giá vốn → Giá niêm yết → Giá bán → Lợi nhuận
+                            </p>
+                        </div>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3 style="margin: 0;">📦 Danh sách sản phẩm</h3>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <span style="font-size: 13px; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px;">
+                                    🔄 Đồng bộ tự động với trang người dùng
+                                </span>
+                            </div>
+                        </div>
+                        <div class="top-bar" style="margin-bottom: 20px;">
+                            <input type="text" id="searchAdjustedProduct" placeholder="🔍 Tìm kiếm theo tên hoặc loại sản phẩm...">
+                        </div>
+                        <div class="adjusted-products-grid" id="adjustedProductsGrid">
+                            <!-- Sản phẩm sẽ được load bằng JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Báo cáo lợi nhuận -->
+                <div id="report-tab" class="tab-content">
+                    <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+                        <h4 style="margin: 0 0 8px 0; color: #92400e; font-size: 15px;">📊 Báo cáo lợi nhuận tổng hợp</h4>
+                        <p style="margin: 0; font-size: 13px; color: #78350f; line-height: 1.6;">
+                            Hiển thị lợi nhuận của tất cả sản phẩm dựa trên <strong>giá vốn</strong> và <strong>giá bán hiện tại</strong>.
+                        </p>
+                    </div>
+
+                    <div style="display: flex; gap: 15px; justify-content: space-between; margin-bottom: 20px;">
+                        <input type="text" id="searchReportProduct" placeholder="🔍 Tìm kiếm sản phẩm..." style="flex: 1; padding: 10px 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px;">
+                        
+                        <select id="filterCategory" style="padding: 10px 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; background: white; cursor: pointer;">
+                            <option value="">📱 Tất cả loại</option>
+                        </select>
+
+                        <select id="filterProfit" style="padding: 10px 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; background: white; cursor: pointer;">
+                            <option value="all">Tất cả</option>
+                            <option value="high">Lời cao (≥20%)</option>
+                            <option value="medium">Lời TB (10-20%)</option>
+                            <option value="low">Lời thấp (<10%)</option>
+                            <option value="loss">Lỗ/Hòa vốn (≤0%)</option>
+                        </select>
+                    </div>
+
+                    <!-- Thống kê tổng quan -->
+                    <div id="profitSummary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                        <!-- Sẽ được load bằng JavaScript -->
+                    </div>
+
+                    <!-- Bảng chi tiết -->
+                    <div style="overflow-x: auto; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <table id="profitReportTable" style="width: 100%; border-collapse: collapse;">
+                            <thead style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white;">
+                                <tr>
+                                    <th style="padding: 12px; text-align: left;">Sản phẩm</th>
+                                    <th style="padding: 12px; text-align: left;">Loại</th>
+                                    <th style="padding: 12px; text-align: right;">Giá vốn</th>
+                                    <th style="padding: 12px; text-align: right;">Giá bán</th>
+                                    <th style="padding: 12px; text-align: right;">Lợi nhuận</th>
+                                    <th style="padding: 12px; text-align: center;">% LN</th>
+                                    <th style="padding: 12px; text-align: center;">Tình trạng</th>
+                                </tr>
+                            </thead>
+                            <tbody id="profitReportBody">
+                                <!-- Sẽ được load bằng JavaScript -->
+                            </tbody>
+                            <tfoot style="background: #f8fafc; font-weight: bold;">
+                                <tr>
+                                    <td colspan="4" style="padding: 12px; text-align: right;">TỔNG CỘNG:</td>
+                                    <td id="totalProfitAmount" style="padding: 12px; text-align: right; color: #10b981; font-size: 16px;">0₫</td>
+                                    <td id="avgProfitPercent" style="padding: 12px; text-align: center; color: #3b82f6;">0%</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                    <!-- Tab % Lợi nhuận -->
+                <div id="profit-tab" class="tab-content">
+                    <!-- Hướng dẫn -->
+                    <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-left: 4px solid #10b981; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+                        <h4 style="margin: 0 0 8px 0; color: #065f46; font-size: 15px;">📘 Hướng dẫn tính % lợi nhuận + khuyến mãi</h4>
+                        <p style="margin: 0; font-size: 13px; color: #064e3b; line-height: 1.8;">
+                            <strong>✅ NGUYÊN TẮC QUAN TRỌNG:</strong><br>
+                            <strong style="color: #dc2626; font-size: 14px; background: #fef2f2; padding: 4px 8px; border-radius: 4px;">⚠️ LUÔN LUÔN tính dựa trên GIÁ VỐN (giá nhập hàng)</strong><br><br>
+                            
+                            <strong style="color: #3b82f6;">📐 CÔNG THỨC (2 bước):</strong><br>
+                            <div style="background: white; padding: 10px; border-radius: 6px; margin: 8px 0;">
+                                1️⃣ <strong>Giá niêm yết</strong> = Giá vốn × (1 + % lợi nhuận)<br>
+                                2️⃣ <strong>Giá bán cuối</strong> = Giá niêm yết × (1 - % khuyến mãi)<br>
+                                3️⃣ <strong>Lời thực tế</strong> = Giá bán cuối - Giá vốn
+                            </div>
+                            
+                            <strong style="color: #10b981;">💡 VÍ DỤ CỤ THỂ:</strong><br>
+                            <table style="width: 100%; margin-top: 8px; background: white; border-radius: 6px; overflow: hidden; font-size: 12px;">
+                                <tr style="background: #f9fafb;">
+                                    <td style="padding: 6px;">💰 Giá vốn</td>
+                                    <td style="padding: 6px; text-align: right;"><strong>2.000.000₫</strong></td>
+                                </tr>
+                                <tr style="background: #dbeafe;">
+                                    <td style="padding: 6px;">📊 +20% lợi nhuận</td>
+                                    <td style="padding: 6px; text-align: right; color: #3b82f6;">+400.000₫</td>
+                                </tr>
+                                <tr style="background: white;">
+                                    <td style="padding: 6px;">🏷️ Giá niêm yết</td>
+                                    <td style="padding: 6px; text-align: right;"><strong>2.400.000₫</strong></td>
+                                </tr>
+                                <tr style="background: #fee2e2;">
+                                    <td style="padding: 6px;">🎁 -5% khuyến mãi</td>
+                                    <td style="padding: 6px; text-align: right; color: #ef4444;">-120.000₫</td>
+                                </tr>
+                                <tr style="background: #dcfce7;">
+                                    <td style="padding: 6px;"><strong>💳 Giá bán cuối</strong></td>
+                                    <td style="padding: 6px; text-align: right;"><strong style="color: #10b981;">2.280.000₫</strong></td>
+                                </tr>
+                                <tr style="background: #fef3c7;">
+                                    <td style="padding: 6px;"><strong>💵 Lời thực tế</strong></td>
+                                    <td style="padding: 6px; text-align: right;"><strong style="color: #f59e0b;">280.000₫ (14%)</strong></td>
+                                </tr>
+                            </table>
+                            <div style="margin-top: 8px; padding: 6px; background: white; border-radius: 4px; font-size: 11px; color: #6b7280;">
+                                👁️ Hiển thị cho khách: <del>2.400.000₫</del> → <strong>2.280.000₫</strong> <span style="color: #ef4444;">[-5%]</span>
+                            </div>
+                        </p>
+                    </div>
+                    
                     <!-- Theo loại sản phẩm -->
                     <div class="profit-section">
                         <h3>📊 % Lợi nhuận theo loại sản phẩm</h3>
@@ -328,10 +467,6 @@
                                     <option value="Iphone">iPhone</option>
                                     <option value="Samsung">Samsung</option>
                                     <option value="Xiaomi">Xiaomi</option>
-                                    <option value="Oppo">Oppo</option>
-                                    <option value="Vivo">Vivo</option>
-                                    <option value="Realme">Realme</option>
-                                    <option value="Nokia">Nokia</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -339,7 +474,18 @@
                                 <input type="number" id="categoryProfit" placeholder="Nhập % lợi nhuận" min="0"
                                     max="100" step="0.1">
                             </div>
-                            <button id="saveCategoryBtn">💾 Lưu</button>
+                            <div class="form-group">
+                                <label>% Khuyến mãi (Tùy chọn):</label>
+                                <input type="number" id="categoryDiscount" placeholder="Nhập % giảm giá" min="0"
+                                    max="100" step="1" value="0">
+                            </div>
+                            <button id="saveCategoryBtn">💾 Lưu %</button>
+                            <button id="applyCategoryProfitBtn" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">⚡ Áp dụng vào giá</button>
+                        </div>
+                        <div style="background: #f9fafb; padding: 10px; border-radius: 6px; margin-top: 12px; font-size: 12px; color: #374151; line-height: 1.6;">
+                            💡 <strong style="color: #3b82f6;">Lưu %</strong>: Chỉ lưu % lợi nhuận vào bộ nhớ để dùng sau.<br>
+                            ⚡ <strong style="color: #8b5cf6;">Áp dụng vào giá</strong>: Tính ngay giá bán mới theo công thức trên.<br>
+                            <span style="color: #dc2626;">⚠️</span> <strong>Luôn tính từ giá vốn</strong>, không phụ thuộc giá hiện tại!
                         </div>
                     </div>
 
@@ -349,34 +495,33 @@
                         <div class="profit-form">
                             <div class="form-group">
                                 <label>Sản phẩm:</label>
-                                <!-- Custom Select với hình ảnh -->
-                                <div class="custom-select-wrapper" id="productSelectWrapper">
-                                    <select id="productSelect" style="display: none;">
-                                        <option value="">Chọn sản phẩm</option>
-                                    </select>
-                                    <div class="custom-select" id="customProductSelect">
-                                        <div class="custom-select-trigger">
-                                            <span class="selected-value">Chọn sản phẩm</span>
-                                            <span class="arrow">▼</span>
-                                        </div>
-                                        <div class="custom-options" id="customProductOptions">
-                                            <!-- Options sẽ được load bằng JS -->
-                                        </div>
-                                    </div>
-                                </div>
+                                <select id="productSelect">
+                                    <option value="">Chọn sản phẩm</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label>% Lợi nhuận:</label>
                                 <input type="number" id="productProfit" placeholder="Nhập % lợi nhuận" min="0" max="100"
                                     step="0.1">
                             </div>
-                            <button id="saveProductBtn">💾 Lưu</button>
+                            <div class="form-group">
+                                <label>% Khuyến mãi (Tùy chọn):</label>
+                                <input type="number" id="productDiscount" placeholder="Nhập % giảm giá" min="0"
+                                    max="100" step="1" value="0">
+                            </div>
+                            <button id="saveProductBtn">💾 Lưu %</button>
+                            <button id="applyProductProfitBtn" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">⚡ Áp dụng vào giá</button>
+                        </div>
+                        <div style="background: #f9fafb; padding: 10px; border-radius: 6px; margin-top: 12px; font-size: 12px; color: #374151; line-height: 1.6;">
+                            💡 <strong style="color: #3b82f6;">Lưu %</strong>: Chỉ lưu % lợi nhuận vào bộ nhớ để dùng sau.<br>
+                            ⚡ <strong style="color: #8b5cf6;">Áp dụng vào giá</strong>: Tính ngay giá bán mới theo công thức trên.<br>
+                            <span style="color: #dc2626;">⚠️</span> <strong>Luôn tính từ giá vốn</strong>, không phụ thuộc giá hiện tại!
                         </div>
                     </div>
 
                     <!-- Bảng hiển thị % lợi nhuận -->
                     <div class="profit-table-section">
-                        <h3>📋 Danh sách % lợi nhuận</h3>
+                        <h3>📋 Danh sách % lợi nhuận đã lưu</h3>
                         <div class="profit-table">
                             <div class="table-header">
                                 <div>Loại/Sản phẩm</div>
@@ -385,6 +530,9 @@
                             </div>
                             <div id="profitTableBody"></div>
                         </div>
+                        <p style="font-size: 13px; color: #6b7280; margin-top: 12px;">
+                            💡 Click <strong>Áp dụng</strong> để cập nhật giá bán theo % lợi nhuận đã lưu.
+                        </p>
                     </div>
                 </div>
 
