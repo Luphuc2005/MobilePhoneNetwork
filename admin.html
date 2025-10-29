@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./assets/css/duyddawng-components.css">
     <link rel="stylesheet" href="./assets/css/productAdmin.css">
+    <link rel="stylesheet" href="./assets/css/admin_order.css">
+    <link rel="stylesheet" href="./assets/css/inventory.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
         integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -626,13 +628,170 @@
                 </div>
             </div>
             <!-- THANH NHÀN - Quản lý đơn hàng -->
-            <div id="orders-content" class="section-content" style="display: none;">
+            <div id="orders-content" class="orders-content section-content" style="display: none;">
+                <!-- <div id="orders-id" class = "" style="display: none;"> -->
+                <div class = "orders">
+                    <div class = "title">
+                        <h1>Quản lý đơn hàng</h1>
+                        <p>Quản lý và theo dõi trạng thái đơn hàng</p>
+                    </div>
+                    <div class = "order-search-bar">
+                        <form id = "search-orders-form">
+                            <input type = "search" class = "search-element input-search" id = "search-id-name" placeholder = "Tìm mã đơn hàng, khách hàng">
+                            
+                            <select id = "status-select" class = "search-element">
+                                <option value = "all" selected>Tất cả trạng thái</option>
+                                <option value = "waiting">Chờ xử lý</option>
+                                <option value = "accepted">Đã xác nhận</option>
+                                <option value = "delivery">Đang giao</option>
+                                <option value = "done">Hoàn thành</option>
+                                <option value = "cancel">Đã hủy</option>
+                            </select>
 
+                            <select id = "dictrict-select" class = "search-element">
+                                <option value = "all">Tất cả phường xã</option>
+                            </select>
+                            <button class = "search-btn search-element" type="submit">Lọc</button>
+                            <span class = "info-label">Từ ngày:</span>
+                            <input type = "date" id = "start-date" class = "input-date">
+                            <span>-</span>
+                            <input type = "date" id = "end-date" class = "input-date">
+                        </form>
+                    </div>
+                    <div class = "order-list">
+                        <!-- comment -->
+                        <!-- <div class = "order-item">
+                            <div class = "order-header">
+                                <div class = "order-id order-header-item">
+                                    <p>Mã đơn</p>
+                                    <p class = "header-value">DH001234</p>
+                                </div>
+                                <div class = "order-date order-header-item">
+                                    <p>Ngày đặt</p>
+                                    <p class = "header-value">15/10/2025 14:30</p>
+                                </div>
+                                <div class = "order-address order-header-item">
+                                    <p>Quận/huyện</p>
+                                    <p class = "header-value">Quận 1</p>
+                                </div>
+                                <div class = "order-status waiting-status">
+                                    Chờ xử lý
+                                </div>
+                            </div>
+                            <div class = "wrapper-order-content"> 
+                                <div class = "order-content">
+                                    <div class="customer-info">
+                                        <h3>Thông tin khách hàng</h3>
+                                        <div class="info-line name info-label">Họ tên: <span class = "info-value">Nguyễn Văn A</span></div>
+                                        <div class="info-line phone info-label">Số điện thoại: <span class = "info-value">0912345678</span></div>
+                                        <div class="info-line address info-label"><span class = "info-value">123 Đường ABC, Phường Bến Nghé, Quận 1, TP.HCM</span></div>
+                                    </div>
+                                    <div class = "order-info">
+                                        <h3>Thông tin đơn hàng</h3>
+                                        <div class="info-line info-label">Tổng tiền: <span class="total-price info-value">29.990.000₫</span></div>
+                                        <div class="info-line info-label">Thanh toán: <span class = "info-value">Tiền mặt khi giao hàng</span></div>
+                                        
+                                        <div class="status-update-section">
+                                            <label for="status">Cập nhật trạng thái</label>
+                                            <div class="status-update-form">
+                                                <div class="status-select">Chờ xử lý</div>
+                                                <div class="select-list hidden">
+                                                    <div class="select-item">Chờ xử lý</div>
+                                                    <div class="select-item">Đã xác nhận</div>
+                                                    <div class="select-item">Đang giao</div>
+                                                    <div class="select-item">Hoàn thành</div>
+                                                    <div class="select-item">Đã hủy</div>
+                                                </div>
+                                            </div>
+                                            <button class="update-status-order-btn">Cập nhật</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class = "order-footer">
+                                    <button class = "detail-bnt">Chi tiết</button>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+                <div class = "content-footer radius-8">
+                    <div class = "page-number info-label">Hiển thị <span style = "margin: 0px 5px;" id = "now-page">1-5</span> trong tổng số <span style = "margin: 0px 5px;" id = "all-page">158</span> đơn hàng</div>
+                    <div class = "page-controler">
+                        <div class = "page-item" id = "pre-page-btn">
+                            Trước
+                        </div> 
+                        <div class = "page-numbers">
+                            <!-- <div class = "page-item">
+                                1
+                            </div> -->
+                        </div>
+                        <div class = "page-item" id = "next-page-btn">
+                            Sau
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="detail-order-wrapper hidden" >
+                <div class="detail-content">
+                    <div class = "detail-header"> 
+                        <div class = "detail-close-btn">
+                            <img src = "./assets/images/icons/back-icon.png">
+                        </div>
+                        <div class = "detail-title">
+                            <h2>Chi tiết đơn hàng</h2>
+                        </div>
+                    </div> 
+                    <div class="order-info">
+                        <div class = "info-wrapper">
+                            <p class = "detail-order-id-label"><strong>Mã đơn hàng:</strong> <span id="detail-order-id"></span></p>
+                            <p><strong>Ngày đặt:</strong> <span id="detail-date"></span></p>
+                            <p><strong>Địa chỉ:</strong> <span id="detail-address"></span></p>
+                            <p><strong>Trạng thái:</strong> <span id="detail-status"></span></p>
+                        </div>
+                        <div class = "detail-product-list">
+                            <p id = "detail-product-list-title"><strong>Sản phẩm:</strong></p>
+                            <ul id="detail-products">
+                                <!-- <li class = "detail-product-item">
+                                    <div class = "detail-product-img-wrapper"> 
+                                        <img src="./assets/images/products/samsung-galaxy-s25-ultra.png" alt="Samsung Galaxy S25 Ultra" align = "center">
+                                    </div>
+                                    <div class = "detail-product-info">
+                                        <p class = "detail-type-product">Samsung</p>
+                                        <p class = "detail-product-name">Samsung galaxy s25 ultra</p> 
+                                        <p class = "detail-product-quantity">x1</p> 
+                                    </div>
+                                    <div class = "detail-product-price">
+                                        200$
+                                    </div>
+                                </li> -->
+                            </ul>
+                        </div>
+                        <div class = "payment-wrapper">
+                            <p><strong>Phương thức thanh toán:</strong> <span id="detail-payment"></span></p>
+                            <p><strong>Tổng tiền:</strong> <span id="detail-total"></span></p>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- THANH NHÀN - Quản lý tồn kho -->
             <div id="inventory-content" class="section-content" style="display: none;">
+                <h2>Quản lý tồn kho</h2>
 
+                <div class="inventory-search">
+                    <input type="text" id="inventory-name" placeholder="Nhập tên sản phẩm...">
+                    <select id="inventory-type">
+                    <option value="">-- Chọn loại --</option>
+                    <option value="Iphone">Iphone</option>
+                    <option value="Xiaomi">Xiaomi</option>
+                    <option value="Samsung">Samsung</option>
+                    </select>
+                    <button id="btn-search-inventory">Tra cứu</button>
+                </div>
+
+                <div id="inventory-list" class="inventory-list"></div>
             </div>
+
             <!-- HUYỀN TRANG - Quản lý nhập hàng -->
             <div id="import-content" class="section-content" style="display: none;">
 
@@ -704,6 +863,13 @@
         <script src="./assets/js/pricing.js"></script>
         <script src="./assets/js/duyddawng-navgateTo.js"></script>
         <script src="./assets/js/duyddawng-categories.js"></script>
+        <script src=".\assets\js\customer.js"></script>
+        <script src=".\assets\js\order-modify-orderstatus.js"></script>
+        <script src=".\assets\js\order-local-storage.js"></script>
+        <script src=".\assets\js\order-search.js"></script>
+        <script src=".\assets\js\order-detail.js"></script>
+        <script src=".\assets\js\order-page-control.js"></script>
+        <script src=".\assets\js\inventory.js"></script>
         <link href="./assets/css/admin.css" rel="stylesheet">
 </body>
 
