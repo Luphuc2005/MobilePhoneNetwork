@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./assets/css/duyddawng-components.css">
     <link rel="stylesheet" href="./assets/css/productAdmin.css">
+    <link rel="stylesheet" href="./assets/css/admin_order.css">
+    <link rel="stylesheet" href="./assets/css/inventory.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
         integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -462,10 +464,26 @@
                 </div>
             </div>
             <!-- THANH NHÀN - Quản lý đơn hàng -->
-            <div id="orders-content" class="section-content" style="display: none;">
+            <div id="orders-content" class="orders-content section-content" style="display: none;">
+                <!-- <div id="orders-id" class = "" style="display: none;"> -->
+                <div class = "orders">
+                    <div class = "title">
+                        <h1>Quản lý đơn hàng</h1>
+                        <p>Quản lý và theo dõi trạng thái đơn hàng</p>
+                    </div>
+                    <div class = "order-search-bar">
+                        <form id = "search-orders-form">
+                            <input type = "search" class = "search-element input-search" id = "search-id-name" placeholder = "Tìm mã đơn hàng, khách hàng">
+                            
+                            <select id = "status-select" class = "search-element">
+                                <option value = "all" selected>Tất cả trạng thái</option>
+                                <option value = "waiting">Chờ xử lý</option>
+                                <option value = "accepted">Đã xác nhận</option>
+                                <option value = "delivery">Đang giao</option>
+                                <option value = "done">Hoàn thành</option>
+                                <option value = "cancel">Đã hủy</option>
+                            </select>
 
-<<<<<<< HEAD
-=======
                             <select id = "dictrict-select" class = "search-element">
                                 <option value = "all">Tất cả phường xã</option>
                             </select>
@@ -550,7 +568,7 @@
                     </div>
                 </div>
             </div>
-            <div class="detail-order-wrapper hidden">
+            <div class="detail-order-wrapper hidden" >
                 <div class="detail-content">
                     <div class = "detail-header"> 
                         <div class = "detail-close-btn">
@@ -591,12 +609,25 @@
                         </div>
                     </div>
                 </div>
->>>>>>> 3a540ca (tmp)
             </div>
             <!-- THANH NHÀN - Quản lý tồn kho -->
             <div id="inventory-content" class="section-content" style="display: none;">
+                <h2>Quản lý tồn kho</h2>
 
+                <div class="inventory-search">
+                    <input type="text" id="inventory-name" placeholder="Nhập tên sản phẩm...">
+                    <select id="inventory-type">
+                    <option value="">-- Chọn loại --</option>
+                    <option value="Iphone">Iphone</option>
+                    <option value="Xiaomi">Xiaomi</option>
+                    <option value="Samsung">Samsung</option>
+                    </select>
+                    <button id="btn-search-inventory">Tra cứu</button>
+                </div>
+
+                <div id="inventory-list" class="inventory-list"></div>
             </div>
+
             <!-- HUYỀN TRANG - Quản lý nhập hàng -->
             <div id="import-content" class="section-content" style="display: none;">
 
@@ -668,6 +699,13 @@
         <script src="./assets/js/pricing.js"></script>
         <script src="./assets/js/duyddawng-navgateTo.js"></script>
         <script src="./assets/js/duyddawng-categories.js"></script>
+        <script src=".\assets\js\customer.js"></script>
+        <script src=".\assets\js\order-modify-orderstatus.js"></script>
+        <script src=".\assets\js\order-local-storage.js"></script>
+        <script src=".\assets\js\order-search.js"></script>
+        <script src=".\assets\js\order-detail.js"></script>
+        <script src=".\assets\js\order-page-control.js"></script>
+        <script src=".\assets\js\inventory.js"></script>
         <link href="./assets/css/admin.css" rel="stylesheet">
 </body>
 
