@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Trang Chính Của Web Bán Điện Thoại</title>
   <link rel="stylesheet" href="./assets/css/duyddawng-components.css">
+  <link rel="stylesheet" href="./assets/css/user.css">
 </head>
 
 <body>
@@ -43,7 +44,7 @@
       </div>
       <!-- Tài khoản (Tuấn Khôi) -->
       <div class="user-acount-area">
-        <a href="auth.html" class="acount-icon">
+        <a class="acount-icon">
           <img src="./assets/images/icons/logo-account.png" alt="logo account" class="logo">
           <span>Tài khoản</span>
         </a>
@@ -118,6 +119,36 @@
         </div>
       </div>
     </section>
+    <!-- Category Quick Access -->
+    <section class="category-section">
+      <div class="category-flex">
+        <a href="#" class="category-card">
+          <div class="category-icon">🍎</div>
+          <span>iPhone</span>
+        </a>
+        <a href="#" class="category-card">
+          <div class="category-icon">📱</div>
+          <span>Samsung</span>
+        </a>
+        <a href="#" class="category-card">
+          <div class="category-icon">💫</div>
+          <span>Oppo</span>
+        </a>
+        <a href="#" class="category-card">
+          <div class="category-icon">🎯</div>
+          <span>Xiaomi</span>
+        </a>
+        <a href="#" class="category-card">
+          <div class="category-icon">⚡</div>
+          <span>Vivo</span>
+        </a>
+        <a href="#" class="category-card">
+          <div class="category-icon">🎨</div>
+          <span>Realme</span>
+        </a>
+      </div>
+    </section>
+    <!-- ==============PRODUCT================ -->
     <section class="products-section" id="products">
       <div class="section-header">
         <h2>Sản phẩm nổi bật</h2>
@@ -126,7 +157,9 @@
         <!-- Product 1 -->
         
       </div>
+      <div class="product-detail">
 
+      </div>
       <!-- Pagination -->
       <div class="pagination">
         
@@ -216,9 +249,17 @@
         </div>
       </div>
     </div>
-    <script src="./assets/js/compoment.js"></script>
-    <script src="./assets/js/listProductIndex.js"></script>
   </footer>
+  <!--=============== PHẢI ĐỂ ĐẦU ================-->
+  <script src="./assets/js/storage-config.js"></script>
+  <!-- ========================================== -->
+      <script src="./assets/js/compoment.js"></script>
+    <script src="./assets/js/listProductIndex.js"></script>
+  <script src="./assets/js/compoment.js"></script>
+  <script src="./assets/js/duyddawng-category-sync.js"></script>
+  <script src="./assets/js/validation.js"></script>
+  <script src="./assets/js/product-detail.js"></script>
+  <script src="./assets/js/cart.js"></script>
 </body>
 
 </html>
