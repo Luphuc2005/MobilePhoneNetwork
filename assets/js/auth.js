@@ -153,6 +153,7 @@ updateForm.onsubmit = function (e) {
             combinedAddress = currentUser.address;
         }
         updateUser(newName.value, newPhone.value, newEmail.value, combinedAddress);
+        alert("Cập nhật thành công");
     }
 }
 
@@ -197,6 +198,7 @@ passwordResetForm.onsubmit = function (e)
         localStorage.setItem("users", JSON.stringify(userList));
         formBackground[1].style.display="none";
         alert("Thay đổi mật khẩu thành công");
+        passwordResetForm.reset();
     }
 }
 
