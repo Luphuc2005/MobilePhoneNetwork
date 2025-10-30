@@ -100,7 +100,7 @@ function setupEventListeners() {
   const saveCategoryBtn = document.getElementById("saveCategoryBtn");
   if (saveCategoryBtn) {
     saveCategoryBtn.addEventListener("click", (e) => {
-      e.preventDefault();
+      e.preventDefault(); // không cho user nhấn F5
       saveCategoryProfit();
     });
   }
@@ -225,7 +225,7 @@ function loadCategories() {
     categorySelect.appendChild(option);
   });
 
-  console.log("✅ Categories loaded:", categories.length, "items");
+  console.log("  Categories loaded:", categories.length, "items");
 }
 
 // ====== LOAD PRODUCTS ======
@@ -269,7 +269,7 @@ function loadProducts() {
     });
 
   console.log(
-    "✅ Products loaded:",
+    "  Products loaded:",
     products.length,
     "items in",
     Object.keys(productsByCategory).length,
@@ -317,7 +317,7 @@ function loadAdjustedProducts(searchTerm = "") {
     grid.appendChild(card);
   });
 
-  console.log("✅ Adjusted products loaded:", adjustedProducts.length, "items");
+  console.log("  Adjusted products loaded:", adjustedProducts.length, "items");
 }
 
 // ====== CREATE PRODUCT CARD ======
@@ -399,7 +399,7 @@ function createProductCard(product) {
         <button onclick="editProductDiscount(${
           product.id
         })" class="btn-view-detail" title="Xem chi tiết giá">
-          <img src="assets/images/icons/info.svg" alt="Chi tiết" style="filter: brightness(0) invert(1);" />
+          <img src="assets/images/icons/info.png" alt="Chi tiết" style="filter: brightness(0) invert(1);" />
           Xem chi tiết
         </button>
         ${
@@ -673,7 +673,7 @@ function removeDiscount(productId) {
 
       loadAdjustedProducts();
       showNotification(
-        "✅ Đã xóa khuyến mãi",
+        "  Đã xóa khuyến mãi",
         `"${product.tensanpham}" đã trở về giá niêm yết ${formatPrice(
           originalPrice
         )}. Trang người dùng đã tự động cập nhật!`,
@@ -769,7 +769,7 @@ function removeProfitMargin(productId) {
 
       loadAdjustedProducts();
       showNotification(
-        "✅ Đã xóa lợi nhuận",
+        "  Đã xóa lợi nhuận",
         `"${product.tensanpham}" đã trở về giá vốn ${formatPrice(
           costPrice
         )}. Trang người dùng đã tự động cập nhật!`,
@@ -929,9 +929,9 @@ function applyCategoryProfitToPrice() {
       ${
         discountPercent > 0
           ? `<div style="margin-top: 8px; padding: 8px; background: white; border-left: 3px solid #10b981; border-radius: 4px; font-size: 12px;">
-        ✅ Hiển thị: <del>${formatPrice(
-          exampleListPrice
-        )}</del> → <strong>${formatPrice(
+          Hiển thị: <del>${formatPrice(
+            exampleListPrice
+          )}</del> → <strong>${formatPrice(
               exampleSellPrice
             )}</strong> <span style="color: #ef4444;">[-${discountPercent}%]</span>
       </div>`
@@ -943,7 +943,7 @@ function applyCategoryProfitToPrice() {
       let totalProfit = 0;
 
       categoryProducts.forEach((product) => {
-        // ✅ LOGIC HOÀN HẢO: LUÔN dựa trên giá vốn
+        //   LOGIC HOÀN HẢO: LUÔN dựa trên giá vốn
         if (!product.giavon || product.giavon === 0) {
           showNotification(
             "❌ Lỗi",
@@ -991,7 +991,7 @@ function applyCategoryProfitToPrice() {
       }
 
       showNotification(
-        "✅ Thành công",
+        "  Thành công",
         `Đã áp dụng ${profit}% lợi nhuận cho ${updatedCount} sản phẩm ${category}! Tổng lợi nhuận: ~${formatPrice(
           totalProfit
         )}`,
@@ -1054,7 +1054,7 @@ function applyProductProfitToPrice() {
     return;
   }
 
-  // ✅ LOGIC HOÀN HẢO: LUÔN dựa trên giá vốn
+  //   LOGIC HOÀN HẢO: LUÔN dựa trên giá vốn
   if (!product.giavon || product.giavon === 0) {
     showNotification(
       "❌ Lỗi",
@@ -1150,14 +1150,14 @@ function applyProductProfitToPrice() {
       ${
         discountPercent > 0
           ? `<div style="margin-top: 8px; padding: 8px; background: white; border-left: 3px solid #10b981; border-radius: 4px; font-size: 12px;">
-        ✅ Hiển thị: <del>${formatPrice(
-          listPrice
-        )}</del> → <strong>${formatPrice(
+          Hiển thị: <del>${formatPrice(
+            listPrice
+          )}</del> → <strong>${formatPrice(
               sellPrice
             )}</strong> <span style="color: #ef4444;">[-${discountPercent}%]</span>
       </div>`
           : `<div style="margin-top: 8px; padding: 8px; background: white; border-left: 3px solid #10b981; border-radius: 4px; font-size: 12px;">
-        ✅ Không có khuyến mãi, chỉ hiển thị giá ${formatPrice(sellPrice)}
+          Không có khuyến mãi, chỉ hiển thị giá ${formatPrice(sellPrice)}
       </div>`
       }
     </div>`,
@@ -1187,7 +1187,7 @@ function applyProductProfitToPrice() {
       }
 
       showNotification(
-        "✅ Thành công",
+        "  Thành công",
         `Đã áp dụng ${profit}% lợi nhuận cho "${
           product.tensanpham
         }"! Lợi nhuận: ${formatPrice(profitAmount)}`,
@@ -1222,7 +1222,7 @@ function applyProfitFromTable(name, profit, type) {
         let updatedCount = 0;
 
         categoryProducts.forEach((product) => {
-          // ✅ LOGIC HOÀN HẢO: LUÔN dựa trên giá vốn
+          //   LOGIC HOÀN HẢO: LUÔN dựa trên giá vốn
           if (!product.giavon || product.giavon === 0) {
             console.warn(
               `Sản phẩm "${product.tensanpham}" chưa có giá vốn, bỏ qua.`
@@ -1254,7 +1254,7 @@ function applyProfitFromTable(name, profit, type) {
         }
 
         showNotification(
-          "✅ Thành công",
+          "  Thành công",
           `Đã áp dụng ${profit}% lợi nhuận cho ${updatedCount} sản phẩm ${name}!`,
           "success"
         );
@@ -1272,7 +1272,7 @@ function applyProfitFromTable(name, profit, type) {
       return;
     }
 
-    // ✅ LOGIC HOÀN HẢO: LUÔN dựa trên giá vốn
+    //   LOGIC HOÀN HẢO: LUÔN dựa trên giá vốn
     if (!product.giavon || product.giavon === 0) {
       showNotification(
         "❌ Lỗi",
@@ -1294,7 +1294,7 @@ function applyProfitFromTable(name, profit, type) {
       )} + 💵 Lợi nhuận: ${formatPrice(
         profitAmount
       )} = 💳 Giá bán: <strong>${formatPrice(sellPrice)}</strong><br>
-      <span style="color: #10b981;">✅ Tính toán dựa trên giá vốn</span></small>`,
+      <span style="color: #10b981;">  Tính toán dựa trên giá vốn</span></small>`,
       () => {
         product.gia = sellPrice;
         product.oldPrice = 0;
@@ -1313,7 +1313,7 @@ function applyProfitFromTable(name, profit, type) {
         }
 
         showNotification(
-          "✅ Thành công",
+          "  Thành công",
           `Đã áp dụng ${profit}% lợi nhuận cho "${name}"!`,
           "success"
         );
@@ -1536,7 +1536,7 @@ function saveCategoryProfit() {
         ? `Lợi nhuận "${category}" đã được cập nhật: ${oldProfit}% → ${profit}%`
         : `Đã thêm lợi nhuận cho "${category}": ${profit}%`;
 
-      showNotification("✅ Thành công", successMessage, "success");
+      showNotification("  Thành công", successMessage, "success");
     },
     () => {
       showNotification(
@@ -1647,7 +1647,7 @@ function saveProductProfit() {
         ? `Lợi nhuận "${productName}" đã được cập nhật: ${oldProfit}% → ${profit}%`
         : `Đã thêm lợi nhuận cho "${productName}": ${profit}%`;
 
-      showNotification("✅ Thành công", successMessage, "success");
+      showNotification("  Thành công", successMessage, "success");
     },
     () => {
       showNotification(
@@ -1682,7 +1682,7 @@ function cleanupInvalidProfitEntries() {
   if (hasInvalidEntries) {
     productProfits = validProductProfits;
     localStorage.setItem("productProfits", JSON.stringify(productProfits));
-    console.log("✅ Đã dọn dẹp các % lợi nhuận không hợp lệ");
+    console.log("  Đã dọn dẹp các % lợi nhuận không hợp lệ");
 
     // Hiển thị thông báo cho user
     showNotification(
@@ -1791,7 +1791,7 @@ function editProfit(name, currentProfit, type) {
 
   loadProfitTable();
   showNotification(
-    "✅ Thành công",
+    "  Thành công",
     `Đã cập nhật % lợi nhuận cho ${name}: ${profit}%`,
     "success"
   );
@@ -1810,11 +1810,7 @@ function deleteProfit(name, type) {
   }
 
   loadProfitTable();
-  showNotification(
-    "✅ Thành công",
-    `Đã xóa % lợi nhuận của ${name}`,
-    "success"
-  );
+  showNotification("  Thành công", `Đã xóa % lợi nhuận của ${name}`, "success");
 }
 
 // ====== CALCULATE PRICE ======
@@ -1938,7 +1934,7 @@ function showNotification(title, message, type = "success") {
   switch (type) {
     case "success":
       bgColor = "#10b981";
-      icon = "✅";
+      icon = " ";
       break;
     case "error":
       bgColor = "#ef4444";
@@ -1950,7 +1946,7 @@ function showNotification(title, message, type = "success") {
       break;
     default:
       bgColor = "#10b981";
-      icon = "✅";
+      icon = " ";
   }
 
   notification.className = "pricing-notification";
@@ -2097,7 +2093,7 @@ function initializePricing() {
     loadProfitTable();
   }
 
-  console.log("✅ Pricing module initialized successfully!");
+  console.log("  Pricing module initialized successfully!");
 }
 
 // ====== PROFIT REPORT (BÁO CÁO LỢI NHUẬN) ======
@@ -2371,7 +2367,7 @@ window.pricingDebug = {
       categoryProfits = {};
       productProfits = {};
       loadProfitTable();
-      console.log("✅ Đã reset pricing data");
+      console.log("  Đã reset pricing data");
     }
   },
   info: () => {
@@ -2390,6 +2386,141 @@ window.pricingDebug = {
 console.log("💡 Gõ: pricingDebug.info() để xem thông tin");
 
 // Auto initialize when DOM is ready
+// ====== SHOW PROFIT GUIDE MODAL ======
+window.showProfitGuide = function () {
+  const overlay = document.createElement("div");
+  overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+  `;
+
+  const modal = document.createElement("div");
+  modal.style.cssText = `
+    background: white;
+    border-radius: 16px;
+    max-width: 700px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.3s ease;
+  `;
+
+  modal.innerHTML = `
+    <!-- Header -->
+    <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 24px; border-radius: 16px 16px 0 0; color: white;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="margin: 0; font-size: 24px; font-weight: 700;">📘 Hướng dẫn tính % lợi nhuận + khuyến mãi</h2>
+        <button onclick="this.closest('.overlay-guide').remove()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 24px; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">
+          ×
+        </button>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div style="padding: 30px;">
+      <!-- Nguyên tắc -->
+      <div style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
+        <h3 style="margin: 0 0 8px 0; color: #991b1b; font-size: 16px;">✅ NGUYÊN TẮC QUAN TRỌNG:</h3>
+        <p style="margin: 0; color: #7f1d1d; font-size: 16px; font-weight: 700;">
+          ⚠️ LUÔN LUÔN tính dựa trên GIÁ VỐN (giá nhập hàng)
+        </p>
+      </div>
+
+      <!-- Công thức -->
+      <div style="margin-bottom: 24px;">
+        <h3 style="margin: 0 0 12px 0; color: #3b82f6; font-size: 16px;">📐 CÔNG THỨC (3 bước):</h3>
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 2px solid #e2e8f0;">
+          <div style="margin-bottom: 8px; font-size: 14px; line-height: 1.8;">
+            1️⃣ <strong>Giá niêm yết</strong> = Giá vốn × (1 + % lợi nhuận)
+          </div>
+          <div style="margin-bottom: 8px; font-size: 14px; line-height: 1.8;">
+            2️⃣ <strong>Giá bán cuối</strong> = Giá niêm yết × (1 - % khuyến mãi)
+          </div>
+          <div style="font-size: 14px; line-height: 1.8;">
+            3️⃣ <strong>Lời thực tế</strong> = Giá bán cuối - Giá vốn
+          </div>
+        </div>
+      </div>
+
+      <!-- Ví dụ -->
+      <div style="margin-bottom: 24px;">
+        <h3 style="margin: 0 0 12px 0; color: #10b981; font-size: 16px;">💡 VÍ DỤ CỤ THỂ:</h3>
+        <table style="width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <tr style="background: #f9fafb;">
+            <td style="padding: 12px; font-size: 14px; border-bottom: 1px solid #e5e7eb;">💰 Giá vốn</td>
+            <td style="padding: 12px; text-align: right; font-weight: 700; font-size: 15px; border-bottom: 1px solid #e5e7eb;">2.000.000₫</td>
+          </tr>
+          <tr style="background: #dbeafe;">
+            <td style="padding: 12px; font-size: 14px; border-bottom: 1px solid #e5e7eb;">📊 +20% lợi nhuận</td>
+            <td style="padding: 12px; text-align: right; color: #3b82f6; font-weight: 600; font-size: 15px; border-bottom: 1px solid #e5e7eb;">+400.000₫</td>
+          </tr>
+          <tr style="background: white;">
+            <td style="padding: 12px; font-size: 14px; border-bottom: 1px solid #e5e7eb;">🏷️ Giá niêm yết</td>
+            <td style="padding: 12px; text-align: right; font-weight: 700; font-size: 15px; border-bottom: 1px solid #e5e7eb;">2.400.000₫</td>
+          </tr>
+          <tr style="background: #fee2e2;">
+            <td style="padding: 12px; font-size: 14px; border-bottom: 1px solid #e5e7eb;">🎁 -5% khuyến mãi</td>
+            <td style="padding: 12px; text-align: right; color: #ef4444; font-weight: 600; font-size: 15px; border-bottom: 1px solid #e5e7eb;">-120.000₫</td>
+          </tr>
+          <tr style="background: #dcfce7;">
+            <td style="padding: 12px; font-size: 14px; border-bottom: 1px solid #e5e7eb;"><strong>💳 Giá bán cuối</strong></td>
+            <td style="padding: 12px; text-align: right; color: #10b981; font-weight: 700; font-size: 16px; border-bottom: 1px solid #e5e7eb;">2.280.000₫</td>
+          </tr>
+          <tr style="background: #fef3c7;">
+            <td style="padding: 12px; font-size: 14px;"><strong>💵 Lời thực tế</strong></td>
+            <td style="padding: 12px; text-align: right; color: #f59e0b; font-weight: 700; font-size: 16px;">280.000₫ (14%)</td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Hiển thị cho khách -->
+      <div style="background: #f0f9ff; border: 2px dashed #3b82f6; padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+        <div style="font-size: 13px; color: #1e40af; margin-bottom: 8px; font-weight: 600;">👁️ Hiển thị cho khách hàng:</div>
+        <div style="font-size: 18px; text-align: center;">
+          <span style="text-decoration: line-through; color: #6b7280;">2.400.000₫</span>
+          →
+          <strong style="color: #10b981;">2.280.000₫</strong>
+          <span style="background: #fef2f2; color: #ef4444; padding: 4px 8px; border-radius: 4px; font-weight: 600; font-size: 14px; margin-left: 8px;">-5%</span>
+        </div>
+      </div>
+
+      <!-- Lưu ý -->
+      <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; border-radius: 8px;">
+        <p style="margin: 0; color: #78350f; font-size: 13px; line-height: 1.6;">
+          <strong>⚡ Lưu ý quan trọng:</strong><br>
+          • Luôn tính từ <strong>giá vốn gốc</strong>, không phụ thuộc giá hiện tại<br>
+          • Áp dụng % lợi nhuận trước, sau đó mới áp dụng % khuyến mãi<br>
+          • Lời thực tế được tính bằng: Giá bán cuối - Giá vốn
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="padding: 20px 30px; background: #f9fafb; border-top: 1px solid #e5e7eb; border-radius: 0 0 16px 16px; text-align: right;">
+      <button onclick="this.closest('.overlay-guide').remove()" style="padding: 12px 24px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);">
+        ✓ Đã hiểu
+      </button>
+    </div>
+  `;
+
+  overlay.className = "overlay-guide";
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  // Close on overlay click
+  overlay.onclick = (e) => {
+    if (e.target === overlay) overlay.remove();
+  };
+};
+
+// ====== INITIALIZATION ======
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
     initializePricing();
