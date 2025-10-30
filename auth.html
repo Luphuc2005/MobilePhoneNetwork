@@ -6,96 +6,162 @@
         <title>Thông tin cá nhân</title>
         <link rel="stylesheet" href="./assets/css/duyddawng-components.css">
         <link rel="stylesheet" href="./assets/css/user.css">
-        <script src="./assets/js/validation.js"></script>
     </head>
     <body>
-      <header class="main-header">
-      <!-- Phần top của Header -->
-      <div class="header-top">
+      <header class="main-header" style="position: relative;">
+        <!-- Phần top của Header -->
+        <div class="header-top">
           <!-- Logo -->
           <div class="logo">
-              <a href="index.html">📱PhoneStore</a>
-              <a href="index.html">PhoneStore</a>
+            <a href="index.html">📱PhoneStore</a>
+            <a href="index.html">PhoneStore</a>
           </div>
           <!-- Thanh tìm kiếm (Thanh Nhàn) -->
-            <div class="search-bar">
-              <input type="text" placeholder="Tìm kiếm sản phẩm...">
-            </div>
-              <!-- Menu điều hướng chính -->
-              <nav class="main-nav">
-                  <ul>
-                      <li><a href="index.html#home">Trang chủ</a></li>
-                      <li><a href="index.html#products">Danh mục </a></li>
-                      <li><a href="index.html#promotions">Khuyến mãi</a></li>
-                      <li><a href="index.html#">Tin Tức</a></li>
-                  </ul>
-              </nav>
-            <!-- Hành động người dùng -->
-            <div class="user-actions" >
-              <!-- Giỏ Hàng (Quốc Cường)-->
-              <!-- Trỏ đến user-account.html và dùng hash #cart để sử dụng router -->
-              <a href="user-account.html#cart" class="cart-icon">
-                  <div class="cart-icon-wrapper">
-                      <img src="./assets/images/icons/icon-cart.png" alt="icon cart" class="logo">
-                      <span class="cart-count">0</span>
-                  </div>
-              </a>
-            </div>
-            <!-- Tài khoản (Tuấn Khôi) -->
-            <div class="user-acount-area">
-                  <a class="acount-icon">
-                      <img src="./assets/images/icons/logo-account.png" alt="logo account" class="logo">
-                      <span>Tài khoản</span>
-                  </a>
-            </div>
+          <div class="search-bar">
+            <input type="text" placeholder="Tìm kiếm sản phẩm...">
           </div>
-  </header>
+          <!-- Menu điều hướng chính -->
+          <nav class="main-nav">
+            <ul>
+              <li><a href="index.html#home">Trang chủ</a></li>
+              <li><a href="index.html#products">Danh mục </a></li>
+              <li><a href="index.html#promotions">Khuyến mãi</a></li>
+              <li><a href="index.html#">Tin Tức</a></li>
+            </ul>
+          </nav>
+          <!-- Hành động người dùng -->
+          <div class="user-actions">
+            <!-- Giỏ Hàng (Quốc Cường)-->
+            <!-- Trỏ đến user-account.html và dùng hash #cart để sử dụng router -->
+            <a href="user-account.html#cart" class="cart-icon">
+              <div class="cart-icon-wrapper">
+                <img src="./assets/images/icons/icon-cart.png" alt="icon cart" class="logo">
+                <span class="cart-count">0</span>
+              </div>
+            </a>
+          </div>
+          <!-- Tài khoản (Tuấn Khôi) -->
+          <div class="user-acount-area">
+            <a class="acount-icon">
+              <img src="./assets/images/icons/logo-account.png" alt="logo account" class="logo">
+              <span>Tài khoản</span>
+            </a>
+          </div>
+        </div>
+      </header>
 
   <main>
-    <div id=thongTinCaNhan>
-        <div class="menuThongTin">
-            <div class="menuHeader">
-                <img src="./assets/images/icons/auth/avatar.svg" style="width: 3em">
-                <div class="userName">Nguyễn Văn A</div>
+    <div id="main-container">
+      <div id=user-container>
+          <div id="user-sidebar">
+              <div id="sidebar-header">
+                  <img src="./assets/images/icons/auth/avatar.svg" style="width: 3em">
+                  <span id="header-title">Placeholder</span>
+              </div>
+              <hr style="width: 90%; margin-top: 7%; align-self: center;">
+              <ul>
+                  <li><img src="./assets/images/icons/auth/info.svg"> <button>Thông tin cá nhân</button></li>
+                  <li><img src="./assets/images/icons/auth/order.svg"><button id="order-history">Lịch sử đơn hàng</button></li>
+                  <li><img src="./assets/images/icons/auth/exit.svg"><button id="logout">Đăng xuất</button></li>
+                </ul>
+          </div>
+          <div id="user-content">
+            <div id="user-info">
+              <div style="display: flex; align-items: baseline; margin-top: 4%; margin-bottom: 2%; justify-content: space-between;">
+                <h2>Thông tin tài khoản</h2>
+                <button id="updateInfo">
+                  <img src="./assets/images/icons/auth/edit.svg" style="transform: translateY(5px); padding-right: 5px">Cập nhật thông tin cá nhân
+                </button>
+              </div>
+              <table>
+                <tr>
+                  <th>Họ và tên:</th>
+                  <td colspan="3" id="hoten">Place holder</td>
+                </tr>
+              
+                <tr>
+                  <th>Email:</th>
+                  <td colspan="3" id="email">Placeholder@gmail.com</td>
+                </tr>
+
+                <tr>
+                  <th>Số điện thoại:</th>
+                  <td id="sdt">1234567</td>
+                  <th id="joinDate">Ngày tham gia:</th>
+                  <td id="joinDateVal">"ngày tham gia"</td>
+                </tr>
+
+                <tr>
+                  <th>Địa chỉ:</th>
+                  <td colspan="3" id="diaChi" style="color: gray">Không có địa chỉ nào được lưu</td>
+                </tr>
+                <tr>
+                  <th>Mật khẩu:</th>
+                  <td colspan="2" id="passwordCell">
+                    <div style="display: flex; height: 100%;">
+                      <input type="password" id="userPassword" value="placeholder" disabled>
+                      <input type="checkbox" id="showPassword">
+                    </div>
+                  </td> 
+                  <td id="changePasswordCell"> 
+                    <button id="changePassword">Thay đổi mật khẩu</button>
+                    </td>
+                </tr>
+              </table>
             </div>
-            <hr style="width: 100%; margin-top: 7%;">
-            <ul>
-                <li><img src="./assets/images/icons/auth/info.svg"> <button>Thông tin cá nhân</button></li>
-                <li><img src="./assets/images/icons/auth/exit.svg"><button id="logout">Đăng xuất</button></li>
-            </ul>
-        </div>
-        <div class="userInfo">
-            <h2 style="margin-top: 5%;">Thông tin tài khoản</h2>
-            <form class="form">
-                <table style="width: 100%;">
-                    <tr>
-                      <th class="field-label"><label for="hoTen">Họ Tên</label></th>
-                      <th class="field-input"><input type="text" name="hoTen" value="Nguyễn Văn A"></th>
-                    </tr>
-                   
-                    <tr>
-                      <th class="field-label"><label for="email">Email</label></th>
-                      <th class="field-input"><input type="email" name="email" value="example@gmail.com"></th>
-                    </tr>
-
-                    <tr>
-                      <th class="field-label"><label for="sdt">Số điện thoại</label></th>
-                      <th class="field-input"><input type="tel" name="sdt" value="012345678"></th>
-                    </tr>
-
-                    <tr>
-                      <th class="field-label"><label for="address">Địa chỉ</label></th>
-                      <th class="field-input"><input type="text" name="address" placeholder="Chưa có địa chỉ"></th>
-                    </tr>
-                  </table>
-                <span style="width: 100%; display: flex; justify-content: flex-end;">
-                <input type="button" value="LƯU THAY ĐỔI" class="save-button">
-                </span>
-            </form> 
+          </div>
+          <div id="update-info-background">
+            <form id="update-form" novalidate>
+              <button type="button" class="close-form">x</button>
+              <fieldset>
+                <legend>Họ và tên</legend>
+                <input type="text" id="new-name">
+              </fieldset>
+              <fieldset>
+                <legend>Số điện thoại</legend>
+                <input type="tel" id="new-phone">
+              </fieldset>
+              <fieldset>
+                <legend>Địa chỉ email</legend>
+                <input type="email" id="new-email">
+              </fieldset>
+              <fieldset>
+                <legend>Địa chỉ</legend>
+                <div style="width: 100%; display: flex; justify-content: space-between; flex-wrap: wrap;">
+                  <select id="new-city">
+                    <option>Chọn tỉnh/thành phố</option>
+                    <option value="Thành phố Hồ Chí Minh">Thành phố Hồ Chí Minh</option>
+                  </select>
+                  <select id="new-district">
+                    <option>Chọn quận/huyện</option>
+                    <option value="Quận 1">Quận 1</option>
+                    <option value="Quận 4">Quận 4</option>
+                    <option value="Quận 5">Quận 5</option>
+                    <option value="Quận 7">Quận 7</option>
+                    <option value="Quận 8">Quận 8</option>
+                  </select>
+                  <select id="new-ward">
+                    <option>Chọn phường</option>
+                    <option value="Phường 1">Quận 1</option>
+                    <option value="Phường 2">Quận 2</option>
+                    <option value="Phường 3">Quận 3</option>
+                    <option value="Phường 4">Quận 4</option>
+                    <option value="Phường 5">Quận 5</option>
+                    <option value="Phường 6">Quận 6</option>
+                    <option value="Phường 7">Quận 7</option>
+                  </select>
+                </div>
+                <input id="new-address" type="text" placeholder="Số nhà, tên đường*">
+                </fieldset>
+                <div style="position: absolute; bottom: 4%; width: 100%; display: flex; justify-content: space-around; height: 6%">
+                  <input type="reset" value="Thiết lập lại" id="reset-form-button"> 
+                  <input type="submit" value="Cập nhật thông tin" id="save-changes-button">
+                </div>
+            </form>
+          </div>
         </div>
     </div>
   </main>
-
   <footer>
     <div class="footer-content">
 
@@ -179,94 +245,7 @@
         </div>
       </div>
     </div>
+    <script src="./assets/js/auth.js"></script>
   </footer>
-  <script type="text/javascript"> 
-    document.getElementById("logout").onclick = () => {
-      location.href="index.html";
-    };
-
-    const account = document.querySelector('.acount-icon');
-    const usernameHeader = account.querySelector("span");
-    let dropdownMenu = document.createElement("div");
-    dropdownMenu.setAttribute("class", "dropdown-menu")
-    dropdownMenu.style.visibility="hidden";
-    drawDropdownMenu();
-    function drawDropdownMenu() 
-    {                     
-        if (sessionStorage.getItem("login-status") != null)
-        {
-            dropdownMenu.innerHTML = `
-                        <ul>
-                            <li><button>Thông tin cá nhân</button></li>
-                            <li><button>Đổi mật khẩu</button></li>
-                            <li><button id="sign-out">Đăng xuất</button></li>
-                        </ul>`;
-            let list = dropdownMenu.querySelector("ul");
-            let listItems = dropdownMenu.querySelectorAll("li");
-            let authLink = dropdownMenu.querySelector("a");
-            listItems.forEach((li) => {
-                li.style.width="fit-content";
-            });
-            list.style.flexDirection="column";
-            list.style.alignItems="flex-end";
-            dropdownMenu.style.minWidth="fit-content";
-            dropdownMenu.style.width="150%";
-            account.appendChild(dropdownMenu);
-            usernameHeader.textContent = "Nguyễn Văn A";
-
-            const signout = document.getElementById("sign-out");
-            if (signout !== null)
-            {
-                signout.addEventListener("click", (event) => {
-                console.log("sign out");
-                sessionStorage.removeItem("login-status");
-                console.log(sessionStorage.getItem("login-status"));
-                drawDropdownMenu();
-                });
-            }
-        }
-        else
-        {
-            console.log("get in");
-            dropdownMenu.innerHTML=`
-                            <ul>
-                                <li><button id="sign-in">Đăng nhập</button></li>
-                                <li><button id="sign-up">Đăng ký</button></li>
-                            </ul>
-                            `;
-            account.appendChild(dropdownMenu);
-            usernameHeader.textContent = "Tài khoản";
-            const signin = document.getElementById("sign-in");
-            if (signin != null)
-            {
-                signin.addEventListener("click", (event) => {
-                    console.log("sign in");
-                    // sessionStorage.setItem("login-status", "true"); 
-                    drawFormDangNhap();
-                    drawDropdownMenu();
-                });
-            }
-
-            const signup = document.getElementById("sign-up");
-            if (signup != null)
-            {
-                signup.addEventListener("click", (event) => {
-                    console.log("sign up");
-                    // sessionStorage.setItem("login-status", "true"); 
-                    drawFormDangKy();
-                    drawDropdownMenu();
-                });
-            }
-        }
-    }
-
-    account.addEventListener("mouseover", (event) => {
-        dropdownMenu.style.visibility="visible";
-    });
-
-    account.addEventListener("mouseout", (event) => {
-        dropdownMenu.style.visibility="hidden";
-    });
-  </script>
     </body>
 </html> 
