@@ -1,3 +1,4 @@
+import * as RENDER from './duyddawng-category-sync.js';
 document.addEventListener("DOMContentLoaded", () => {
     const categoryTableBody = document.getElementById('categoryTableBody');
     if (!categoryTableBody) {
@@ -184,6 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updatePaginationInfo();
         //khởi tạo
         renderPagination();
+        RENDER.renderCategorySection();
     }
 
     //phân trang 
@@ -311,6 +313,7 @@ document.addEventListener("DOMContentLoaded", () => {
             
             renderTable();
             showToast('Đã xóa vĩnh viễn loại sản phẩm!', 'success');
+
         }
     };
 

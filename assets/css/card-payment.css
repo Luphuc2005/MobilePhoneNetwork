@@ -1,0 +1,160 @@
+/* ==================CARD PAYMENT FORM STYLES================= */
+.card-payment-form {
+    background: #F9FAFB;
+    border: 2px solid #D1D5DB;
+    border-radius: 12px;
+    padding: 25px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card-payment-form h3 {
+    color: #1F2937;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #E5E7EB;
+}
+
+.card-payment-form .form-group {
+    margin-bottom: 20px;
+}
+
+.card-payment-form label {
+    display: block;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.card-payment-form input[type="text"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #D1D5DB;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.card-payment-form input[type="text"]:focus {
+    outline: none;
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.card-payment-form input[type="text"]::placeholder {
+    color: #9CA3AF;
+}
+
+.card-payment-form small {
+    display: block;
+    color: #6B7280;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    padding-left: 30px;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.custom-checkbox span {
+    font-size: 14px;
+    color: #374151;
+}
+
+.custom-checkbox input[type="checkbox"] + span:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid #D1D5DB;
+    border-radius: 4px;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + span:before {
+    background: #3B82F6;
+    border-color: #3B82F6;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + span:after {
+    content: '✓';
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.card-security-note {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #ECFDF5;
+    border: 1px solid #10B981;
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-top: 20px;
+}
+
+.card-security-note i {
+    color: #10B981;
+    font-size: 18px;
+}
+
+.card-security-note span {
+    color: #065F46;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* Card number formatting */
+#card-number {
+    letter-spacing: 2px;
+    font-family: 'Courier New', monospace;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .card-payment-form {
+        padding: 20px 15px;
+    }
+    
+    .card-payment-form h3 {
+        font-size: 16px;
+    }
+}

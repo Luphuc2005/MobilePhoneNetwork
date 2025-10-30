@@ -1,0 +1,52 @@
+/* Cart Item Details - Màu sắc và Bộ nhớ */
+.item-info-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    margin: auto 0px;
+}
+
+.item-details-info {
+    display: flex;
+    gap: 10px;
+    font-size: 12px;
+    color: #666;
+    margin-top: 3px;
+}
+
+.item-details-info span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    background: #F3F4F6;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.item-details-info i {
+    font-size: 11px;
+}
+
+.item-memory {
+    color: #2563EB;
+    background: #EFF6FF !important;
+}
+
+.item-color {
+    color: #7C3AED;
+    background: #F5F3FF !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .item-details-info {
+        font-size: 11px;
+        gap: 6px;
+    }
+    
+    .item-details-info span {
+        padding: 2px 6px;
+    }
+}

@@ -375,14 +375,20 @@ function setupAddToCartButton() {
         const selectedColor = document.querySelector('input[name="color"]:checked')?.value || 'Titan Đen';
         const selectedMemory = document.querySelector('input[name="memory"]:checked')?.value || '256GB';
         
-        // Tạo tên sản phẩm đầy đủ với màu và dung lượng
-        const fullProductName = `${productDetail.name} ${selectedMemory} ${selectedColor}`;
+        // Lưu tên gốc, màu và bộ nhớ riêng biệt
+        const productName = productDetail.name;
+        const productColor = selectedColor;
+        const productMemory = selectedMemory;
         
         // Lấy giỏ hàng hiện tại từ localStorage
         let cart = JSON.parse(localStorage.getItem('cart') || '[]');
         
-        // Tìm xem sản phẩm đã có trong giỏ chưa (so sánh tên đầy đủ)
-        let existingProduct = cart.find(item => item.name === fullProductName);
+        // Tìm xem sản phẩm đã có trong giỏ chưa (so sánh name + color + memory)
+        let existingProduct = cart.find(item => 
+            item.name === productName && 
+            item.color === productColor && 
+            item.memory === productMemory
+        );
         
         if (existingProduct) {
             // Nếu đã có, tăng số lượng
@@ -392,21 +398,21 @@ function setupAddToCartButton() {
             // Nếu chưa có, thêm mới
             cart.push({
                 img: productDetail.img,
-                name: fullProductName,
+                name: productName,
+                color: productColor,
+                memory: productMemory,
                 price: productDetail.price.replace(/[₫,.]/g, '').trim(), // Lưu dạng số
                 quantity: 1
             });
-            alert(`Đã thêm "${fullProductName}" vào giỏ hàng!`);
+            alert(`Đã thêm "${productName} - ${productMemory} - ${productColor}" vào giỏ hàng!`);
         }
         
         // Lưu giỏ hàng vào localStorage
         localStorage.setItem('cart', JSON.stringify(cart));
         
         // Cập nhật số lượng hiển thị trên icon giỏ hàng (nếu có)
-        const cartCount = document.querySelector('.cart-count');
-        if (cartCount) {
-            const totalQuantity = cart.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
-            cartCount.textContent = totalQuantity;
+        if (typeof window.updateCartCount === 'function') {
+            window.updateCartCount();
         }
         
         // Hiệu ứng animation cho nút (optional)

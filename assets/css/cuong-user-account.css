@@ -4,6 +4,7 @@
     background-color: #E5E7EB;
     padding-left: 10%;
     padding-right: 10%;
+    min-height: 100vh;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif 
 }
 .user-account-page .btn{
@@ -1310,11 +1311,13 @@ a {
 .background-user-info {
     display: none;
     background-color: #51505077;
-    position: absolute;;
-    top: 0%;
-    left: 0%;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 1200px;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 1000;
 }
 
 /* --- Container chính của Form --- */
@@ -1322,14 +1325,41 @@ a {
     
     width: 100%;
     max-width: 600px; /* Giới hạn chiều rộng của form */
-    position: absolute;
-    top: 3%;
-    left: 30%;
-    right: 30%;
+    position: relative;
+    margin: 30px auto;
     background: #ffffff;
     padding: 25px 30px;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* Nút đóng checkout */
+.close-checkout-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 35px;
+    height: 35px;
+    background: #EF4444;
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.close-checkout-btn:hover {
+    background: #DC2626;
+    transform: rotate(90deg);
+}
+
+.close-checkout-btn i {
+    pointer-events: none;
 }
 
 .user-info h2 {
