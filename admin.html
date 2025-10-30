@@ -466,35 +466,36 @@
             <!-- THANH NHÀN - Quản lý đơn hàng -->
             <div id="orders-content" class="orders-content section-content" style="display: none;">
                 <!-- <div id="orders-id" class = "" style="display: none;"> -->
-                <div class = "orders">
-                    <div class = "title">
+                <div class="orders">
+                    <div class="title">
                         <h1>Quản lý đơn hàng</h1>
                         <p>Quản lý và theo dõi trạng thái đơn hàng</p>
                     </div>
-                    <div class = "order-search-bar">
-                        <form id = "search-orders-form">
-                            <input type = "search" class = "search-element input-search" id = "search-id-name" placeholder = "Tìm mã đơn hàng, khách hàng">
-                            
-                            <select id = "status-select" class = "search-element">
-                                <option value = "all" selected>Tất cả trạng thái</option>
-                                <option value = "waiting">Chờ xử lý</option>
-                                <option value = "accepted">Đã xác nhận</option>
-                                <option value = "delivery">Đang giao</option>
-                                <option value = "done">Hoàn thành</option>
-                                <option value = "cancel">Đã hủy</option>
+                    <div class="order-search-bar">
+                        <form id="search-orders-form">
+                            <input type="search" class="search-element input-search" id="search-id-name"
+                                placeholder="Tìm mã đơn hàng, khách hàng">
+
+                            <select id="status-select" class="search-element">
+                                <option value="all" selected>Tất cả trạng thái</option>
+                                <option value="waiting">Chờ xử lý</option>
+                                <option value="accepted">Đã xác nhận</option>
+                                <option value="delivery">Đang giao</option>
+                                <option value="done">Hoàn thành</option>
+                                <option value="cancel">Đã hủy</option>
                             </select>
 
-                            <select id = "dictrict-select" class = "search-element">
-                                <option value = "all">Tất cả phường xã</option>
+                            <select id="dictrict-select" class="search-element">
+                                <option value="all">Tất cả phường xã</option>
                             </select>
-                            <button class = "search-btn search-element" type="submit">Lọc</button>
-                            <span class = "info-label">Từ ngày:</span>
-                            <input type = "date" id = "start-date" class = "input-date">
+                            <button class="search-btn search-element" type="submit">Lọc</button>
+                            <span class="info-label">Từ ngày:</span>
+                            <input type="date" id="start-date" class="input-date">
                             <span>-</span>
-                            <input type = "date" id = "end-date" class = "input-date">
+                            <input type="date" id="end-date" class="input-date">
                         </form>
                     </div>
-                    <div class = "order-list">
+                    <div class="order-list">
                         <!-- comment -->
                         <!-- <div class = "order-item">
                             <div class = "order-header">
@@ -551,42 +552,44 @@
                         </div> -->
                     </div>
                 </div>
-                <div class = "content-footer radius-8">
-                    <div class = "page-number info-label">Hiển thị <span style = "margin: 0px 5px;" id = "now-page">1-5</span> trong tổng số <span style = "margin: 0px 5px;" id = "all-page">158</span> đơn hàng</div>
-                    <div class = "page-controler">
-                        <div class = "page-item" id = "pre-page-btn">
+                <div class="content-footer radius-8">
+                    <div class="page-number info-label">Hiển thị <span style="margin: 0px 5px;" id="now-page">1-5</span>
+                        trong tổng số <span style="margin: 0px 5px;" id="all-page">158</span> đơn hàng</div>
+                    <div class="page-controler">
+                        <div class="page-item" id="pre-page-btn">
                             Trước
-                        </div> 
-                        <div class = "page-numbers">
+                        </div>
+                        <div class="page-numbers">
                             <!-- <div class = "page-item">
                                 1
                             </div> -->
                         </div>
-                        <div class = "page-item" id = "next-page-btn">
+                        <div class="page-item" id="next-page-btn">
                             Sau
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="detail-order-wrapper hidden" >
+            <div class="detail-order-wrapper hidden">
                 <div class="detail-content">
-                    <div class = "detail-header"> 
-                        <div class = "detail-close-btn">
-                            <img src = "./assets/images/icons/back-icon.png">
+                    <div class="detail-header">
+                        <div class="detail-close-btn">
+                            <img src="./assets/images/icons/back-icon.png">
                         </div>
-                        <div class = "detail-title">
+                        <div class="detail-title">
                             <h2>Chi tiết đơn hàng</h2>
                         </div>
-                    </div> 
+                    </div>
                     <div class="order-info">
-                        <div class = "info-wrapper">
-                            <p class = "detail-order-id-label"><strong>Mã đơn hàng:</strong> <span id="detail-order-id"></span></p>
+                        <div class="info-wrapper">
+                            <p class="detail-order-id-label"><strong>Mã đơn hàng:</strong> <span
+                                    id="detail-order-id"></span></p>
                             <p><strong>Ngày đặt:</strong> <span id="detail-date"></span></p>
                             <p><strong>Địa chỉ:</strong> <span id="detail-address"></span></p>
                             <p><strong>Trạng thái:</strong> <span id="detail-status"></span></p>
                         </div>
-                        <div class = "detail-product-list">
-                            <p id = "detail-product-list-title"><strong>Sản phẩm:</strong></p>
+                        <div class="detail-product-list">
+                            <p id="detail-product-list-title"><strong>Sản phẩm:</strong></p>
                             <ul id="detail-products">
                                 <!-- <li class = "detail-product-item">
                                     <div class = "detail-product-img-wrapper"> 
@@ -603,7 +606,7 @@
                                 </li> -->
                             </ul>
                         </div>
-                        <div class = "payment-wrapper">
+                        <div class="payment-wrapper">
                             <p><strong>Phương thức thanh toán:</strong> <span id="detail-payment"></span></p>
                             <p><strong>Tổng tiền:</strong> <span id="detail-total"></span></p>
                         </div>
@@ -617,10 +620,10 @@
                 <div class="inventory-search">
                     <input type="text" id="inventory-name" placeholder="Nhập tên sản phẩm...">
                     <select id="inventory-type">
-                    <option value="">-- Chọn loại --</option>
-                    <option value="Iphone">Iphone</option>
-                    <option value="Xiaomi">Xiaomi</option>
-                    <option value="Samsung">Samsung</option>
+                        <option value="">-- Chọn loại --</option>
+                        <option value="Iphone">Iphone</option>
+                        <option value="Xiaomi">Xiaomi</option>
+                        <option value="Samsung">Samsung</option>
                     </select>
                     <button id="btn-search-inventory">Tra cứu</button>
                 </div>

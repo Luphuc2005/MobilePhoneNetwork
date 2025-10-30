@@ -1,4 +1,4 @@
-let allOrders = [
+const allOrders = [
     {
         order_id: "DH001234",
         date: "15/10/2025 14:30",

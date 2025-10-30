@@ -1,18 +1,9 @@
 //STORAGE_KEYS
 const STORAGE_KEY = STORAGE_KEYS.CATEGORIES; 
 
-// Dữ liệu mẫu (CHỈ dùng khi localStorage HOÀN TOÀN TRỐNG)
-const fallbackCategories = [
-    { id: 1, icon: '📱', name: 'iPhone', description: 'Điện thoại Apple iPhone', productCount: 45, status: 'Hoạt động', iconType: 'emoji' },
-    { id: 2, icon: '🤖', name: 'Samsung', description: 'Điện thoại Samsung Galaxy', productCount: 38, status: 'Hoạt động', iconType: 'emoji' },
-    { id: 3, icon: '💫', name: 'Oppo', description: 'Điện thoại OPPO', productCount: 25, status: 'Hoạt động', iconType: 'emoji' },
-    { id: 4, icon: '🎯', name: 'Xiaomi', description: 'Điện thoại Xiaomi', productCount: 32, status: 'Hoạt động', iconType: 'emoji' },
-    { id: 5, icon: '⚡', name: 'Vivo', description: 'Điện thoại Vivo', productCount: 20, status: 'Hoạt động', iconType: 'emoji' },
-    { id: 6, icon: '🎨', name: 'Realme', description: 'Điện thoại Realme', productCount: 18, status: 'Hoạt động', iconType: 'emoji' }
-];
 // write
 function getCategoriesFromStorage() {
-    return StorageHelper.load(STORAGE_KEY, fallbackCategories); 
+    return StorageHelper.load(STORAGE_KEY, DEFAULT_CATEGORIES); 
 }
 
 // Hàm render 

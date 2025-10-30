@@ -80,7 +80,7 @@ const StorageHelper = {
             
             // Trigger custom event để sync trong cùng tab
             // custom = key+'-page'
-            this.triggerSync(key,source);
+            // this.triggerSync(key,source);
             return true;
         } catch (e) {
             console.error(`[Storage] Lỗi lưu ${key}:`, e);

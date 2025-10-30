@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log("Khởi tạo module Quản lý Loại Sản Phẩm...");
 
-    const STORAGE_KEY = STORAGE_KEYS.CATEGORIES;
+    const STORAGE_KEY = STORAGE_KEYS.CATEGORIES ;
         const SOURCE = STORAGE_KEY+'-page';
         // --- Hàm quản lý localStorage ---
         function saveCategoriestoStorage() {
@@ -17,18 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return StorageHelper.load(STORAGE_KEY, null); 
     }
 
-    // --- Dữ liệu mặc định ---
-    const defaultCategories = [
-        { id: 1, icon: '📱', name: 'iPhone', description: 'Điện thoại Apple iPhone', productCount: 45, status: 'Hoạt động', iconType: 'emoji' },
-        { id: 2, icon: '🤖', name: 'Samsung', description: 'Điện thoại Samsung Galaxy', productCount: 38, status: 'Hoạt động', iconType: 'emoji' },
-        { id: 3, icon: '🎯', name: 'Xiaomi', description: 'Điện thoại Xiaomi', productCount: 32, status: 'Hoạt động', iconType: 'emoji' },
-        { id: 4, icon: '⚡', name: 'OPPO', description: 'Điện thoại OPPO', productCount: 25, status: 'Hoạt động', iconType: 'emoji' },
-        { id: 5, icon: '🔥', name: 'Vivo', description: 'Điện thoại Vivo', productCount: 20, status: 'Hoạt động', iconType: 'emoji' },
-        { id: 6, icon: '💎', name: 'Realme', description: 'Điện thoại Realme', productCount: 18, status: 'Ẩn', iconType: 'emoji' },
-        { id: 7, icon: '🎨', name: 'Nokia', description: 'Điện thoại Nokia', productCount: 12, status: 'Hoạt động', iconType: 'emoji' },
-        { id: 8, icon: '🌟', name: 'Huawei', description: 'Điện thoại Huawei', productCount: 15, status: 'Ẩn', iconType: 'emoji' }
-    ];
-
     // --- Khởi tạo dữ liệu ---
     let categories = [];
     const loadedData = loadCategoriesFromStorage();
@@ -38,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log('Sử dụng dữ liệu từ localStorage');
     } else {
         //gán dữ liệu mặc định 
-        categories = [...defaultCategories];
+        categories = [...DEFAULT_CATEGORIES];
         saveCategoriestoStorage();
         console.log('Khởi tạo dữ liệu mặc định');
     }
@@ -455,7 +443,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- Render lần đầu ---
     if (categories.length === 0) {
-        categories = [...defaultCategories];
+        categories = [...DEFAULT_CATEGORIES];
         filteredCategories = [...categories];
         saveCategoriestoStorage();
     }
@@ -484,7 +472,7 @@ document.addEventListener("DOMContentLoaded", () => {
         load: loadCategoriesFromStorage,
         render: renderTable,
         reset: () => {
-            categories = [...defaultCategories];
+            categories = [...DEFAULT_CATEGORIES];
             filteredCategories = [...categories];
             saveCategoriestoStorage();
             renderTable();
