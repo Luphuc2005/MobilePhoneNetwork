@@ -7,12 +7,8 @@
     <title>Document</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/css/cuong-user-account.css">
-    <link rel="stylesheet" href="assets/css/cart-item-details.css">
-    <link rel="stylesheet" href="assets/css/card-payment.css">
     <link rel="stylesheet" href="assets/css/user.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="assets/js/cart.js" defer></script>
-    <script src="assets/js/card-payment.js" defer></script>
 </head>
 
 <body class="user-account-page">
@@ -34,7 +30,27 @@
             </div>
             <!-- Item -->
             <div class="items-container">
+                <div class="cart-item">
+                <div class="item-name-container cart-col product">
+                    <div class="item-image">
+                        <img src="https://cdn.wccftech.com/wp-content/uploads/2024/09/iPhone-17-Air-2.jpg" alt="">
+                    </div>
+                    <div class="item-name">Iphone 17 air</div>
+                </div>
+                <div class="item-price cart-col price">$10.00</div>
+                <div class="item-quantity-container cart-col quantity">
+                    <div style="display: flex;">
+                        <span class="increase">+</span>
+                        <input type="number" class="item-quantity" value="1" min="1">
+                        <span class="decrease">-</span>
+                    </div>
 
+                </div>
+                <div class="item-total cart-col total">$100000000</div>
+                <div class="item-remove cart-col action">
+                    <a href=""><img src="assets/images/icons/recycle-bin.png" alt=""></a>
+                </div>
+            </div>
             </div>
             
             <div class="cart-actions">
@@ -85,9 +101,6 @@
         </div>
         <div class="background-user-info">
             <div class="user-info" id="user-info-container">
-                <button class="close-checkout-btn" id="close-checkout-btn" type="button">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
                 <h2>Thông tin người nhận</h2>
 
                 <form action="/dat-hang" method="POST">
@@ -159,60 +172,6 @@
                             <input type="radio" id="card" name="payment_method" value="card">
                             <span class="checkmark"></span>
                         </label>
-                    </div>
-
-                    <!-- Form nhập thông tin thẻ thanh toán -->
-                    <div class="card-payment-form" id="card-payment-form" style="display: none;">
-                        <h3>Thông tin thẻ thanh toán</h3>
-                        
-                        <div class="form-group">
-                            <label for="card-number">Số thẻ: <span style="color: red;">*</span></label>
-                            <input type="text" id="card-number" name="card_number" 
-                                   placeholder="1234 5678 9012 3456" 
-                                   maxlength="19"
-                                   pattern="[0-9\s]{13,19}">
-                            <small>Nhập 16 số trên mặt thẻ</small>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="card-holder">Tên chủ thẻ: <span style="color: red;">*</span></label>
-                            <input type="text" id="card-holder" name="card_holder" 
-                                   placeholder="NGUYEN VAN A"
-                                   style="text-transform: uppercase;">
-                            <small>Tên như trên thẻ (viết hoa không dấu)</small>
-                        </div>
-
-                        <div style="display: flex; gap: 20px;">
-                            <div class="form-group" style="flex: 1;">
-                                <label for="expiry-date">Ngày hết hạn: <span style="color: red;">*</span></label>
-                                <input type="text" id="expiry-date" name="expiry_date" 
-                                       placeholder="MM/YY"
-                                       maxlength="5"
-                                       pattern="(0[1-9]|1[0-2])\/[0-9]{2}">
-                                <small>Định dạng: MM/YY</small>
-                            </div>
-
-                            <div class="form-group" style="flex: 1;">
-                                <label for="cvv">CVV: <span style="color: red;">*</span></label>
-                                <input type="text" id="cvv" name="cvv" 
-                                       placeholder="123"
-                                       maxlength="4"
-                                       pattern="[0-9]{3,4}">
-                                <small>3-4 số sau thẻ</small>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="custom-checkbox">
-                                <input type="checkbox" id="save-card" name="save_card">
-                                <span>Lưu thông tin thẻ cho lần mua sau</span>
-                            </label>
-                        </div>
-
-                        <div class="card-security-note">
-                            <i class="fa-solid fa-lock"></i>
-                            <span>Thông tin thẻ của bạn được bảo mật an toàn bằng mã hóa SSL 256-bit</span>
-                        </div>
                     </div>
 
                     <div class="form-group">

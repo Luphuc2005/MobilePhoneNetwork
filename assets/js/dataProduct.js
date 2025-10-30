@@ -12,8 +12,6 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "40",
-    color: ["Titan Tự Nhiên", "Titan Trắng", "Titan Xanh", "Titan Đen"],
-    memory: ["128GB", "256GB", "512GB"],
     hinhanh: "/assets/images/products/ip15prm",
   },
   {
@@ -29,8 +27,6 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "35",
-    color: ["Tím Đậm", "Vàng", "Bạc", "Đen"],
-    memory: ["128GB", "256GB", "512GB", "1TB"],
     hinhanh: "/assets/images/products/ip14prm.jpg",
   },
   {
@@ -46,8 +42,6 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "50",
-    color: ["Xanh Lá", "Hồng", "Xanh Dương", "Ánh Sao"],
-    memory: ["128GB", "256GB", "512GB"],
     hinhanh: "/assets/images/products/ip13.jpg",
   },
   {
@@ -63,8 +57,6 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "25",
-    color: ["Đen", "Trắng", "Đỏ (PRODUCT)RED"],
-    memory: ["64GB", "128GB", "256GB"],
     hinhanh: "/assets/images/products/ipse.webp",
   },
   {
@@ -80,8 +72,6 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "30",
-    color: ["Titan Xám", "Titan Tím", "Titan Vàng", "Titan Đen"],
-    memory: ["256GB", "512GB", "1TB"],
     hinhanh: "/assets/images/products/samsung-galaxy-s24-ultra.png",
   },
   {
@@ -97,8 +87,6 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "20",
-    color: ["Kem", "Phantom Black", "Icy Blue"],
-    memory: ["256GB", "512GB", "1TB"],
     hinhanh: "/assets/images/products/samsung-galaxy-z-fold-5.png",
   },
   {
@@ -114,8 +102,6 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "45",
-    color: ["Tím Nhạt", "Xanh Lime", "Trắng", "Đen"],
-    memory: ["128GB", "256GB"],
     hinhanh: "/assets/images/products/samsung-galaxy-a54.webp",
   },
   {
@@ -131,8 +117,6 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "40",
-    color: ["Đen", "Xanh Dương", "Xanh Meadow"],
-    memory: ["256GB", "512GB", "1TB"],
     hinhanh: "/assets/images/products/xiaomi-13t-pro.png",
   },
   {
@@ -148,8 +132,6 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "60",
-    color: ["Ice Blue", "Onyx Gray", "Pearl White"],
-    memory: ["128GB", "256GB"],
     hinhanh: "/assets/images/products/xiaomi-redmi-note-12.jpg",
   },
   {
@@ -165,8 +147,6 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "25",
-    color: ["Đen", "Vàng Nâu", "Xanh Dương"],
-    memory: ["256GB", "512GB"],
     hinhanh: "/assets/images/products/oppo-find-x6-pro.webp",
   },
   {
@@ -182,8 +162,6 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "40",
-    color: ["Bạc Rạng Đông", "Xanh Lá", "Đen"],
-    memory: ["128GB", "256GB"],
     hinhanh: "/assets/images/products/oppo-reno-10.png",
   },
   {
@@ -199,8 +177,6 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "30",
-    color: ["Himalayan Blue", "Noble Black", "Peak Blue"],
-    memory: ["128GB", "256GB"],
     hinhanh: "/assets/images/products/vivo-v29.webp",
   },
   {
@@ -216,8 +192,6 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "55",
-    color: ["Mint Green", "Meteor Black"],
-    memory: ["128GB", "256GB"],
     hinhanh: "/assets/images/products/vivo-y36.webp",
   },
   {
@@ -233,8 +207,6 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "35",
-    color: ["Sunrise Beige", "Oasis Green", "Astral Black"],
-    memory: ["128GB", "256GB", "512GB"],
     hinhanh: "/assets/images/products/realme-11pro.webp",
   },
   {
@@ -250,8 +222,6 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "50",
-    color: ["Ocean Blue", "Midnight Sun"],
-    memory: ["64GB", "128GB"],
     hinhanh: "/assets/images/products/Nokia-G50.jpg",
   },
   {
@@ -267,8 +237,6 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "20",
-    color: ["Titan Tự Nhiên", "Titan Trắng", "Titan Xám", "Titan Đen"],
-    memory: ["256GB", "512GB", "1TB"],
     hinhanh: "/assets/images/products/ip17.png",
   },
 ];
