@@ -31,6 +31,7 @@ function navigateTo(section, event) {
     console.log(document.getElementById("orders-id"));
   } else if(section === "inventory") {
     document.getElementById("inventory-content").style.display = "block";
+    initInventory();
   } else {
     document.getElementById("other-content").style.display = "block";
   }

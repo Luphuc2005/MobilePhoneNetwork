@@ -317,17 +317,22 @@ body {
 }
 
 .dropdown-menu ul li {
-    padding: 5px 10px ;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    padding: 0.3em 0;
 }
 
 .dropdown-menu ul li button {
+    width: 80%;
     border: none;
     font-size: 14px;
     font-weight: bold;
     background: none;
     min-width: fit-content;
-    padding: 5px 15px;
     cursor: pointer;
+    align-items: center;
+    padding: 0.4em 0.5em;
 }
 
 .dropdown-menu ul li #sign-in {
