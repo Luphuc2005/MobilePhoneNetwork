@@ -1,52 +1,12 @@
-//lắng nghe sự kiện , DOMContentLoaded(tải xog trình duyệt )
-//khởi động trang
 document.addEventListener("DOMContentLoaded", () => {
-  const saveSection = sessionStorage.getItem("currentAdminSection");
-  //== null
-  if (!saveSection) navigateTo("dashboard");
-  else {
-    navigateTo(saveSection);
-  }
-});
-function navigateTo(sectionId, event) {
-  if (event) {
-    //ngăn chặn a tải lại trang
-    event.preventDefault();
-  }
-  //tất cả set giá trị điều là chuỗi
-  sessionStorage.setItem("currentAdminSection", sectionId);
-  const sections = document.querySelectorAll(".section-content");
-  //duyệt vòng for
-  sections.forEach((el) => {
-    el.style.display = "none";
-  });
-  //nội dung được chọn
-  const activeSection = document.getElementById(sectionId + "-content");
-  if (activeSection) {
-    activeSection.style.display = "block";
-
-    // Khởi tạo module pricing khi vào trang
-    if (sectionId === "pricing" && typeof initializePricing === "function") {
-      console.log("💰 Initializing pricing module from navigateTo...");
-      setTimeout(() => {
-        initializePricing();
-      }, 100);
+    const categoryTableBody = document.getElementById('categoryTableBody');
+    if (!categoryTableBody) {
+        return;
     }
-  } else {
-    //thây đổi phần tử ở other-content
-    const otherSection = document.getElementById("other-content");
-    const sectionTitle = document.getElementById("section-title");
-    const sectionDesc = document.getElementById("section-desc");
-    // lấy tên của trang
-    let linkText = sectionId;
-    const linkElement = document.querySelector(
-      `.sidebar-menu-item[href="#${sectionId}"] span`
-    );
 
-<<<<<<< HEAD
     console.log("Khởi tạo module Quản lý Loại Sản Phẩm...");
 
-    const STORAGE_KEY = STORAGE_KEYS.CATEGORIES ;
+    const STORAGE_KEY = STORAGE_KEYS.CATEGORIES;
         const SOURCE = STORAGE_KEY+'-page';
         // --- Hàm quản lý localStorage ---
         function saveCategoriestoStorage() {
@@ -57,6 +17,18 @@ function navigateTo(sectionId, event) {
         return StorageHelper.load(STORAGE_KEY, null); 
     }
 
+    // --- Dữ liệu mặc định ---
+    const defaultCategories = [
+        { id: 1, icon: '📱', name: 'iPhone', description: 'Điện thoại Apple iPhone', productCount: 45, status: 'Hoạt động', iconType: 'emoji' },
+        { id: 2, icon: '🤖', name: 'Samsung', description: 'Điện thoại Samsung Galaxy', productCount: 38, status: 'Hoạt động', iconType: 'emoji' },
+        { id: 3, icon: '🎯', name: 'Xiaomi', description: 'Điện thoại Xiaomi', productCount: 32, status: 'Hoạt động', iconType: 'emoji' },
+        { id: 4, icon: '⚡', name: 'OPPO', description: 'Điện thoại OPPO', productCount: 25, status: 'Hoạt động', iconType: 'emoji' },
+        { id: 5, icon: '🔥', name: 'Vivo', description: 'Điện thoại Vivo', productCount: 20, status: 'Hoạt động', iconType: 'emoji' },
+        { id: 6, icon: '💎', name: 'Realme', description: 'Điện thoại Realme', productCount: 18, status: 'Ẩn', iconType: 'emoji' },
+        { id: 7, icon: '🎨', name: 'Nokia', description: 'Điện thoại Nokia', productCount: 12, status: 'Hoạt động', iconType: 'emoji' },
+        { id: 8, icon: '🌟', name: 'Huawei', description: 'Điện thoại Huawei', productCount: 15, status: 'Ẩn', iconType: 'emoji' }
+    ];
+
     // --- Khởi tạo dữ liệu ---
     let categories = [];
     const loadedData = loadCategoriesFromStorage();
@@ -66,7 +38,7 @@ function navigateTo(sectionId, event) {
         console.log('Sử dụng dữ liệu từ localStorage');
     } else {
         //gán dữ liệu mặc định 
-        categories = [...DEFAULT_CATEGORIES];
+        categories = [...defaultCategories];
         saveCategoriestoStorage();
         console.log('Khởi tạo dữ liệu mặc định');
     }
@@ -483,7 +455,7 @@ function navigateTo(sectionId, event) {
 
     // --- Render lần đầu ---
     if (categories.length === 0) {
-        categories = [...DEFAULT_CATEGORIES];
+        categories = [...defaultCategories];
         filteredCategories = [...categories];
         saveCategoriestoStorage();
     }
@@ -512,7 +484,7 @@ function navigateTo(sectionId, event) {
         load: loadCategoriesFromStorage,
         render: renderTable,
         reset: () => {
-            categories = [...DEFAULT_CATEGORIES];
+            categories = [...defaultCategories];
             filteredCategories = [...categories];
             saveCategoriestoStorage();
             renderTable();
@@ -522,30 +494,3 @@ function navigateTo(sectionId, event) {
 
     console.log('Debug: Gõ categoriesDebug.getAll() để xem dữ liệu');
 });
-=======
-    if (linkElement) {
-      linkText = linkElement.textContent;
-    }
-    if (sectionTitle) sectionTitle.textContent = linkText;
-    if (sectionDesc)
-      sectionDesc.textContent = `Nội dung cho phần "${linkText}" sẽ được phát triển `;
-    if (otherSection) otherSection.style.display = "block";
-  }
-  const menuItems = document.querySelectorAll(".sidebar-menu-item");
-  menuItems.forEach((item) => {
-    item.classList.remove("active");
-  });
-  //có sử kiện xẩy ra
-  if (event) {
-    event.currentTarget.classList.add("active");
-  } else {
-    //không có sự kiện xảy ra -> tìm trang hiện tại hiển thị nav
-    const defaultActiveItem = document.querySelector(
-      `.sidebar-menu-item[href="#${sectionId}"]`
-    );
-    if (defaultActiveItem) {
-      defaultActiveItem.classList.add("active");
-    }
-  }
-}
->>>>>>> c218cc4c9e43476a275766e16c53818382bea8e0

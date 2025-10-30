@@ -67,8 +67,6 @@ if (sliderContainer) {
     console.warn('Không tìm thấy .slider-container');
 }
 
-
-// ================Account==============
 // Dropdown menu cho tài khoản khi trỏ chuột vào ô Tài khoản
 const account = document.querySelector('.acount-icon');
 const usernameHeader = account.querySelector("span");
@@ -77,35 +75,27 @@ dropdownMenu.setAttribute("class", "dropdown-menu")
 dropdownMenu.style.visibility="hidden";
 drawDropdownMenu();
 function drawDropdownMenu() 
-{      
-    let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
-    if (currentUser != null)
+{                     
+    if (sessionStorage.getItem("login-status") != null)
     {
         dropdownMenu.innerHTML = `
                     <ul>
                         <li><button id="profile">Thông tin cá nhân</button></li>
+                        <li><button>Đổi mật khẩu</button></li>
                         <li><button id="sign-out">Đăng xuất</button></li>
                     </ul>`;
         let list = dropdownMenu.querySelector("ul");
         let listItems = dropdownMenu.querySelectorAll("li");
+        let authLink = dropdownMenu.querySelector("a");
         listItems.forEach((li) => {
-            li.style.minWidth="fit-content";
-            li.style.justifyContent="flex-end"; 
+            li.style.width="fit-content";
         });
-        let buttons = list.querySelectorAll("button");
-        buttons.forEach((button) => {
-            button.style.textAlign="end";
-        })
         list.style.flexDirection="column";
         list.style.alignItems="flex-end";
-        list.style.width="fit-content";
-        dropdownMenu.style.width="120%";
-        dropdownMenu.style.display="flex";
-        dropdownMenu.style.justifyContent="center";
+        dropdownMenu.style.minWidth="fit-content";
+        dropdownMenu.style.width="150%";
         account.appendChild(dropdownMenu);
-
-        let currentUsername = currentUser.name;
-        usernameHeader.textContent = currentUsername;
+        usernameHeader.textContent = "Nguyễn Văn A";
 
         //Thông tin cá nhân
         const profile = document.getElementById("profile");
@@ -121,28 +111,15 @@ function drawDropdownMenu()
         {
             signout.addEventListener("click", (event) => {
             console.log("sign out");
-            localStorage.removeItem("currentUser");
-            //Đưa dropdown menu về lúc chưa đăng nhập
-            listItems.forEach((li) => {
-                li.style.minWidth="fit-content";
-                li.style.justifyContent="flex-end"; 
+            sessionStorage.removeItem("login-status");
+            console.log(sessionStorage.getItem("login-status"));
+            drawDropdownMenu();
             });
-            let buttons = list.querySelectorAll("button");
-            buttons.forEach((button) => {
-                button.style.textAlign="";
-            })
-            list.style.flexDirection="";
-            list.style.alignItems="";
-            list.style.width="";
-            dropdownMenu.style.width="";
-            dropdownMenu.style.display="";
-            dropdownMenu.style.justifyContent="";
-                drawDropdownMenu();
-                });
         }
     }
     else
     {
+        console.log("get in");
         dropdownMenu.innerHTML=`
                         <ul>
                             <li><button id="sign-in">Đăng nhập</button></li>
@@ -158,7 +135,9 @@ function drawDropdownMenu()
         {
             signin.addEventListener("click", (event) => {
                 console.log("sign in");
+                sessionStorage.setItem("login-status", "true"); 
                 drawFormDangNhap();
+                drawDropdownMenu();
             });
         }
 
@@ -168,6 +147,7 @@ function drawDropdownMenu()
         {
             signup.addEventListener("click", (event) => {
                 console.log("sign up");
+                // sessionStorage.setItem("login-status", "true"); 
                 drawFormDangKy();
                 drawDropdownMenu();
             });

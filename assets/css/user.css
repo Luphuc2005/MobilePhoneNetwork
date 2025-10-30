@@ -12,18 +12,17 @@ html, body
 }
 
 /* Form dang ky va dang nhap */
-.close-form {
+.close {
     background:none;
     border: none;
     font-size: x-large;
     font-weight: 500;
     cursor: pointer;
-    position: absolute;
-    top: 25px;
-    right: 30px;
+    float: right;
+    transform: translate(250%, 45%);
 }
 
-.close-form:hover {
+.close:hover {
     color: gray;
 }
 
@@ -50,7 +49,6 @@ html, body
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    position:relative;
 }
 
 .form-container p {
@@ -105,12 +103,7 @@ html, body
     margin-bottom: 1%;
 }
 
-#formDangKy input[type="text"], 
-#formDangKy input[type="email"], 
-#formDangKy input[type="password"],
-#formDangNhap input[type="text"], 
-#formDangNhap input[type="email"], 
-#formDangNhap input[type="password"]  {
+input[type="text"], input[type="email"], input[type="password"] {
     width: 100%;
     min-height: 35px;
     height: 4dvh;
@@ -124,27 +117,23 @@ html, body
     border: solid 0.3px lightgray;
 }
 
-#formDangKy legend,
-#formDangNhap legend {
+legend {
     font-weight: bold;
     font-size: small;
 }
 
-#formDangKy fieldset,
-#formDangNhap fieldset {
+fieldset {
     padding: 0;
     margin-top: 5%;
     margin-bottom: 2%;
     border: none;
 }
 
-#formDangKy fieldset div,
-#formDangNhap fieldset div {
+fieldset div {
     margin-top: 1%; 
 }
 
-#formDangKy .submitButton,
-#formDangNhap .submitButton {
+.submitButton {
     width: 100%;
     height: 5dvh;
     min-height: 40px;
@@ -161,24 +150,35 @@ html, body
     padding: 0;
 }
 
-/* Container cua trang */
-#main-container {
-    display: flex;
-    justify-content: center;
-}
 /* Trang thông tin cá nhân */
-#user-container {
-    width: 60%;
+#thongTinCaNhan {
+    width: 70%;
     min-width: fit-content;
     display: flex;
     gap: 30px;
     margin-top: 1.5%;
     margin-bottom: 1.5%;
-    border: solid 1px;
 }
 
-/* Sidebar */
-#user-sidebar {
+.menuThongTin ul {
+    margin: 0;
+    margin-top: 5%;
+    margin-left: 5%;
+}
+
+#thongTinCaNhan input {
+    width: 100%;
+    min-height: 35px;
+    height: 4dvh;
+    padding: 0;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 2%;
+    border-radius: 7px;
+    border: solid 0.3px lightgray;
+}
+
+.menuThongTin {
     width: 30%;
     min-width: fit-content;
     display: flex;
@@ -188,13 +188,7 @@ html, body
     padding: 10px;
 }
 
-#user-sidebar ul {
-    margin: 0;
-    margin-top: 5%;
-    margin-left: 5%;
-}
-
-#sidebar-header {
+.menuHeader {
     display: flex;
     align-items: center;
     gap: 1em;
@@ -203,12 +197,12 @@ html, body
     margin-left: 5%;
 }
 
-#header-title {
-    font-size: 1.5em;
+.userName {
+    font-size: x-large;
     font-weight: 500;
 }
 
-#user-sidebar li{
+.menuThongTin li{
     list-style-type: none;
     margin: 5% 0;
     font-size:large;
@@ -219,7 +213,7 @@ html, body
     transition: transform 1s;
 }
 
-#user-sidebar button{
+.menuThongTin button{
     background: none;
     border: none;
     font-size:large;
@@ -227,13 +221,12 @@ html, body
     transition: transform 0.3s;
 }
 
-#user-sidebar button:hover{
+.menuThongTin button:hover{
     color: red;
     transform: translateX(7px);
 }
 
-/*Content*/
-#user-content {
+.userInfo {
     width: 70%;
     background-color: white;
     border-radius: 10px;
@@ -243,215 +236,68 @@ html, body
     padding-bottom: 3%;
 }
 
-#user-info {
-    width: 90%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-#user-info #updateInfo {
-    font-size: 1em;
-    background: none;
-    border: none;
-    padding-right: 0.6em;
-    cursor: pointer;
-    color: red;
-    align-items: baseline;
-}
-
-#user-info #updateInfo:hover {
-    text-decoration: underline;
-}
-
-#user-info table {
+.userInfo .form
+{
     width: 100%;
-    border-spacing: 0.6em 1.5em;
+    padding: 0 3dvw;
 }
 
-#user-info tr, 
-#user-info th,
-#user-info td {
-    height: 2em;
+.userInfo th {
+    vertical-align: baseline;
 }
 
-#user-info th {
+.userInfo table {
+    border-spacing: 0.5em 0.5em;
+}
+
+.userInfo .field-label{ 
+    height: fit-content;
     width: 20%;
-    text-align: right;
+    min-width: fit-content;
+    text-align: end;
 }
 
-#user-info td {
-    border: solid 1px black;
-    border-radius: 5px;
-    padding-left: 5px;
+.userInfo field-input{
+    width: 80%;
 }
 
-#user-info #passwordCell {
-    width: 55%;
+.userInfo input {
+    width: 80%;
 }
 
-#user-info #changePasswordCell {
-    width: 25%;
-    border: none;
-}
-
-#user-info #changePassword {
-    color: mediumblue;
-    width: fit-content;
-    font-size: 1em;
-    text-align: right;
-    background: none;
-    border: none;
-    cursor: pointer;
-    float: right;
-}
-
-#user-info #changePassword:hover {
-    text-decoration:underline;
-}
-
-#user-info #userPassword {
-    width: 90%;
-    background: none;
-    border: none;
-    font-size: 1em;
-}
-
-#user-info #showPassword {
-    appearance: none;
-    width: 8%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-image: url(../images/icons/auth/showPassword.svg);
-}
-
-#user-info #showPassword:checked {
-    background-position: center;
-    background-repeat: no-repeat;
-    background-image: url(../images/icons/auth/hidePassword.svg);
-}
-
-#user-info #joinDate {
-    width: 20%;
-    min-width: max-content;
-}
-
-#user-info #joinDateVal {
-    text-align: right;
-    border: none;
-}
-
-/* Form cập nhật thông tin */
-#update-info-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 100vh;
-    width: 100vw;
-    background-color: rgba(0,0,0,0.4);
-    z-index: 1001;
-    display: none;
-}
-
-#update-form {
-    position: fixed;
-    min-height: 100px;
-    min-width: 100px;
-    height: 90%;
-    width: 30%;
-    background-color: white;
-    top: 50%;
-    right: 15px;
-    transform:translateY(-50%);
-    border-radius: 10px;
-    z-index: 1002;
-}
-
-#update-form fieldset {
-    display: flex;
-    flex-direction: column;
-    margin: 15px 15px;
-    border: none;
-}
-
-#update-form input {
-    height: 2.5em;
-    font-size: 1em;
-    padding-left: 10px;
-    border: solid 0.7px lightgray;
-    border-radius: 7px;
-}
-
-#update-form select {
-    padding: 1em 0;
-    border-radius: 7px;
-    border: solid 0.7px lightgray;
-}
-
-#update-form legend {
-    margin-bottom: 0.5em;
-    font-size: 1em;
-    font-weight: 500;
-}
-
-#update-form #new-address {
-    margin-top: 1em;
-}
-
-#update-form #save-changes-button, 
-#update-form #reset-form-button {
-    height: 100%;
-    width: 40%;
-    padding: 0;
-}
-
-#update-form #save-changes-button {
-    background-color:crimson;
+.save-button
+{ 
+    width: fit-content !important;
+    background-color: #E30019;
     color: white;
     font-weight: 600;
+    font-size: large;
+    height: fit-content !important;
+    padding: 0.5em 1.5em !important; 
+    cursor: pointer;
 }
 
-#update-form #reset-form-button {
-    background-color: white;
-    border: solid 1px lightgray;
-}
-
-#update-form .close-form{
-    top: 5px;
-    right: 20px;
-}
-
-#update-form #new-city {
-    width: 40%;
-}
-
-#update-form #new-district {
-    width: 25%;
-}
-
-#update-form #new-ward {
-    width: 25%;
+.save-button:hover {
+    background-color: #aa2537;
 }
 
 @media screen and (max-width: 1317px){
-    #user-container {
+    #thongTinCaNhan {
         width: 90%;
     }
 }
 
 @media screen and (max-width: 1024px){
-    #user-container {
+    #thongTinCaNhan {
         width: 100%;
     }
 
-    #user-content input[type="button"] {
+    .userInfo input[type="button"] {
         padding: 0;
         font-size: medium !important;
     }
 
-    #user-content table {
+    .userInfo table {
         border-spacing: 1em 0.5em;
     }
 }
@@ -462,29 +308,29 @@ html, body
         margin-bottom: 5%;
     }
 
-    #user-container {
+    #thongTinCaNhan {
         width: 100%;
         height: 100%;
         flex-direction: column;
     }
 
-    #user-sidebar ul {
+    .menuThongTin ul {
         margin: 0;
         margin-top: 0;
         margin-left: 0;
     }
 
-    #user-sidebar {
+    .menuThongTin {
         width: 100%;
         height: fit-content
     }
 
-    #user-content {
+    .userInfo {
         width: 100%;
         height: 80%;
     }
 
-    #sidebar-header {
+    .menuHeader {
         display: flex;
         align-items: center;
         gap: 1em;
@@ -493,11 +339,11 @@ html, body
         margin-left: 1%;
     }
 
-    #sidebar-header img {
+    .menuHeader img {
             width: 3em !important;
         }
 
-    #user-sidebar hr {
+    .menuThongTin hr {
         margin-top: 2% !important;
     }
 
@@ -507,7 +353,7 @@ html, body
     }
     
     
-    #user-sidebar li{
+    .menuThongTin li{
         list-style-type: none;
         margin: 5% 0;
         font-size:large;
@@ -517,18 +363,18 @@ html, body
         gap: 0.5em;
     }
 
-    #user-sidebar button{
+    .menuThongTin button{
         background: none;
         border: none;
         font-size:large;
         cursor: pointer;
     }
 
-    #user-content table {
+    .userInfo table {
         border-spacing: 10px 10px;
     }
 
-    #user-content input[type="button"] {
+    .userInfo input[type="button"] {
         padding: 0;
         font-size: small !important;
         font-weight: 600 !important;
