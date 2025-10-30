@@ -97,6 +97,123 @@ function changePage(page) {
   renderPagination();
 }
 
+// ====== ĐỒNG BỘ DỮ LIỆU TỰ ĐỘNG ======
+// Lắng nghe sự thay đổi localStorage từ các tab khác (admin)
+window.addEventListener("storage", (e) => {
+  // Lắng nghe thay đổi dữ liệu sản phẩm
+  if (e.key === "product" && e.newValue) {
+    console.log("🔄 Phát hiện thay đổi giá từ admin, đang cập nhật...");
+
+    // Cập nhật dữ liệu sản phẩm
+    products = JSON.parse(e.newValue);
+    lastProductData = JSON.stringify(products);
+
+    // Render lại sản phẩm với trang hiện tại
+    renderProducts(currentPage);
+    renderPagination();
+
+    // Hiển thị thông báo nhỏ cho user
+    showUpdateNotification();
+  }
+
+  // Lắng nghe trigger cập nhật giá cụ thể
+  if (e.key === "priceUpdateTrigger" && e.newValue) {
+    const updateInfo = JSON.parse(e.newValue);
+    console.log("📢 Nhận được thông báo cập nhật giá:", updateInfo.productName);
+
+    // Hiển thị thông báo chi tiết
+    showUpdateNotification(updateInfo.productName);
+  }
+});
+
+// ====== KIỂM TRA VÀ CẬP NHẬT ĐỊNH KỲ (cho cùng tab) ======
+// Dùng để cập nhật khi thay đổi trong cùng tab
+let lastProductData = JSON.stringify(products);
+
+setInterval(() => {
+  const currentProductData = localStorage.getItem("product");
+  if (currentProductData !== lastProductData) {
+    console.log("🔄 Phát hiện thay đổi dữ liệu, đang cập nhật...");
+    products = JSON.parse(currentProductData);
+    lastProductData = currentProductData;
+    renderProducts(currentPage);
+    renderPagination();
+    showUpdateNotification();
+  }
+}, 2000); // Kiểm tra mỗi 2 giây
+
+// ====== HÀM HIỂN THỊ THÔNG BÁO CẬP NHẬT ======
+function showUpdateNotification(productName = null) {
+  // Xóa thông báo cũ nếu có
+  const existingNotif = document.querySelector(".update-notification");
+  if (existingNotif) existingNotif.remove();
+
+  const notification = document.createElement("div");
+  notification.className = "update-notification";
+  notification.style.cssText = `
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    z-index: 9999;
+    font-size: 14px;
+    font-weight: 600;
+    animation: slideIn 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 350px;
+  `;
+
+  const message = productName
+    ? `Giá "${productName}" đã được cập nhật!`
+    : "Giá sản phẩm đã được cập nhật!";
+
+  notification.innerHTML = `
+    <span style="font-size: 18px;">🔄</span>
+    <span style="line-height: 1.4;">${message}</span>
+  `;
+
+  document.body.appendChild(notification);
+
+  // Tự động ẩn sau 4 giây
+  setTimeout(() => {
+    notification.style.animation = "slideOut 0.3s ease-out";
+    setTimeout(() => notification.remove(), 300);
+  }, 4000);
+}
+
+// Thêm CSS animation
+const style = document.createElement("style");
+style.textContent = `
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(100px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slideOut {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(100px);
+    }
+  }
+`;
+document.head.appendChild(style);
+
 // ====== CHẠY LẦN ĐẦU ======
 renderProducts();
 renderPagination();
