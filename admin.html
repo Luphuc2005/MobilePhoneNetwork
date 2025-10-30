@@ -234,19 +234,8 @@
                         <input id="userSearchInput" type="text" placeholder="🔍 Tìm kiếm theo tên, email, SĐT, địa chỉ..."
                             autocomplete="off" style="flex: 1; min-width: 280px; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; transition: all 0.3s;" />
                         
-                        <select id="filterStatus" style="padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; min-width: 180px; cursor: pointer; background: white; transition: all 0.3s;">
-                            <option value="all">📊 Tất cả trạng thái</option>
-                            <option value="active">✅ Đang hoạt động</option>
-                            <option value="locked">🔒 Đã khóa</option>
-                        </select>
                         
-                        <select id="sortBy" style="padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; min-width: 180px; cursor: pointer; background: white; transition: all 0.3s;">
-                            <option value="id">🔢 Sắp xếp: ID</option>
-                            <option value="name">🔤 Sắp xếp: Tên</option>
-                            <option value="joinDate">📅 Sắp xếp: Ngày tham gia</option>
-                            <option value="orders">🛒 Sắp xếp: Đơn hàng</option>
-                        </select>
-                        
+                      
                         <button id="btnAddUser" onclick="showAddUserModal()" style="white-space: nowrap; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);">
                             ➕ Thêm khách hàng
                         </button>
@@ -297,15 +286,15 @@
             <div id="pricing-content" class="section-content" style="display: none;">
                 <div class="page-title">
                     <h2> Quản lý giá bán</h2>
-                    <p>Thiết lập % lợi nhuận và tra cứu giá sản phẩm</p>
+                    
                 </div>
 
                 <!-- Tabs -->
                 <div class="pricing-tabs">
-                    <button class="tab-btn active" data-tab="adjusted">📦 Sản phẩm đã điều chỉnh</button>
-                    <button class="tab-btn" data-tab="report">📊 Báo cáo lợi nhuận</button>
-                    <button class="tab-btn" data-tab="profit">⚡ Áp dụng % Lợi nhuận</button>
-                    <button class="tab-btn" data-tab="lookup">🔍 Tra cứu giá</button>
+                    <button class="tab-btn active" data-tab="adjusted"> Sản phẩm đã điều chỉnh</button>
+                    <button class="tab-btn" data-tab="report">Báo cáo lợi nhuận </button>
+                    <button class="tab-btn" data-tab="profit"> Áp dụng % Lợi nhuận</button>
+                    <button class="tab-btn" data-tab="lookup"> Tra cứu giá</button>
                 </div>
 
                 <!-- Tab Sản phẩm đã điều chỉnh -->
@@ -315,10 +304,10 @@
                        
                         
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                            <h3 style="margin: 0;">📦 Danh sách sản phẩm</h3>
+                            <h3 style="margin: 0;"> Danh sách sản phẩm</h3>
                             <div style="display: flex; gap: 10px; align-items: center;">
                                 <span style="font-size: 13px; color: #6b7280; background: #f3f4f6; padding: 6px 12px; border-radius: 6px;">
-                                    🔄 Đồng bộ tự động với trang người dùng
+                                    Đồng bộ tự động với trang người dùng
                                 </span>
                             </div>
                         </div>
@@ -396,7 +385,7 @@
                     
                     <!-- Theo loại sản phẩm -->
                     <div class="profit-section">
-                        <h3>📊 % Lợi nhuận theo loại sản phẩm</h3>
+                        <h3> % Lợi nhuận theo loại sản phẩm</h3>
                         <div class="profit-form">
                             <div class="form-group">
                                 <label>Loại sản phẩm:</label>
@@ -425,7 +414,7 @@
 
                     <!-- Theo từng sản phẩm -->
                     <div class="profit-section">
-                        <h3>📱 % Lợi nhuận theo sản phẩm</h3>
+                        <h3> % Lợi nhuận theo sản phẩm</h3>
                         <div class="profit-form">
                             <div class="form-group">
                                 <label>Sản phẩm:</label>
@@ -451,7 +440,7 @@
 
                     <!-- Bảng hiển thị % lợi nhuận -->
                     <div class="profit-table-section">
-                        <h3>📋 Danh sách % lợi nhuận đã lưu</h3>
+                        <h3> Danh sách % lợi nhuận đã lưu</h3>
                         <div class="profit-table">
                             <div class="table-header">
                                 <div>Loại/Sản phẩm</div>
@@ -461,7 +450,7 @@
                             <div id="profitTableBody"></div>
                         </div>
                         <p style="font-size: 13px; color: #6b7280; margin-top: 12px;">
-                            💡 Click <strong>Áp dụng</strong> để cập nhật giá bán theo % lợi nhuận đã lưu.
+                             Click <strong>Áp dụng</strong> để cập nhật giá bán theo % lợi nhuận đã lưu.
                         </p>
                     </div>
                 </div>
@@ -469,7 +458,7 @@
                 <!-- Tab Tra cứu giá -->
                 <div id="lookup-tab" class="tab-content">
                     <div class="lookup-section">
-                        <h3>🔍 Tra cứu giá sản phẩm</h3>
+                        <h3> Tra cứu giá sản phẩm</h3>
                         <div class="lookup-form">
                             <div class="form-group">
                                 <label>Giá vốn:</label>
@@ -485,7 +474,7 @@
 
                         <!-- Ví dụ tính giá -->
                         <div class="example-section">
-                            <h4>📋 Ví dụ tính giá:</h4>
+                            <h4> Ví dụ tính giá:</h4>
                             <div class="example-buttons">
                                 <button onclick="setExample(29990000, 20)">iPhone: 30M + 20%</button>
                                 <button onclick="setExample(27990000, 15)">Samsung: 28M + 15%</button>
