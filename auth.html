@@ -86,9 +86,9 @@
 
                 <tr>
                   <th>Số điện thoại:</th>
-                  <td id="sdt">1234567</td>
+                  <td id="sdt" style="color: gray">1234567</td>
                   <th id="joinDate">Ngày tham gia:</th>
-                  <td id="joinDateVal">"ngày tham gia"</td>
+                  <td id="joinDateVal">1/1/2000</td>
                 </tr>
 
                 <tr>
@@ -100,7 +100,7 @@
                   <td colspan="2" id="passwordCell">
                     <div style="display: flex; height: 100%;">
                       <input type="password" id="userPassword" value="placeholder" disabled>
-                      <input type="checkbox" id="showPassword">
+                      <input type="checkbox" class="showPassword">
                     </div>
                   </td> 
                   <td id="changePasswordCell"> 
@@ -110,7 +110,7 @@
               </table>
             </div>
           </div>
-          <div id="update-info-background">
+          <div class="modal-background">
             <form id="update-form" novalidate>
               <button type="button" class="close-form">x</button>
               <fieldset>
@@ -129,11 +129,11 @@
                 <legend>Địa chỉ</legend>
                 <div style="width: 100%; display: flex; justify-content: space-between; flex-wrap: wrap;">
                   <select id="new-city">
-                    <option>Chọn tỉnh/thành phố</option>
+                    <option value="default">Chọn tỉnh/thành phố</option>
                     <option value="Thành phố Hồ Chí Minh">Thành phố Hồ Chí Minh</option>
                   </select>
                   <select id="new-district">
-                    <option>Chọn quận/huyện</option>
+                    <option value="default">Chọn quận/huyện</option>
                     <option value="Quận 1">Quận 1</option>
                     <option value="Quận 4">Quận 4</option>
                     <option value="Quận 5">Quận 5</option>
@@ -141,14 +141,14 @@
                     <option value="Quận 8">Quận 8</option>
                   </select>
                   <select id="new-ward">
-                    <option>Chọn phường</option>
-                    <option value="Phường 1">Quận 1</option>
-                    <option value="Phường 2">Quận 2</option>
-                    <option value="Phường 3">Quận 3</option>
-                    <option value="Phường 4">Quận 4</option>
-                    <option value="Phường 5">Quận 5</option>
-                    <option value="Phường 6">Quận 6</option>
-                    <option value="Phường 7">Quận 7</option>
+                    <option value="default">Chọn phường</option>
+                    <option value="Phường 1">Phường 1</option>
+                    <option value="Phường 2">Phường 2</option>
+                    <option value="Phường 3">Phường 3</option>
+                    <option value="Phường 4">Phường 4</option>
+                    <option value="Phường 5">Phường 5</option>
+                    <option value="Phường 6">Phường 6</option>
+                    <option value="Phường 7">Phường 7</option>
                   </select>
                 </div>
                 <input id="new-address" type="text" placeholder="Số nhà, tên đường*">
@@ -159,6 +159,31 @@
                 </div>
             </form>
           </div>
+          <div class="modal-background">
+            <form id="reset-password-form" novalidate>
+              <button type="button" class="close-form">x</button>
+              <fieldset>
+                <legend>Đổi mật khẩu</legend>
+                <span>Mật khẩu của bạn phải có tối thiểu 8 kí tự, đồng thời bao gồm chữ số, chữ hoa và chữ thường.</span>
+                <div>
+                  <input type="password" id="current-password" placeholder="Nhập mật khẩu hiện tại">
+                  <input type="checkbox" class="showPassword">
+                </div>
+                <div>
+                  <input type="password" id="new-password" placeholder="Nhập mật khẩu mới">
+                  <input type="checkbox" class="showPassword">
+                </div>
+                <div>
+                  <input type="password" id="confirm-new-password" placeholder="Nhập lại mật khẩu mới">
+                  <input type="checkbox" class="showPassword">
+                </div>
+                <div style="border: none; margin-top: 1%; margin-bottom: 2%;">
+                  <a href="">Quên mật khẩu</a>
+                </div>
+                <input type="submit" value="Đổi mật khẩu" id="reset-password-button" disabled>
+              </fieldset>
+            </form>
+          </div> 
         </div>
     </div>
   </main>

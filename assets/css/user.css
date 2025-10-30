@@ -174,7 +174,6 @@ html, body
     gap: 30px;
     margin-top: 1.5%;
     margin-bottom: 1.5%;
-    border: solid 1px;
 }
 
 /* Sidebar */
@@ -266,7 +265,7 @@ html, body
 
 #user-info table {
     width: 100%;
-    border-spacing: 0.6em 1.5em;
+    border-spacing: 0.6em 2em;
 }
 
 #user-info tr, 
@@ -281,9 +280,11 @@ html, body
 }
 
 #user-info td {
-    border: solid 1px black;
+    border: solid 1px lightgray;
     border-radius: 5px;
-    padding-left: 5px;
+    padding-left: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 #user-info #passwordCell {
@@ -317,15 +318,16 @@ html, body
     font-size: 1em;
 }
 
-#user-info #showPassword {
+.showPassword {
     appearance: none;
     width: 8%;
     background-position: center;
     background-repeat: no-repeat;
+    background-size: contain;
     background-image: url(../images/icons/auth/showPassword.svg);
 }
 
-#user-info #showPassword:checked {
+.showPassword:checked {
     background-position: center;
     background-repeat: no-repeat;
     background-image: url(../images/icons/auth/hidePassword.svg);
@@ -342,7 +344,7 @@ html, body
 }
 
 /* Form cập nhật thông tin */
-#update-info-background {
+.modal-background {
     position: fixed;
     top: 0;
     left: 0;
@@ -433,6 +435,78 @@ html, body
 
 #update-form #new-ward {
     width: 25%;
+}
+
+#reset-password-form {
+    background-color: white;
+    width: 30%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 15px;
+    padding: 10px;
+}
+
+#reset-password-form .close-form {
+    top: 15px;
+    right: 25px;
+}
+
+#reset-password-form fieldset {
+    margin: 3% 3%;
+    border: none;
+}
+
+#reset-password-form legend {
+    font-size: 1.5em;
+    margin-bottom: 1%;
+}
+
+#reset-password-form div {
+    display: flex;
+    border: solid 0.5px gray;
+    margin: 3% 0;
+    margin-bottom: 0;
+    border-radius: 7px;
+}
+
+#reset-password-form input {
+    font-size: 1em;
+    height: 2.5em;
+    margin: 1% 0;
+    width: 100%;
+    border: none;
+    outline: none;
+    padding-left: 15px;
+}
+
+#reset-password-form input:focus {
+    border: none;
+}
+
+#reset-password-form .showPassword {
+    width: 4%;
+    min-width: 20px;
+    margin-right: 10px;
+}
+
+#reset-password-button {
+    border-radius: 25px;
+    background-color: #4681f4;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+}
+
+#reset-password-button:hover {
+    background-color: #5783db;
+    cursor: pointer;
+}
+
+#reset-password-button:disabled {
+    background-color: #365085;
+    cursor: default;
 }
 
 @media screen and (max-width: 1317px){
