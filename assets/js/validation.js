@@ -262,7 +262,7 @@ window.onclick = function (event) {
 
 // ===================Xử lý đăng nhập đăng xuất=================
 let userList = [];
-let userFetch = localStorage.getItem(STORAGE_KEYS.USERS) || [];
+let userFetch = localStorage.getItem("users") || [];
 userList = JSON.parse(userFetch);
 
 //Xử lý đăng ký
@@ -294,7 +294,7 @@ function registerUser(regName, regMail, regPass)
     };
 
     userList.push(account);
-    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(userList));
+    localStorage.setItem("users", JSON.stringify(userList));
     formDangKy.getElementsByClassName("form")[0].reset();
     Array.from(passreq).forEach(req => {
         req.style.color="initial";
@@ -312,7 +312,7 @@ function loginUser(logEmail, logPass)
         if (logEmail == userList[i].email && logPass == userList[i].password)
         { 
             formDangNhap.getElementsByClassName("form")[0].reset();
-            localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(userList[i]));
+            localStorage.setItem("currentUser", JSON.stringify(userList[i]));
             formDangNhap.style.display="none";
             console.log("Login thanh cong, line 316");
             return true;
