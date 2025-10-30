@@ -280,16 +280,17 @@ function registerUser(regName, regMail, regPass)
     let date = new Date().getDate();
     let month = new Date().getMonth();
     let year = new Date().getFullYear();
-    let joinDate = date + " " + month + " " + year;
+    let joinDateVal = date + " " + month + " " + year;
     let userId = userList.at(-1).id + 1; //Lấy id của người dùng gần đây nhất +1;
     let account = {
         id: userId,
-        hoTen: regName, 
+        name: regName, 
         email: regMail,
-        sdt: "",
-        diaChi: "",
-        status: "active",
-        ngayThamGia: joinDate,
+        phone: "",
+        address: "",
+        trangthai: "active",
+        joinDate: joinDateVal,
+        orders: 0,
         password: regPass
     };
 

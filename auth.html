@@ -110,6 +110,55 @@
               </table>
             </div>
           </div>
+          <div id="update-info-background">
+            <form id="update-form" novalidate>
+              <button type="button" class="close-form">x</button>
+              <fieldset>
+                <legend>Họ và tên</legend>
+                <input type="text" id="new-name">
+              </fieldset>
+              <fieldset>
+                <legend>Số điện thoại</legend>
+                <input type="tel" id="new-phone">
+              </fieldset>
+              <fieldset>
+                <legend>Địa chỉ email</legend>
+                <input type="email" id="new-email">
+              </fieldset>
+              <fieldset>
+                <legend>Địa chỉ</legend>
+                <div style="width: 100%; display: flex; justify-content: space-between; flex-wrap: wrap;">
+                  <select id="new-city">
+                    <option>Chọn tỉnh/thành phố</option>
+                    <option value="Thành phố Hồ Chí Minh">Thành phố Hồ Chí Minh</option>
+                  </select>
+                  <select id="new-district">
+                    <option>Chọn quận/huyện</option>
+                    <option value="Quận 1">Quận 1</option>
+                    <option value="Quận 4">Quận 4</option>
+                    <option value="Quận 5">Quận 5</option>
+                    <option value="Quận 7">Quận 7</option>
+                    <option value="Quận 8">Quận 8</option>
+                  </select>
+                  <select id="new-ward">
+                    <option>Chọn phường</option>
+                    <option value="Phường 1">Quận 1</option>
+                    <option value="Phường 2">Quận 2</option>
+                    <option value="Phường 3">Quận 3</option>
+                    <option value="Phường 4">Quận 4</option>
+                    <option value="Phường 5">Quận 5</option>
+                    <option value="Phường 6">Quận 6</option>
+                    <option value="Phường 7">Quận 7</option>
+                  </select>
+                </div>
+                <input id="new-address" type="text" placeholder="Số nhà, tên đường*">
+                </fieldset>
+                <div style="position: absolute; bottom: 4%; width: 100%; display: flex; justify-content: space-around; height: 6%">
+                  <input type="reset" value="Thiết lập lại" id="reset-form-button"> 
+                  <input type="submit" value="Cập nhật thông tin" id="save-changes-button">
+                </div>
+            </form>
+          </div>
         </div>
     </div>
   </main>

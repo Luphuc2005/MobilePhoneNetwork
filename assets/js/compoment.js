@@ -104,7 +104,7 @@ function drawDropdownMenu()
         dropdownMenu.style.justifyContent="center";
         account.appendChild(dropdownMenu);
 
-        let currentUsername = currentUser.hoTen;
+        let currentUsername = currentUser.name;
         usernameHeader.textContent = currentUsername;
 
         //Thông tin cá nhân
@@ -121,7 +121,7 @@ function drawDropdownMenu()
         {
             signout.addEventListener("click", (event) => {
             console.log("sign out");
-            localStorage.removeItem("currentUsers");
+            localStorage.removeItem("currentUser");
             //Đưa dropdown menu về lúc chưa đăng nhập
             listItems.forEach((li) => {
                 li.style.minWidth="fit-content";
