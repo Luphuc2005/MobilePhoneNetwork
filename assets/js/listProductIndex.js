@@ -1,5 +1,5 @@
 // ====== LẤY DỮ LIỆU TỪ LOCALSTORAGE ======
-let products = JSON.parse(localStorage.getItem("products")) || [];
+let products = JSON.parse(localStorage.getItem("product")) || [];
 
 // ====== CHỌN PHẦN TỬ DOM ======
 const layoutProduct = document.querySelector(".products-flex");
@@ -22,7 +22,7 @@ function renderProducts(page = 1) {
   const start = (page - 1) * productsPerPage;
   const end = start + productsPerPage;
   const paginatedProducts = products.slice(start, end);
-
+  
   paginatedProducts.forEach((item) => {
     layoutProduct.innerHTML += `
       <div class="product-card">
@@ -95,6 +95,7 @@ function changePage(page) {
   currentPage = page;
   renderProducts(currentPage);
   renderPagination();
+  setupProductCardEvents(); // Gắn lại event sau khi render
 }
 
 // ====== ĐỒNG BỘ DỮ LIỆU TỰ ĐỘNG ======
@@ -130,17 +131,6 @@ window.addEventListener("storage", (e) => {
 // Dùng để cập nhật khi thay đổi trong cùng tab
 let lastProductData = JSON.stringify(products);
 
-setInterval(() => {
-  const currentProductData = localStorage.getItem("product");
-  if (currentProductData !== lastProductData) {
-    console.log("🔄 Phát hiện thay đổi dữ liệu, đang cập nhật...");
-    products = JSON.parse(currentProductData);
-    lastProductData = currentProductData;
-    renderProducts(currentPage);
-    renderPagination();
-    showUpdateNotification();
-  }
-}, 2000); // Kiểm tra mỗi 2 giây
 
 // ====== HÀM HIỂN THỊ THÔNG BÁO CẬP NHẬT ======
 function showUpdateNotification(productName = null) {
@@ -214,41 +204,88 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
+// ====== HÀM GẮN EVENT CHO NÚT CHI TIẾT ======
+function setupProductCardEvents() {
+    const productCards = document.getElementsByClassName('product-card');
+    for (let card of productCards) {
+        const btnDetail = card.querySelector('.btn-detail');
+        if (btnDetail) {
+            btnDetail.addEventListener('click', function () {
+                // 1. Kiểm tra xem có mục cũ không và xóa đi
+                let productDetailString = localStorage.getItem('productDetail');
+                if (productDetailString) {
+                    localStorage.removeItem('productDetail');
+                }
+                let listProducts = JSON.parse(localStorage.getItem("product")) || [];
+                productDetailString = listProducts.find(product => product.tensanpham === card.querySelector('.product-name').innerText);
+                console.log(productDetailString);
+                
+                // 2. Thu thập dữ liệu từ card
+                let productDetail = {
+                    img: productDetailString.hinhanh,
+                    name: productDetailString.tensanpham,
+                    price: productDetailString.gia.toLocaleString("vi-VN", { style: "currency", currency: "VND" }),
+                    rating: productDetailString.rating || "4.5",
+                    reviews: productDetailString.reviews || "72",
+                    priceOld: (productDetailString.oldPrice || productDetailString.gia * 1.1).toLocaleString("vi-VN", { style: "currency", currency: "VND" }),
+                    color: productDetailString.color || ["Titan Đen"],  // Giữ nguyên array
+                    memory: productDetailString.memory || ["256GB"]     // Giữ nguyên array
+                };
+                
+                console.log('📦 Product Detail được tạo:', productDetail);
+                
+                // 3. Lưu dữ liệu mới vào localStorage
+                localStorage.setItem('productDetail', JSON.stringify(productDetail));
+                let products = document.getElementById("products");
+                products.style.display="none";
+                let categoryCard = document.getElementById("category-card");
+                categoryCard.style.display="none";
+                let productContainer = document.getElementsByClassName('product-container')[0];
+                productContainer.style.display="block";
+                renderProductDetailPage(productDetail);
+                setupThumbnailGallery();
+                setupAddToCartButton();
+                setupColorMemoryTracking(); // Thêm tracking cho màu và bộ nhớ
+                setupContinueShoppingButton();
+            });
+        }
+    }
+}
+
 // ====== CHẠY LẦN ĐẦU ======
 renderProducts();
 renderPagination();
+setupProductCardEvents(); // Gắn event cho trang 1
 
 function renderProductDetailPage(detail) {
     let productContainer = document.querySelector('.product-container');
     console.log(detail);
     if (detail && productContainer) {
-        // Lưu ý: Dùng innerHTML = thay vì += để tránh render đè
-        let star, reviewCount;
-    try {
-        // Tách chuỗi tại vị trí " ("
-        // parts sẽ là mảng: ["4.5", "50 đánh giá)"]
-        const parts = detail.ratingText.split(' ('); 
-
-        // Lấy phần tử đầu tiên và loại bỏ khoảng trắng thừa
-        star = parts[0].trim(); // "4.5"
-
-        // Lấy phần tử thứ hai, rồi tách tiếp bằng dấu cách
-        // reviewParts sẽ là mảng: ["50", "đánh", "giá)"]
-        const reviewParts = parts[1].split(' ');
-
-        // Lấy con số đầu tiên
-        reviewCount = reviewParts[0]; // "50"
-
-        console.log("Số sao:", star);           // Output: 4.5
-        console.log("Số đánh giá:", reviewCount); // Output: 50
-
-    } catch (e) {
-        console.error("Lỗi khi tách chuỗi rating:", e);
-        // Đặt giá trị mặc định nếu chuỗi không đúng định dạng
-        const star = "N/A";
-        const reviewCount = "0";
-    }
-        productContainer.innerHTML = ` 
+        // Render các option bộ nhớ
+        let memoryOptions = '';
+        if (detail.memory && Array.isArray(detail.memory)) {
+            detail.memory.forEach((mem, index) => {
+                const checked = index === 0 ? 'checked' : '';
+                memoryOptions += `
+                    <input type="radio" name="memory" id="memory-${mem}" value="${mem}" ${checked}>
+                    <label for="memory-${mem}">${mem}</label>
+                `;
+            });
+        }
+        
+        // Render các option màu sắc
+        let colorOptions = '';
+        if (detail.color && Array.isArray(detail.color)) {
+            detail.color.forEach((col, index) => {
+                const checked = index === 0 ? 'checked' : '';
+                colorOptions += `
+                    <input type="radio" name="color" id="color-${col}" value="${col}" ${checked}>
+                    <label for="color-${col}">${col}</label>
+                `;
+            });
+        }
+        
+    productContainer.innerHTML = ` 
 <div class="product-main">
             
             <div class="product-gallery">
@@ -269,8 +306,8 @@ function renderProductDetailPage(detail) {
                 <h1>${detail.name}</h1>
                 
                 <div class="reviews">
-                    <span class="rating">${star} <i class="fa-solid fa-star"></i></span>
-                    <span class="review-count">${reviewCount} đánh giá</span>
+                    <span class="rating">${detail.rating} <i class="fa-solid fa-star"></i></span>
+                    <span class="review-count">${detail.reviews} đánh giá</span>
                     <span class="sold-count">Đã bán 224</span>
                 </div>
                 
@@ -283,29 +320,12 @@ function renderProductDetailPage(detail) {
                 <div class="options-section">
                     <h3>Chọn màu sắc:</h3>
                     <div class="option-group color-options">
-                        <input type="radio" name="color" id="color-black" value="Titan Đen" checked>
-                        <label for="color-black">Titan Đen</label>
-                        
-                        <input type="radio" name="color" id="color-white" value="Titan Trắng">
-                        <label for="color-white">Titan Trắng</label>
-                        
-                        <input type="radio" name="color" id="color-blue" value="Titan Xanh">
-                        <label for="color-blue">Titan Xanh</label>
-
-                        <input type="radio" name="color" id="color-natural" value="Titan Tự Nhiên">
-                        <label for="color-natural">Titan Tự Nhiên</label>
+                        ${colorOptions}
                     </div>
 
                     <h3>Dung lượng:</h3>
                     <div class="option-group storage-options">
-                        <input type="radio" name="memory" id="memory-256" value="256GB" checked>
-                        <label for="memory-256">256GB</label>
-                        
-                        <input type="radio" name="memory" id="memory-512" value="512GB">
-                        <label for="memory-512">512GB</label>
-                        
-                        <input type="radio" name="memory" id="memory-1tb" value="1TB">
-                        <label for="memory-1tb">1TB</label>
+                        ${memoryOptions}
                     </div>
                 </div>
 
@@ -466,6 +486,45 @@ function setupContinueShoppingButton() {
 }
 
 /**
+ * Hàm theo dõi thay đổi màu sắc và bộ nhớ, cập nhật localStorage
+ */
+function setupColorMemoryTracking() {
+    const colorInputs = document.querySelectorAll('input[name="color"]');
+    const memoryInputs = document.querySelectorAll('input[name="memory"]');
+    
+    function updateProductDetail() {
+        let storedDetailString = localStorage.getItem('productDetail');
+        if (!storedDetailString) return;
+        
+        let productDetail = JSON.parse(storedDetailString);
+        
+        // Cập nhật màu và bộ nhớ được chọn
+        const selectedColor = document.querySelector('input[name="color"]:checked')?.value || 'Titan Đen';
+        const selectedMemory = document.querySelector('input[name="memory"]:checked')?.value || '256GB';
+        
+        productDetail.selectedColor = selectedColor;
+        productDetail.selectedMemory = selectedMemory;
+        
+        // Lưu lại vào localStorage
+        localStorage.setItem('productDetail', JSON.stringify(productDetail));
+        console.log('✅ Đã cập nhật productDetail:', { selectedColor, selectedMemory });
+    }
+    
+    // Thêm event listener cho các radio button màu sắc
+    colorInputs.forEach(input => {
+        input.addEventListener('change', updateProductDetail);
+    });
+    
+    // Thêm event listener cho các radio button bộ nhớ
+    memoryInputs.forEach(input => {
+        input.addEventListener('change', updateProductDetail);
+    });
+    
+    // Cập nhật lần đầu với giá trị mặc định
+    updateProductDetail();
+}
+
+/**
  * Hàm thêm sản phẩm vào giỏ hàng
  * Phải được gọi SAU KHI renderProductDetailPage()
  */
@@ -488,9 +547,17 @@ function setupAddToCartButton() {
         
         let productDetail = JSON.parse(storedDetailString);
         
-        // Lấy màu sắc và dung lượng đã chọn
-        const selectedColor = document.querySelector('input[name="color"]:checked')?.value || 'Titan Đen';
-        const selectedMemory = document.querySelector('input[name="memory"]:checked')?.value || '256GB';
+        // Ưu tiên lấy từ localStorage (đã được cập nhật bởi setupColorMemoryTracking)
+        // Nếu không có thì mới lấy từ DOM
+        const selectedColor = productDetail.selectedColor || document.querySelector('input[name="color"]:checked')?.value || 'Titan Đen';
+        const selectedMemory = productDetail.selectedMemory || document.querySelector('input[name="memory"]:checked')?.value || '256GB';
+        
+        console.log('🛒 Đang thêm vào giỏ hàng:', { 
+            name: productDetail.name, 
+            color: selectedColor, 
+            memory: selectedMemory,
+            fromLocalStorage: !!(productDetail.selectedColor && productDetail.selectedMemory)
+        });
         
         // Lưu tên gốc, màu và bộ nhớ riêng biệt
         const productName = productDetail.name;
@@ -563,6 +630,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // 5. Gọi hàm thiết lập nút "Thêm vào giỏ"
         setupAddToCartButton();
         
+        // 6. Theo dõi thay đổi màu sắc và bộ nhớ
+        setupColorMemoryTracking();
+        
         // (Tùy chọn) Xóa dữ liệu sau khi dùng xong để tránh lỗi
         // localStorage.removeItem('productDetail'); 
     } else {
@@ -576,43 +646,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-const productCards = document.getElementsByClassName('product-card');
-for (let card of productCards) {
-    const btnDetail = card.querySelector('.btn-detail');
-    if (btnDetail) {
-        btnDetail.addEventListener('click', function () {
-            // 1. Kiểm tra xem có mục cũ không và xóa đi
-            let productDetailString = localStorage.getItem('productDetail');
-            if (productDetailString) {
-                localStorage.removeItem('productDetail');
-            }
-            
-            // 2. Thu thập dữ liệu từ card
-            let productDetail = {
-                img: card.querySelector('.product-img').src,
-                name: card.querySelector('.product-name').innerText,
-                price: card.querySelector('.product-price').innerText,
-                ratingText: card.querySelector('.rating-text').innerText,
-                priceOld: card.querySelector('.product-old-price').innerText
-                // Lưu ý: Các trường 'reviewCount' và 'soldCount' không có ở đây
-                // Bạn cần thêm chúng nếu có trên product-card
-            };
-            
-            // 3. Lưu dữ liệu mới vào localStorage
-            localStorage.setItem('productDetail', JSON.stringify(productDetail));
-            let products = document.getElementById("products");
-            products.style.display="none";
-            let categoryCard = document.getElementById("category-card");
-            categoryCard.style.display="none";
-            let productContainer = document.getElementsByClassName('product-container')[0];
-            productContainer.style.display="block";
-            renderProductDetailPage(productDetail);
-            setupThumbnailGallery();
-            setupAddToCartButton();
-            setupContinueShoppingButton();
-            // 4. Chuyển hướng đến trang chi tiết
-        });
-
-
-    }
-}
+// Code này đã được chuyển vào hàm setupProductCardEvents() ở trên
