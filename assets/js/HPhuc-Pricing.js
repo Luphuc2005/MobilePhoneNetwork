@@ -1,9 +1,4 @@
 // ====== QUẢN LÝ GIÁ BÁN ======
-// TODO: Sau này sẽ load dữ liệu từ JSON file
-// Cách nối JSON:
-// 1. Tạo file products.json trong thư mục data/
-// 2. Uncomment phần fetch() trong hàm loadProducts()
-// 3. Xóa phần sampleProducts và dùng data.products thay thế
 
 // Biến toàn cục
 let products = JSON.parse(localStorage.getItem("product")) || [];
@@ -14,6 +9,48 @@ let categoryProfits = JSON.parse(localStorage.getItem("categoryProfits")) || {};
 // % Lợi nhuận theo TỪNG SẢN PHẨM cụ thể (VD: iPhone 15 Pro Max = 25%)
 // ⚡ ƯU TIÊN: Nếu có productProfits thì dùng, không có mới dùng categoryProfits
 let productProfits = JSON.parse(localStorage.getItem("productProfits")) || {};
+
+// ====== HELPER: LƯU PRODUCTS ======
+function saveProductsToStorage() {
+  localStorage.setItem("product", JSON.stringify(products));
+}
+
+// ====== CALCULATE PROFIT (LỢI NHUẬN) ======
+function calculateProfit(product) {
+  // Kiểm tra xem có giá vốn không
+  if (!product.giavon || product.giavon === 0) {
+    return {
+      profit: 0,
+      profitPercent: 0,
+      profitPercentText: "0.00",
+      hasProfit: false,
+      message: "Chưa có giá vốn",
+      color: "#6b7280",
+    };
+  }
+
+  // Tính lợi nhuận
+  const profit = product.gia - product.giavon;
+  const profitPercent = (profit / product.giavon) * 100;
+  const profitPercentText = profitPercent.toFixed(2);
+
+  // Xác định màu sắc dựa trên % lợi nhuận
+  let color = "#10b981"; // Xanh lá - lời tốt
+  if (profitPercent < 5) {
+    color = "#ef4444"; // Đỏ - lời thấp
+  } else if (profitPercent < 15) {
+    color = "#f59e0b"; // Vàng - lời trung bình
+  }
+
+  return {
+    profit: profit,
+    profitPercent: profitPercent,
+    profitPercentText: profitPercentText,
+    hasProfit: true,
+    message: `Lời ${formatPrice(profit)} (${profitPercentText}%)`,
+    color: color,
+  };
+}
 
 // ====== TAB SWITCHING ======
 function switchTab(tabName) {
@@ -44,6 +81,10 @@ function switchTab(tabName) {
   if (tabName === "profit") {
     loadProfitTable();
     loadProducts();
+  } else if (tabName === "adjusted") {
+    loadAdjustedProducts();
+  } else if (tabName === "report") {
+    loadProfitReport();
   }
 }
 
@@ -84,6 +125,28 @@ function setupEventListeners() {
     calculateBtn.addEventListener("click", (e) => {
       e.preventDefault();
       calculatePrice();
+    });
+  }
+
+  // Apply category profit to price
+  const applyCategoryProfitBtn = document.getElementById(
+    "applyCategoryProfitBtn"
+  );
+  if (applyCategoryProfitBtn) {
+    applyCategoryProfitBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      applyCategoryProfitToPrice();
+    });
+  }
+
+  // Apply product profit to price
+  const applyProductProfitBtn = document.getElementById(
+    "applyProductProfitBtn"
+  );
+  if (applyProductProfitBtn) {
+    applyProductProfitBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      applyProductProfitToPrice();
     });
   }
 
@@ -128,6 +191,14 @@ function setupEventListeners() {
       }
     });
   }
+
+  // Search adjusted products
+  const searchAdjustedInput = document.getElementById("searchAdjustedProduct");
+  if (searchAdjustedInput) {
+    searchAdjustedInput.addEventListener("input", (e) => {
+      loadAdjustedProducts(e.target.value);
+    });
+  }
 }
 
 // ====== LOAD CATEGORIES ======
@@ -138,8 +209,15 @@ function loadCategories() {
     return;
   }
 
-  // Dữ liệu categories
-  const categories = ["Iphone", "Samsung", "Xiaomi", "Oppo"];
+  // Load categories động từ products (đã được cache)
+  const categoriesSet = new Set();
+  products.forEach((product) => {
+    if (product.danhmuc) {
+      categoriesSet.add(product.danhmuc);
+    }
+  });
+
+  const categories = Array.from(categoriesSet).sort();
 
   // Xóa options cũ
   categorySelect.innerHTML = '<option value="">Chọn loại sản phẩm</option>';
@@ -160,28 +238,21 @@ function loadProducts() {
   const productSelect = document.getElementById("productSelect");
   if (!productSelect) return;
 
-  // Dữ liệu mẫu với 4 sản phẩm
-  const sampleProducts = [
-    { name: "iPhone 15 Pro Max", category: "Iphone", price: 29990000, id: 1 },
-    {
-      name: "Samsung Galaxy S25 Ultra",
-      category: "Samsung",
-      price: 27990000,
-      id: 2,
-    },
-    { name: "Xiaomi 15T Pro", category: "Xiaomi", price: 12990000, id: 3 },
-    { name: "Oppo Find X8", category: "Oppo", price: 18990000, id: 4 },
-  ];
+  // Sắp xếp theo tên sản phẩm
+  const sortedProducts = [...products].sort((a, b) =>
+    a.tensanpham.localeCompare(b.tensanpham)
+  );
 
   // Xóa options cũ
   productSelect.innerHTML = '<option value="">Chọn sản phẩm</option>';
 
-  // Thêm products vào select
-  sampleProducts.forEach((product) => {
-    const option = document.createElement("option");
-    option.value = product.name;
-    option.textContent = `${product.name} (${product.category})`;
-    productSelect.appendChild(option);
+  // Thêm products vào select, nhóm theo category
+  const productsByCategory = {};
+  sortedProducts.forEach((product) => {
+    if (!productsByCategory[product.danhmuc]) {
+      productsByCategory[product.danhmuc] = [];
+    }
+    productsByCategory[product.danhmuc].push(product);
   });
 
   // Thêm từng category group
@@ -1566,17 +1637,11 @@ function saveProductProfit() {
     return;
   }
 
-  const product = productSelect.value.trim();
+  const productId = parseInt(productSelect.value);
   const profit = parseFloat(productProfitInput.value);
 
-  console.log("🔍 Debug saveProductProfit:", {
-    product,
-    profit,
-    optionsCount: productSelect.options.length,
-  });
-
-  // Validation với thông báo chuyên nghiệp
-  if (!product) {
+  // Validation
+  if (!productId || isNaN(productId)) {
     showNotification(
       "📱 Thiếu thông tin",
       "Vui lòng chọn sản phẩm từ danh sách.",
@@ -1604,23 +1669,33 @@ function saveProductProfit() {
     return;
   }
 
+  // Lấy tên sản phẩm từ ID (dùng cache)
+  const selectedProduct = products.find((p) => p.id === productId);
+
+  if (!selectedProduct) {
+    showNotification("❌ Lỗi", "Không tìm thấy sản phẩm!", "error");
+    return;
+  }
+
+  const productName = selectedProduct.tensanpham;
+
   // Kiểm tra xem đã tồn tại chưa
-  const isUpdate = productProfits[product] !== undefined;
-  const oldProfit = productProfits[product];
+  const isUpdate = productProfits[productName] !== undefined;
+  const oldProfit = productProfits[productName];
 
   const title = isUpdate
     ? "Cập nhật lợi nhuận sản phẩm"
     : "Thiết lập lợi nhuận sản phẩm";
   const message = isUpdate
-    ? `Sản phẩm: ${product}<br>Lợi nhuận hiện tại: ${oldProfit}%<br>Lợi nhuận mới: ${profit}%`
-    : `Sản phẩm: ${product}<br>Lợi nhuận: ${profit}%`;
+    ? `Sản phẩm: ${productName}<br>Lợi nhuận hiện tại: ${oldProfit}%<br>Lợi nhuận mới: ${profit}%`
+    : `Sản phẩm: ${productName}<br>Lợi nhuận: ${profit}%`;
 
   showConfirmModal(
     title,
     message,
     () => {
-      // Lưu vào localStorage
-      productProfits[product] = profit;
+      // Lưu theo TÊN sản phẩm, không phải ID
+      productProfits[productName] = profit;
       localStorage.setItem("productProfits", JSON.stringify(productProfits));
 
       // Reset form với animation
@@ -1642,8 +1717,8 @@ function saveProductProfit() {
       loadProfitTable();
 
       const successMessage = isUpdate
-        ? `Lợi nhuận "${product}" đã được cập nhật: ${oldProfit}% → ${profit}%`
-        : `Đã thêm lợi nhuận cho "${product}": ${profit}%`;
+        ? `Lợi nhuận "${productName}" đã được cập nhật: ${oldProfit}% → ${profit}%`
+        : `Đã thêm lợi nhuận cho "${productName}": ${profit}%`;
 
       showNotification("  Thành công", successMessage, "success");
     },
@@ -1651,8 +1726,8 @@ function saveProductProfit() {
       showNotification(
         "ℹ️ Đã hủy",
         isUpdate
-          ? `Giữ nguyên lợi nhuận cho "${product}": ${oldProfit}%`
-          : `Đã hủy thiết lập lợi nhuận cho "${product}".`,
+          ? `Giữ nguyên lợi nhuận cho "${productName}": ${oldProfit}%`
+          : `Đã hủy thiết lập lợi nhuận cho "${productName}".`,
         "info"
       );
     }
@@ -1698,6 +1773,9 @@ function loadProfitTable() {
 
   tableBody.innerHTML = "";
 
+  // Dọn dẹp các entry không hợp lệ (ID thay vì tên)
+  cleanupInvalidProfitEntries();
+
   // Load category profits
   Object.keys(categoryProfits).forEach((category) => {
     const row = createProfitRow(
@@ -1742,6 +1820,11 @@ function createProfitRow(name, profit, type) {
     </div>
     <div><strong>${profit}%</strong></div>
     <div class="actions">
+      <button onclick="applyProfitFromTable('${name}', ${profit}, '${type}')" 
+              style="background: #8b5cf6; padding: 6px 12px; border-radius: 6px; color: white; font-weight: 600; font-size: 12px;" 
+              title="Áp dụng vào giá">
+        ⚡ Áp dụng
+      </button>
       <button onclick="editProfit('${name}', ${profit}, '${type}')" title="Sửa">
         <img src="assets/images/icons/sua.png" alt="Sửa" />
       </button>
@@ -2201,8 +2284,10 @@ function initializePricing() {
 
   // Setup event listeners
   setupEventListeners();
+  setupReportEventListeners(); // Setup báo cáo lợi nhuận
 
   // Load dữ liệu
+  loadAdjustedProducts(); // Load tab mặc định
   loadProfitTable();
   loadCategories();
   loadProducts();
@@ -2649,7 +2734,11 @@ window.showProfitGuide = function () {
 
 // ====== INITIALIZATION ======
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initializePricing);
+  document.addEventListener("DOMContentLoaded", () => {
+    initializePricing();
+    setupPricingSync();
+  });
 } else {
   initializePricing();
+  setupPricingSync();
 }
