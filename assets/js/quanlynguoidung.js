@@ -1,35 +1,3 @@
-function navigateTo(section, event) {
-  event.preventDefault();
-
-  // Ẩn tất cả phần nội dung
-  document
-    .querySelectorAll(
-      "#dashboard-content, #customers-content, #pricing-content, #other-content", "#products-content",
-      "#import-content"
-    )
-    .forEach((div) => (div.style.display = "none"));
-
-  // Hiển thị phần tương ứng
-  if (section === "dashboard") {
-    document.getElementById("dashboard-content").style.display = "block";
-  } else if (section === "customers") {
-    document.getElementById("customers-content").style.display = "block";
-  } else if (section === "pricing") {
-    document.getElementById("pricing-content").style.display = "block";
-    } else if (section === "products") {
-    document.getElementById("products-content").style.display = "block";
-  } else if (section === "import") {
-    document.getElementById("import-content").style.display = "block";
-    // Initialize pricing module
-    setTimeout(() => {
-      if (typeof initializePricing === "function") {
-        initializePricing();
-      }
-    }, 100);
-  } else {
-    document.getElementById("other-content").style.display = "block";
-  }
-}
 
 let searchQuery = "";
 const searchInput = document.getElementById("userSearchInput");

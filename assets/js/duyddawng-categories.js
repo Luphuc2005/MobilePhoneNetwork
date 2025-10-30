@@ -468,7 +468,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- Đồng bộ đa tab ---
     window.addEventListener('phonestore-sync', (e) => {
         //nếu trang web vừa mới lưu thì bỏ qua 
-        if (e.detail.key === STORAGE_KEY && e.detail.source !== 'SOURCE') {
+        if (e.detail.key === STORAGE_KEY && e.detail.source !== SOURCE) {
             console.log('Categories cập nhật từ nguồn khác');
             categories = loadCategoriesFromStorage() || categories;
             filteredCategories = [...categories];

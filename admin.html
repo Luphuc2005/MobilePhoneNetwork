@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./assets/css/duyddawng-components.css">
+    <link href="./assets/css/admin.css" rel="stylesheet">
     <link rel="stylesheet" href="./assets/css/productAdmin.css">
     <link rel="stylesheet" href="./assets/css/admin_order.css">
     <link rel="stylesheet" href="./assets/css/inventory.css">
@@ -215,7 +216,6 @@
                             <!-- Dữ liệu sẽ được load bằng JavaScript -->
                         </div>
                     </div>
-
                     <!-- Thông tin số lượng người dùng -->
                     <div style="margin: 10px 0 0 10px; font-size: 15px; color: #444">
                         Hiển thị 1-5 trang trong tổng số 50 người
@@ -643,74 +643,76 @@
                 </div>
             </div>
         </main>
-        <!-- Modal add Category  -->
-        <div id="categoryModal" class="modal">
-            <div class="modal-content">
-                <!-- Close Button -->
-                <span id="modalClose">&times;</span>
-                <h3 id="modalTitle">Thêm loại sản phẩm mới</h3>
-                <label>Icon(Tải ảnh) <span style="color: red;">*</span></label>
-                <label for="categoryIconUpload" class="btn-upload">
+    </div>
+    <!-- Modal add Category  -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <!-- Close Button -->
+            <span id="modalClose">&times;</span>
+            <h3 id="modalTitle">Thêm loại sản phẩm mới</h3>
+            <label>Icon(Tải ảnh) <span style="color: red;">*</span></label>
+            <label for="categoryIconUpload" class="btn-upload">
+                <img src="./assets/images/icons/icon-plus.png" class="icon-color">
+                <span>Tải ảnh</span>
+            </label>
+            <input type="file" id="categoryIconUpload" accept="image/*">
+            <!-- Image Preview  -->
+            <div id="imagePreview">
+                <img src="" id="previewImg" alt="Xem trước icon">
+                <button type="button" id="removeImage">
                     <img src="./assets/images/icons/icon-plus.png" class="icon-color">
-                    <span>Tải ảnh</span>
-                </label>
-                <input type="file" id="categoryIconUpload" accept="image/*">
-                <!-- Image Preview  -->
-                <div id="imagePreview">
-                    <img src="" id="previewImg" alt="Xem trước icon">
-                    <button type="button" id="removeImage">
-                        <img src="./assets/images/icons/icon-plus.png" class="icon-color">
-                        <span>Xóa ảnh</span>
-                    </button>
-                </div>
-                <!-- Category Name -->
-                <label for="categoryName">Tên loại sản phẩm <span style="color: red;">*</span></label>
-                <input type="text" id="categoryName" placeholder="Ex: IPhone, SamSung, Xiaomi">
-                <!-- Category Description  -->
-                <label for="categoryDescription">Mô tả</label>
-                <textarea id="categoryDescription" rows="3" placeholder="Mô tả ngắn gọn về sản phẩm"></textarea>
-                <!-- Status(for edit) -->
-                <div id="statusContainer" style="display: none;">
-                    <label for="categoryStatus">Trạng thái</label>
-                    <select id="categoryStatus">
-                        <option value="hoat-dong">Hoạt động</option>
-                        <option value="an">Ẩn</option>
-                    </select>
-                </div>
-                <div class="modal-actions">
-                    <button class="cancel" id="cancelBtn">
-                        <img src="./assets/images/icons/icon-plus.png" class="icon-color">
-                        <span>Hủy</span>
-                    </button>
-                    <button class="save" id="saveBtn">
-                        <img src="./assets/images/icons/icon-plus.png" class="icon-color">
-                        <span>Lưu</span>
-                    </button>
-                </div>
+                    <span>Xóa ảnh</span>
+                </button>
             </div>
-            <div id="toast" class="toast">
-                <img src="./assets/images/icons/icon-plus.png" class="icon-color" id="toastIcon">
-                <span id="toastMessage"></span>
+            <!-- Category Name -->
+            <label for="categoryName">Tên loại sản phẩm <span style="color: red;">*</span></label>
+            <input type="text" id="categoryName" placeholder="Ex: IPhone, SamSung, Xiaomi">
+            <!-- Category Description  -->
+            <label for="categoryDescription">Mô tả</label>
+            <textarea id="categoryDescription" rows="3" placeholder="Mô tả ngắn gọn về sản phẩm"></textarea>
+            <!-- Status(for edit) -->
+            <div id="statusContainer" style="display: none;">
+                <label for="categoryStatus">Trạng thái</label>
+                <select id="categoryStatus">
+                    <option value="hoat-dong">Hoạt động</option>
+                    <option value="an">Ẩn</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="cancel" id="cancelBtn">
+                    <img src="./assets/images/icons/icon-plus.png" class="icon-color">
+                    <span>Hủy</span>
+                </button>
+                <button class="save" id="saveBtn">
+                    <img src="./assets/images/icons/icon-plus.png" class="icon-color">
+                    <span>Lưu</span>
+                </button>
             </div>
         </div>
-        <!--=============== PHẢI ĐỂ ĐẦU ================-->
-        <script src="./assets/js/storage-config.js"></script>
-        <!-- ========================================== -->
-        <script src="./assets/js/dataProduct.js"></script>
-        <script src="./assets/js/quanlynguoidung.js"></script>
-        <script src="./assets/js/pricing.js"></script>
-        <script src="./assets/js/duyddawng-navgateTo.js"></script>
-        <script src="./assets/js/duyddawng-categories.js"></script>
-        <script src="./assets/js/productlayout.js"></script>
-        <script src=".\assets\js\customer.js"></script>
-        <script src=".\assets\js\order-modify-orderstatus.js"></script>
-        <script src=".\assets\js\order-local-storage.js"></script>
-        <script src=".\assets\js\order-search.js"></script>
-        <script src=".\assets\js\order-detail.js"></script>
-        <script src=".\assets\js\order-page-control.js"></script>
-        <script src=".\assets\js\inventory.js"></script>
-        <script src="./assets/js/importGoods.js"></script>
-        <link href="./assets/css/admin.css" rel="stylesheet">
+        <div id="toast" class="toast">
+            <img src="./assets/images/icons/icon-plus.png" class="icon-color" id="toastIcon">
+            <span id="toastMessage"></span>
+        </div>
+    </div>
+    <!--=============== PHẢI ĐỂ ĐẦU ================-->
+    <script src="./assets/js/storage-config.js"></script>
+    <script src="./assets/js/duyddawng-data-categories.js"></script>
+    <!-- ========================================== -->
+    <script src="./assets/js/duyddawng-navgateTo.js"></script>
+    <script src="./assets/js/duyddawng-categories.js"></script>
+    <script src="./assets/js/dataProduct.js"></script>
+    <script src="./assets/js/quanlynguoidung.js"></script>
+    <script src="./assets/js/pricing.js"></script>
+
+    <script src="./assets/js/productlayout.js"></script>
+    <script src=".\assets\js\customer.js"></script>
+    <script src=".\assets\js\order-modify-orderstatus.js"></script>
+    <script src=".\assets\js\order-local-storage.js"></script>
+    <script src=".\assets\js\order-search.js"></script>
+    <script src=".\assets\js\order-detail.js"></script>
+    <script src=".\assets\js\order-page-control.js"></script>
+    <script src=".\assets\js\inventory.js"></script>
+    <script src="./assets/js/importGoods.js"></script>
 </body>
 
 </html>
