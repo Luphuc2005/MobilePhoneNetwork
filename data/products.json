@@ -1,0 +1,137 @@
+[
+  {
+    "id": 1,
+    "name": "Iphone 15 ProMax",
+    "category": "Iphone",
+    "price": 29.99,
+    "status": true,
+    "quantity": "40",
+    "image": "/assets/images/products/ip15prm"
+  },
+  {
+    "id": 2,
+    "name": "Iphone 14 Pro",
+    "category": "Iphone",
+    "price": 25.99,
+    "status": true,
+    "quantity": "35",
+    "image": "/assets/images/products/ip14prm.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Iphone 13",
+    "category": "Iphone",
+    "price": 19.99,
+    "status": true,
+    "quantity": "50",
+    "image": "/assets/images/products/ip13.jpg"
+  },
+  {
+    "id": 4,
+    "name": "Iphone SE",
+    "category": "Iphone",
+    "price": 12.99,
+    "status": true,
+    "quantity": "25",
+    "image": "/assets/images/products/ipse.webp"
+  },
+  {
+    "id": 5,
+    "name": "Samsung Galaxy S24 Ultra",
+    "category": "Samsung",
+    "price": 27.99,
+    "status": true,
+    "quantity": "30",
+    "image": "/assets/images/products/samsung-galaxy-s24-ultra.png"
+  },
+  {
+    "id": 6,
+    "name": "Samsung Galaxy Z Fold5",
+    "category": "Samsung",
+    "price": 29.49,
+    "status": true,
+    "quantity": "20",
+    "image": "/assets/images/products/samsung-galaxy-z-fold-5.png"
+  },
+  {
+    "id": 7,
+    "name": "Samsung Galaxy A54",
+    "category": "Samsung",
+    "price": 12.49,
+    "status": true,
+    "quantity": "45",
+    "image": "/assets/images/products/samsung-galaxy-a54.webp"
+  },
+  {
+    "id": 8,
+    "name": "Xiaomi 13T Pro",
+    "category": "Xiaomi",
+    "price": 15.99,
+    "status": true,
+    "quantity": "40",
+    "image": "/assets/images/products/xiaomi-13t-pro.png"
+  },
+  {
+    "id": 9,
+    "name": "Xiaomi Redmi Note 12",
+    "category": "Xiaomi",
+    "price": 9.99,
+    "status": true,
+    "quantity": "60",
+    "image": "/assets/images/products/xiaomi-redmi-note-12.jpg"
+  },
+  {
+    "id": 10,
+    "name": "Oppo Find X6 Pro",
+    "category": "Oppo",
+    "price": 18.49,
+    "status": true,
+    "quantity": "25",
+    "image": "/assets/images/products/oppo-find-x6-pro.webp"
+  },
+  {
+    "id": 11,
+    "name": "Oppo Reno10",
+    "category": "Oppo",
+    "price": 13.99,
+    "status": true,
+    "quantity": "40",
+    "image": "/assets/images/products/oppo-reno-10.png"
+  },
+  {
+    "id": 12,
+    "name": "Vivo V29",
+    "category": "Vivo",
+    "price": 11.49,
+    "status": true,
+    "quantity": "30",
+    "image": "/assets/images/products/vivo-v29.webp"
+  },
+  {
+    "id": 13,
+    "name": "Vivo Y36",
+    "category": "Vivo",
+    "price": 8.99,
+    "status": true,
+    "quantity": "55",
+    "image": "/assets/images/products/vivo-y36.webp"
+  },
+  {
+    "id": 14,
+    "name": "Realme 11 Pro+",
+    "category": "Realme",
+    "price": 10.49,
+    "status": true,
+    "quantity": "35",
+    "image": "/assets/images/products/realme-11pro.webp"
+  },
+  {
+    "id": 15,
+    "name": "Nokia G50",
+    "category": "Nokia",
+    "price": 7.99,
+    "status": true,
+    "quantity": "50",
+    "image": "/assets/images/products/Nokia-G50.jpg"
+  }
+]

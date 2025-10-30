@@ -26,6 +26,11 @@ function navigateTo(section, event) {
         initializePricing();
       }
     }, 100);
+  } else if (section === "orders") {
+    document.getElementById("orders-content").style.display = "block";
+    console.log(document.getElementById("orders-id"));
+  } else if(section === "inventory") {
+    document.getElementById("inventory-content").style.display = "block";
   } else {
     document.getElementById("other-content").style.display = "block";
   }
@@ -462,18 +467,56 @@ saveEdit.onclick = () => {
   const trangthai = editTrangThaiSelect
     ? editTrangThaiSelect.value
     : "Hoạt động";
+  
   if (!name || !email || !phone || !password) {
     alert("Vui lòng nhập đầy đủ thông tin!");
     return;
   }
-  users[editingIndex].name = name;
-  users[editingIndex].email = email;
-  users[editingIndex].phone = phone;
-  users[editingIndex].password = password; // Cập nhật mật khẩu
-  users[editingIndex].trangthai = trangthai; // Sử dụng giá trị từ select, fallback "Hoạt động"
-  localStorage.setItem("users", JSON.stringify(users));
-  renderUsers();
-  editModal.style.display = "none";
+  
+  // Kiểm tra nếu password thay đổi thì hiển thị confirm
+  const oldPassword = users[editingIndex].password;
+  const isPasswordChanged = password !== oldPassword;
+  
+  if (isPasswordChanged) {
+    // Hiển thị confirm dialog nếu mật khẩu thay đổi
+    showConfirmDialog(
+      "Xác nhận thay đổi mật khẩu",
+      `Bạn có chắc chắn muốn đổi mật khẩu cho <strong>${name}</strong>?`,
+      () => {
+        // Lưu thông tin
+        users[editingIndex].name = name;
+        users[editingIndex].email = email;
+        users[editingIndex].phone = phone;
+        users[editingIndex].password = password;
+        users[editingIndex].trangthai = trangthai;
+        localStorage.setItem("users", JSON.stringify(users));
+        renderUsers();
+        editModal.style.display = "none";
+        
+        // Hiển thị thông báo thành công
+        showSuccessNotification(
+          "✅ Cập nhật thành công!",
+          `Đã cập nhật thông tin cho <strong>${name}</strong>.`
+        );
+      }
+    );
+  } else {
+    // Không thay đổi mật khẩu thì lưu luôn
+    users[editingIndex].name = name;
+    users[editingIndex].email = email;
+    users[editingIndex].phone = phone;
+    users[editingIndex].password = password;
+    users[editingIndex].trangthai = trangthai;
+    localStorage.setItem("users", JSON.stringify(users));
+    renderUsers();
+    editModal.style.display = "none";
+    
+    // Thông báo thành công
+    showSuccessNotification(
+      "✅ Cập nhật thành công!",
+      `Đã cập nhật thông tin cho <strong>${name}</strong>.`
+    );
+  }
 };
 
 // === Khóa / Mở khóa ===
@@ -496,7 +539,7 @@ function toggleLockUser(index) {
       } else {
         u.trangthai = "Đã khóa";
         showSuccessNotification(
-          `${actionIcon} Khóa Tài khoản Thành công!`,
+          `${actionIcon} Khóa Tài khoản Thành công rồi nèeee!`,
           `Tài khoản <strong>${u.name}</strong> đã bị khóa. Người dùng không thể đăng nhập.`
         );
       }
