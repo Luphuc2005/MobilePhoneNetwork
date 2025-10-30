@@ -13,6 +13,19 @@ let productProfits = JSON.parse(localStorage.getItem("productProfits")) || {};
 // ====== HELPER: LƯU PRODUCTS ======
 function saveProductsToStorage() {
   localStorage.setItem("product", JSON.stringify(products));
+
+  // Trigger custom event để thông báo cho trang người dùng
+  window.dispatchEvent(
+    new CustomEvent("phonestore-sync", {
+      detail: {
+        key: "product",
+        timestamp: Date.now(),
+        source: "pricing-page",
+      },
+    })
+  );
+
+  console.log("💾 Đã lưu products và trigger sync event");
 }
 
 // ====== CALCULATE PROFIT (LỢI NHUẬN) ======
@@ -287,10 +300,20 @@ function loadAdjustedProducts(searchTerm = "") {
   const grid = document.getElementById("adjustedProductsGrid");
   if (!grid) return;
 
-  // Lọc sản phẩm đã điều chỉnh giá (từ cache local)
-  let adjustedProducts = products.filter(
-    (p) => p.oldPrice > 0 || p.discount != 0 || (p.giavon && p.gia > p.giavon)
-  );
+  // Lọc sản phẩm đã điều chỉnh (có trong productProfits hoặc categoryProfits)
+  let adjustedProducts = products.filter((product) => {
+    // Kiểm tra xem sản phẩm này có được áp dụng % lợi nhuận chưa
+    const hasProductProfit = productProfits[product.tensanpham] !== undefined;
+    const hasCategoryProfit = categoryProfits[product.danhmuc] !== undefined;
+
+    // Hiển thị nếu có % lợi nhuận riêng HOẶC theo category
+    // VÀ có giá vốn để tính toán
+    return (
+      (hasProductProfit || hasCategoryProfit) &&
+      product.giavon &&
+      product.giavon > 0
+    );
+  });
 
   // Tìm kiếm nếu có
   if (searchTerm) {
@@ -305,11 +328,28 @@ function loadAdjustedProducts(searchTerm = "") {
 
   if (adjustedProducts.length === 0) {
     grid.innerHTML = `
-      <div style="text-align: center; padding: 40px; color: #6b7280; font-style: italic;">
+      <div style="text-align: center; padding: 40px; color: #6b7280;">
+        <div style="font-size: 48px; margin-bottom: 16px;">📦</div>
+        <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">
+          ${
+            searchTerm
+              ? "Không tìm thấy sản phẩm phù hợp"
+              : "Chưa có sản phẩm nào được điều chỉnh giá"
+          }
+        </div>
+        <div style="font-size: 14px; color: #9ca3af; margin-bottom: 20px;">
+          ${
+            searchTerm
+              ? "Thử tìm kiếm với từ khóa khác"
+              : 'Vào tab "⚡ Áp dụng % Lợi nhuận" để thiết lập giá cho sản phẩm'
+          }
+        </div>
         ${
-          searchTerm
-            ? "Không tìm thấy sản phẩm phù hợp"
-            : "Chưa có sản phẩm nào được điều chỉnh giá"
+          !searchTerm
+            ? `<button onclick="switchTab('profit')" style="padding: 10px 20px; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+            ⚡ Thiết lập % lợi nhuận
+          </button>`
+            : ""
         }
       </div>
     `;
@@ -345,7 +385,7 @@ function createProductCard(product) {
     <div class="product-image-container">
       <img src="${product.hinhanh}" alt="${
     product.tensanpham
-  }" onerror="this.src='/assets/images/products/ip15prm.webp'">
+  }" onerror="this.src='./assets/images/products/ip15prm.webp'">
       ${discount < 0 ? `<div class="discount-badge">${discount}%</div>` : ""}
     </div>
     <div class="product-info-pricing">
@@ -1010,15 +1050,23 @@ function applyCategoryProfitToPrice() {
         }
       });
 
-      // Lưu vào localStorage
+      // ✅ LƯU % LỢI NHUẬN VÀO categoryProfits
+      categoryProfits[category] = profit;
+      localStorage.setItem("categoryProfits", JSON.stringify(categoryProfits));
+
+      // Lưu giá vào localStorage
       saveProductsToStorage();
 
       // Broadcast
       broadcastPriceUpdate(`${updatedCount} sản phẩm ${category}`);
 
+      // Reload profit table để hiển thị % vừa lưu
+      loadProfitTable();
+
       // Reset form
       categorySelect.value = "";
       categoryProfitInput.value = "";
+      if (categoryDiscountInput) categoryDiscountInput.value = "";
 
       // Reload adjusted products nếu đang ở tab đó
       if (
@@ -1209,7 +1257,11 @@ function applyProductProfitToPrice() {
       product.oldPrice = discountPercent > 0 ? listPrice : 0; // Giá niêm yết (nếu có KM)
       product.discount = discountPercent > 0 ? -discountPercent : 0; // % KM (âm)
 
-      // Lưu vào localStorage
+      // ✅ LƯU % LỢI NHUẬN VÀO productProfits
+      productProfits[product.tensanpham] = profit;
+      localStorage.setItem("productProfits", JSON.stringify(productProfits));
+
+      // Lưu giá vào localStorage
       const productIndex = products.findIndex((p) => p.id === productId);
       products[productIndex] = product;
       saveProductsToStorage();
@@ -1217,9 +1269,13 @@ function applyProductProfitToPrice() {
       // Broadcast
       broadcastPriceUpdate(product.tensanpham);
 
+      // Reload profit table để hiển thị % vừa lưu
+      loadProfitTable();
+
       // Reset form
       productSelect.value = "";
       productProfitInput.value = "";
+      if (productDiscountInput) productDiscountInput.value = "";
 
       // Reload adjusted products nếu đang ở tab đó
       if (
@@ -1444,33 +1500,39 @@ function showConfirmModal(title, message, onConfirm, onCancel) {
     <div style="
       background: white;
       border-radius: 12px;
-      padding: 24px;
-      max-width: 400px;
+      max-width: 600px;
       width: 90%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     ">
-      <div style="font-weight: 600; font-size: 18px; margin-bottom: 12px; color: #1f2937;">${title}</div>
-      <div style="font-size: 14px; line-height: 1.5; color: #6b7280; margin-bottom: 20px;">${message}</div>
-      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+      <div style="padding: 24px; overflow-y: auto; flex: 1;">
+        <div style="font-weight: 600; font-size: 18px; margin-bottom: 12px; color: #1f2937;">${title}</div>
+        <div style="font-size: 14px; line-height: 1.5; color: #6b7280;">${message}</div>
+      </div>
+      <div style="padding: 20px 24px; border-top: 1px solid #e5e7eb; background: #f9fafb; display: flex; gap: 12px; justify-content: flex-end; border-radius: 0 0 12px 12px;">
         <button id="cancelBtnhehe" style="
           background: #f3f4f6;
           color: #6b7280;
           border: none;
-          padding: 8px 16px;
+          padding: 10px 20px;
           border-radius: 6px;
           cursor: pointer;
           font-size: 14px;
+          font-weight: 600;
           transition: all 0.2s ease;
         ">Hủy</button>
         <button id="confirmBtn" style="
           background: #10b981;
           color: white;
           border: none;
-          padding: 8px 16px;
+          padding: 10px 20px;
           border-radius: 6px;
           cursor: pointer;
           font-size: 14px;
+          font-weight: 600;
           transition: all 0.2s ease;
         ">Xác nhận</button>
       </div>
