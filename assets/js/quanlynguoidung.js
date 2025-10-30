@@ -1,500 +1,119 @@
+// ============================================================
+// QUẢN LÝ KHÁCH HÀNG - PROFESSIONAL VERSION
+// Đọc dữ liệu từ user-local-storage.js
+// ============================================================
 
+// ====== NAVIGATION FUNCTION ======
+function navigateTo(section, event) {
+  if (event) event.preventDefault();
+
+  // Ẩn tất cả phần nội dung
+  document
+    .querySelectorAll(".section-content")
+    .forEach((div) => (div.style.display = "none"));
+
+  // Hiển thị phần tương ứng
+  const sectionMap = {
+    dashboard: "dashboard-content",
+    customers: "customers-content",
+    pricing: "pricing-content",
+    products: "products-content",
+    categories: "categories-content",
+    orders: "orders-content",
+    inventory: "inventory-content",
+    import: "import-content",
+  };
+
+  const contentId = sectionMap[section];
+  if (contentId) {
+    const element = document.getElementById(contentId);
+    if (element) {
+      element.style.display = "block";
+    }
+  }
+}
+
+// Make navigateTo available globally
+window.navigateTo = navigateTo;
+
+// ====== BIẾN TOÀN CỤC ======
+let users = [];
+let currentPage = 1;
+const usersPerPage = 5;
 let searchQuery = "";
-const searchInput = document.getElementById("userSearchInput");
-if (searchInput) {
-  searchInput.addEventListener("input", (e) => {
-    // Ngăn chặn nếu modal đang mở (tránh conflict focus)
-    if (
-      document.getElementById("modal").style.display === "flex" ||
-      document.getElementById("editModal").style.display === "flex"
-    ) {
-      return;
-    }
-    searchQuery = e.target.value.trim().toLowerCase();
-    currentPage = 1;
-    renderUsers();
-  });
-}
-
-// ====== Biến DOM và biến toàn cục ======
-// Lưu các phần tử HTML và biến dùng chung cho quản lý người dùng
-const modal = document.getElementById("modal"); // Modal thêm người dùng
-const btnAdd = document.getElementById("btnAddUser"); // Nút thêm người dùng
-const closeBtn = document.querySelector(".close"); // Nút đóng modal
-const cancelBtn = document.querySelector(".cancel"); // Nút hủy modal
-const saveBtn = document.querySelector(".save"); // Nút lưu người dùng
-const userTable = document.querySelector(".user-table"); // Bảng danh sách người dùng
-let users = []; // Mảng lưu danh sách người dùng
-let currentPage = 1; // Trang hiện tại
-const usersPerPage = 5; // Số người dùng mỗi trang
-
-// ====== Sự kiện mở/đóng modal thêm người dùng ======
-btnAdd.onclick = () => {
-  modal.style.display = "flex";
-  // Đặt mặc định trạng thái là "Hoạt động" khi mở modal thêm mới
-  const trangThaiSelect = document.querySelector("#modal select");
-  if (trangThaiSelect) {
-    trangThaiSelect.value = "Hoạt động";
-  }
-  // Focus vào input name đầu tiên để tránh nhảy sang search
-  const nameInput = document.querySelector("#modal input:nth-of-type(1)");
-  if (nameInput) {
-    nameInput.focus();
-  }
-}; // Mở modal
-closeBtn.onclick = () => (modal.style.display = "none"); // Đóng modal
-cancelBtn.onclick = () => (modal.style.display = "none"); // Đóng modal khi bấm hủy
-window.onclick = (e) => {
-  // Đóng modal khi click ra ngoài vùng modal
-  if (e.target === modal) modal.style.display = "none";
-};
-
-// Hàm lấy dữ liệu từ form modal (thêm/sửa)
-function getUserFormData(modalSelector) {
-  const modalEl = document.querySelector(modalSelector);
-  const inputs = modalEl.querySelectorAll("input");
-  const select = modalEl.querySelector("select");
-  return {
-    name: inputs[0].value.trim(), // Họ tên
-    email: inputs[1].value.trim(), // Email
-    phone: inputs[2].value.trim(), // Số điện thoại
-    password: inputs[3] ? inputs[3].value.trim() : "", // Mật khẩu
-    trangthai: select ? select.value : "Hoạt động", // Trạng thái (mặc định Hoạt động)
-  };
-}
-
-// ====== Xử lý lưu người dùng mới ======
-saveBtn.onclick = () => {
-  // Lấy dữ liệu từ form
-  const { name, email, phone, password, trangthai } = getUserFormData("#modal");
-  // Kiểm tra dữ liệu hợp lệ
-  if (!name || !email || !phone || !password) {
-    alert("Vui lòng nhập đầy đủ thông tin!");
-    return;
-  }
-  // Tạo object người dùng mới
-  const newUser = {
-    id: users.length + 1,
-    name,
-    email,
-    phone,
-    password, // Lưu mật khẩu
-    trangthai: trangthai || "Hoạt động", // Đảm bảo mặc định "Hoạt động"
-    orders: 0,
-    joinDate: new Date().toLocaleDateString(),
-  };
-  users.push(newUser); // Thêm vào mảng
-  localStorage.setItem("users", JSON.stringify(users)); // Lưu vào localStorage
-  modal.style.display = "none"; // Đóng modal
-  document.querySelectorAll("#modal input").forEach((i) => (i.value = "")); // Xóa input
-  const trangThaiSelect = document.querySelector("#modal select");
-  if (trangThaiSelect) {
-    trangThaiSelect.value = "Hoạt động"; // Reset select về mặc định
-  }
-  renderUsers(); // Vẽ lại bảng
-};
-
-// ====== Hiển thị danh sách người dùng ra bảng ======
-function renderUsers() {
-  // Xóa các dòng cũ (giữ lại header)
-  document.querySelectorAll(".table-row").forEach((row, i) => {
-    if (i > 0) row.remove();
-  });
-  // Lọc danh sách theo từ khóa tìm kiếm
-  let filteredUsers = users;
-  if (searchQuery) {
-    filteredUsers = users.filter(
-      (u) =>
-        u.name.toLowerCase().includes(searchQuery) ||
-        u.email.toLowerCase().includes(searchQuery) ||
-        u.phone.toLowerCase().includes(searchQuery)
-    );
-  }
-  // Phân trang
-  const start = (currentPage - 1) * usersPerPage;
-  const end = start + usersPerPage;
-  const userToShow = filteredUsers.slice(start, end);
-  // Vẽ từng dòng người dùng
-  userToShow.forEach((user, i) => {
-    const trangthai = user.trangthai || "Hoạt động";
-    const lockIconSrc =
-      trangthai === "Hoạt động"
-        ? "assets/images/icons/khoa.png"
-        : "assets/images/icons/3d-unlocked.png";
-    const lockAlt = trangthai === "Hoạt động" ? "Khóa" : "Mở khóa";
-    const trangthaiColor = trangthai === "Hoạt động" ? "green" : "red"; // Màu xanh cho Hoạt động, đỏ cho Đã khóa
-    const newRow = document.createElement("div");
-    newRow.classList.add("table-row");
-    newRow.innerHTML = `
-      <div>#${start + i + 1}</div>
-      <div>${user.name}</div>
-      <div>${user.email}</div>
-      <div>${user.phone}</div>
-      <div style="color: ${trangthaiColor};">${trangthai}</div>
-      <div>${user.orders}</div>
-      <div>${user.joinDate}</div>
-      <div class="col actions">
-        <button><img src="assets/images/icons/eye1.png" alt="Xem" /></button>
-        <button><img src="assets/images/icons/sua.png" alt="Sửa" /></button>
-        <button><img src="${lockIconSrc}" alt="${lockAlt}" /></button>
-        <button><img src="assets/images/icons/xoa.png" alt="Xóa" /></button>
-      </div>
-    `;
-    userTable.appendChild(newRow);
-  });
-  renderPagination(filteredUsers.length); // Vẽ phân trang
-  updateUserInfo(filteredUsers.length); // Cập nhật info tổng số
-  attachActionEvents(); // Gắn lại sự kiện cho nút
-}
-
-// phân trang
-function renderPagination(totalCount) {
-  const total = typeof totalCount === "number" ? totalCount : users.length;
-  const totalPages = Math.ceil(total / usersPerPage);
-  const pageNumbers = document.getElementById("pageNumbers");
-  pageNumbers.innerHTML = "";
-  for (let i = 1; i <= totalPages; i++) {
-    const btn = document.createElement("button");
-    btn.textContent = i;
-    if (i === currentPage) btn.classList.add("active");
-    btn.onclick = () => {
-      currentPage = i;
-      renderUsers();
-    };
-    pageNumbers.appendChild(btn);
-  }
-  document.getElementById("prevPage").disabled = currentPage === 1;
-  document.getElementById("nextPage").disabled = currentPage === totalPages;
-}
-
-// ====== THÔNG TIN HIỂN THỊ ======
-function updateUserInfo(filteredCount) {
-  const total =
-    typeof filteredCount === "number" ? filteredCount : users.length;
-  const start = (currentPage - 1) * usersPerPage + 1;
-  const end = Math.min(currentPage * usersPerPage, total);
-  // Cập nhật thông tin hiển thị có sẵn trong HTML
-  const infoElement = document.querySelector(
-    '.user-management > div[style*="margin: 10px 0 0 10px"]'
-  );
-  if (infoElement) {
-    infoElement.textContent = `Hiển thị ${start}-${end} trong tổng số ${total} người dùng`;
-  }
-}
-
-// ====== NÚT TRƯỚC / SAU ======
-document.getElementById("prevPage").onclick = () => {
-  if (currentPage > 1) {
-    currentPage--;
-    renderUsers();
-  }
-};
-document.getElementById("nextPage").onclick = () => {
-  const totalPages = Math.ceil(users.length / usersPerPage);
-  if (currentPage < totalPages) {
-    currentPage++;
-    renderUsers();
-  }
-};
-
-// ====== LOAD DỮ LIỆU KHI VÀO TRANG ======
-window.onload = () => {
-  // Lấy dữ liệu từ localStorage nếu có
-  const savedUsers = JSON.parse(localStorage.getItem("users")) || [];
-  // Lấy dữ liệu có sẵn trong HTML (nếu có)
-  const htmlUsers = Array.from(document.querySelectorAll(".table-row"))
-    .slice(1)
-    .map((row, index) => {
-      const cells = row.querySelectorAll("div");
-      if (cells.length >= 7) {
-        return {
-          id: index + 1,
-          name: cells[1].textContent,
-          email: cells[2].textContent,
-          phone: cells[3].textContent,
-          password: "", // Mặc định rỗng nếu không có
-          trangthai: cells[4].textContent || "Hoạt động", // Đảm bảo mặc định nếu thiếu
-          orders: parseInt(cells[5].textContent) || 0,
-          joinDate: cells[6].textContent,
-        };
-      }
-      return null;
-    })
-    .filter(Boolean);
-  // Kết hợp dữ liệu từ HTML và localStorage, loại trùng email
-  const allUsers = [
-    ...htmlUsers,
-    ...savedUsers.filter((u) => !htmlUsers.some((h) => h.email === u.email)),
-  ];
-  users =
-    allUsers.length > 0
-      ? allUsers
-      : [
-          {
-            id: 1,
-            name: "Lư Hồng Phúc",
-            email: "phucga150625@email.com",
-            phone: "0866680197",
-            password: "", // Mặc định rỗng
-            trangthai: "Hoạt động", // Mặc định
-            orders: 12,
-            joinDate: "01/01/2024",
-          },
-        ];
-  renderUsers();
-};
-// === Xử lý Xem / Sửa / Khóa / Xóa ===
-function attachActionEvents() {
-  const rows = document.querySelectorAll(".table-row");
-  rows.forEach((row, i) => {
-    if (i === 0) return; // bỏ qua header
-    const buttons = row.querySelectorAll("button");
-    if (buttons.length === 4) {
-      buttons[0].onclick = () => viewUser(i - 1);
-      buttons[1].onclick = () => editUser(i - 1);
-      buttons[2].onclick = () => toggleLockUser(i - 1);
-      buttons[3].onclick = () => deleteUser(i - 1);
-    }
-  });
-}
-
-// === Modal xem/sửa ===
-const editModal = document.getElementById("editModal");
-const closeEdit = document.querySelector(".close-edit");
-const cancelEdit = document.querySelector(".cancel-edit");
-const saveEdit = document.querySelector(".save-edit");
+let statusFilter = "all";
+let sortBy = "id";
 let editingIndex = null;
+let totalFilteredUsers = 0; // Số lượng users sau khi filter
 
-// Đóng modal
-closeEdit.onclick = cancelEdit.onclick = () =>
-  (editModal.style.display = "none");
+// ====== DOM ELEMENTS (Sẽ được lấy sau khi DOM load) ======
+let modal,
+  editModal,
+  btnAdd,
+  userTableBody,
+  searchInput,
+  filterStatusSelect,
+  sortBySelect;
 
-window.onclick = (e) => {
-  if (e.target === editModal) editModal.style.display = "none";
-};
+// ====== VALIDATION HELPERS ======
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
 
-// Nút reset mật khẩu (chỉ trong edit mode)
-const resetPasswordBtn = document.getElementById("resetPasswordBtn");
-if (resetPasswordBtn) {
-  // Làm đẹp nút reset
-  resetPasswordBtn.style.cssText = `
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+function isValidPhone(phone) {
+  const phoneRegex = /^[0-9]{10,11}$/;
+  return phoneRegex.test(phone.replace(/\s/g, ""));
+}
+
+// ====== NOTIFICATION HELPERS ======
+function showNotification(title, message, type = "success") {
+  const bgColor =
+    type === "success"
+      ? "linear-gradient(135deg, #10b981 0%, #059669 100%)"
+      : "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)";
+  const icon = type === "success" ? "✓" : "⚠";
+
+  const notification = document.createElement("div");
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: ${bgColor};
     color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    transition: all 0.3s ease;
+    padding: 20px 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    z-index: 10000;
+    max-width: 400px;
+    animation: slideInRight 0.4s ease;
   `;
-  resetPasswordBtn.onmouseover = () => {
-    resetPasswordBtn.style.transform = "scale(1.05)";
-    resetPasswordBtn.style.boxShadow = "0 4px 8px rgba(0,0,0,0.3)";
-  };
-  resetPasswordBtn.onmouseout = () => {
-    resetPasswordBtn.style.transform = "scale(1)";
-    resetPasswordBtn.style.boxShadow = "0 2px 4px rgba(0,0,0,0.2)";
-  };
-  resetPasswordBtn.onclick = () => {
-    showConfirmDialog(
-      "Xác nhận Reset Mật khẩu",
-      "Bạn có chắc chắn muốn reset mật khẩu về <strong>123123</strong> không?",
-      () => {
-        const editPasswordInput = document.getElementById("editPassword");
-        if (editPasswordInput) {
-          const newPassword = "123123";
-          editPasswordInput.value = newPassword;
-          // Cập nhật vào users array
-          if (editingIndex !== null) {
-            users[editingIndex].password = newPassword;
-            localStorage.setItem("users", JSON.stringify(users));
-          }
-          showSuccessNotification(
-            "✅ Reset Mật khẩu Thành công!",
-            `Mật khẩu mới: <strong>${newPassword}</strong><br>Vui lòng lưu lại thông tin này.`
-          );
-        }
-      }
-    );
-  };
+
+  notification.innerHTML = `
+    <div style="display: flex; align-items: start; gap: 12px;">
+      <div style="font-size: 24px;">${icon}</div>
+      <div style="flex: 1;">
+        <h4 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 700;">${title}</h4>
+        <p style="margin: 0; font-size: 14px; opacity: 0.95; line-height: 1.5;">${message}</p>
+      </div>
+      <button onclick="this.parentElement.parentElement.remove()" style="
+        background: none;
+        border: none;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+        opacity: 0.8;
+      ">×</button>
+    </div>
+  `;
+
+  document.body.appendChild(notification);
+  setTimeout(() => notification.remove(), 5000);
 }
 
-// Nút toggle hiển thị password
-const togglePasswordBtn = document.getElementById("togglePasswordBtn");
-if (togglePasswordBtn) {
-  togglePasswordBtn.onclick = (e) => {
-    e.preventDefault(); // Ngăn submit form
-    const editPasswordInput = document.getElementById("editPassword");
-    if (editPasswordInput) {
-      if (editPasswordInput.type === "password") {
-        editPasswordInput.type = "text";
-        togglePasswordBtn.innerHTML =
-          '<img src="assets/images/icons/eyeoff.png" alt="Ẩn" style="width: 20px; height: 20px;" />';
-      } else {
-        editPasswordInput.type = "password";
-        togglePasswordBtn.innerHTML =
-          '<img src="assets/images/icons/eye.png" alt="Hiện" style="width: 20px; height: 20px;" />';
-      }
-    }
-  };
-}
-// === Xem người dùng ===
-function viewUser(index) {
-  editingIndex = index;
-  const u = users[index];
-  document.getElementById("editModalTitle").textContent =
-    "Xem thông tin người dùng";
-  document.getElementById("editName").value = u.name;
-  document.getElementById("editEmail").value = u.email;
-  document.getElementById("editPhone").value = u.phone;
-  const editPasswordInput = document.getElementById("editPassword");
-  editPasswordInput.value = u.password || ""; // Hiển thị mật khẩu
-  editPasswordInput.type = "password"; // Ẩn mật khẩu mặc định
-  // Reset icon mắt về hiện (để admin có thể click xem)
-  if (togglePasswordBtn) {
-    togglePasswordBtn.innerHTML =
-      '<img src="assets/images/icons/eye.png" alt="Hiện" style="width: 20px; height: 20px;" />';
-  }
-  // Đặt đúng option cho select trạng thái
-  const editTrangThaiSelect = document.getElementById("editTrangThai");
-  if (editTrangThaiSelect) {
-    Array.from(editTrangThaiSelect.options).forEach((opt) => {
-      opt.selected = opt.value === (u.trangthai || "Hoạt động");
-    });
-  }
-  // Khóa input để chỉ xem
-  document
-    .querySelectorAll("#editModal input:not(#editPassword), #editModal select")
-    .forEach((el) => {
-      el.disabled = true;
-    });
-  // Password vẫn có thể toggle để xem (không disabled)
-  editPasswordInput.disabled = false; // Cho phép toggle xem password
-  // Ẩn nút reset khi chỉ xem
-  if (resetPasswordBtn) resetPasswordBtn.style.display = "none";
-  saveEdit.style.display = "none";
-  editModal.style.display = "flex";
-}
-
-// === Sửa người dùng ===
-function editUser(index) {
-  editingIndex = index;
-  const u = users[index];
-  document.getElementById("editModalTitle").textContent =
-    "Chỉnh sửa người dùng";
-  document.getElementById("editName").value = u.name;
-  document.getElementById("editEmail").value = u.email;
-  document.getElementById("editPhone").value = u.phone;
-  const editPasswordInput = document.getElementById("editPassword");
-  editPasswordInput.value = u.password || ""; // Hiển thị password cũ (ẩn mặc định)
-  editPasswordInput.type = "password"; // Ẩn mặc định, có thể toggle
-  // Reset icon mắt về hiện
-  if (togglePasswordBtn) {
-    togglePasswordBtn.innerHTML =
-      '<img src="assets/images/icons/eye.png" alt="Hiện" style="width: 20px; height: 20px;" />';
-  }
-  // Đặt đúng option cho select trạng thái
-  const editTrangThaiSelect = document.getElementById("editTrangThai");
-  if (editTrangThaiSelect) {
-    Array.from(editTrangThaiSelect.options).forEach((opt) => {
-      opt.selected = opt.value === (u.trangthai || "Hoạt động");
-    });
-  }
-  // Cho phép nhập lại (bao gồm password)
-  document
-    .querySelectorAll("#editModal input, #editModal select")
-    .forEach((el) => {
-      el.disabled = false;
-    });
-  // Hiện nút reset khi edit
-  if (resetPasswordBtn) resetPasswordBtn.style.display = "inline-block";
-  saveEdit.style.display = "inline-block";
-  editModal.style.display = "flex";
-  // Focus vào input name đầu tiên khi mở edit modal
-  const editNameInput = document.getElementById("editName");
-  if (editNameInput) {
-    editNameInput.focus();
-  }
-}
-
-// === Lưu chỉnh sửa ===
-saveEdit.onclick = () => {
-  const name = document.getElementById("editName").value.trim();
-  const email = document.getElementById("editEmail").value.trim();
-  const phone = document.getElementById("editPhone").value.trim();
-  const password = document.getElementById("editPassword").value.trim(); // Lấy mật khẩu mới
-  // Lấy value của option được chọn cho trạng thái
-  const editTrangThaiSelect = document.getElementById("editTrangThai");
-  const trangthai = editTrangThaiSelect
-    ? editTrangThaiSelect.value
-    : "Hoạt động";
-  if (!name || !email || !phone || !password) {
-    alert("Vui lòng nhập đầy đủ thông tin!");
-    return;
-  }
-  users[editingIndex].name = name;
-  users[editingIndex].email = email;
-  users[editingIndex].phone = phone;
-  users[editingIndex].password = password; // Cập nhật mật khẩu
-  users[editingIndex].trangthai = trangthai; // Sử dụng giá trị từ select, fallback "Hoạt động"
-  localStorage.setItem("users", JSON.stringify(users));
-  renderUsers();
-  editModal.style.display = "none";
-};
-
-// === Khóa / Mở khóa ===
-function toggleLockUser(index) {
-  const u = users[index];
-  const isLocked = u.trangthai === "Đã khóa";
-  const action = isLocked ? "mở khóa" : "khóa";
-  const actionIcon = isLocked ? "🔓" : "🔒";
-
-  showConfirmDialog(
-    `Xác nhận ${action.charAt(0).toUpperCase() + action.slice(1)} Tài khoản`,
-    `Bạn có chắc chắn muốn <strong>${action}</strong> tài khoản của <strong>${u.name}</strong> không?<br><small>Email: ${u.email}</small>`,
-    () => {
-      if (isLocked) {
-        u.trangthai = "Hoạt động";
-        showSuccessNotification(
-          `${actionIcon} Mở khóa Thành công!`,
-          `Tài khoản <strong>${u.name}</strong> đã được kích hoạt lại.`
-        );
-      } else {
-        u.trangthai = "Đã khóa";
-        showSuccessNotification(
-          `${actionIcon} Khóa Tài khoản Thành công!`,
-          `Tài khoản <strong>${u.name}</strong> đã bị khóa. Người dùng không thể đăng nhập.`
-        );
-      }
-      localStorage.setItem("users", JSON.stringify(users));
-      renderUsers();
-    }
-  );
-}
-
-// === Xóa ===
-function deleteUser(index) {
-  const u = users[index];
-  showConfirmDialog(
-    "⚠️ Xác nhận Xóa Người dùng",
-    `Bạn có chắc chắn muốn <strong>xóa vĩnh viễn</strong> người dùng <strong>${u.name}</strong> không?<br><small>Email: ${u.email}</small><br><br><span style="color: red;">Hành động này không thể hoàn tác!</span>`,
-    () => {
-      users.splice(index, 1);
-      localStorage.setItem("users", JSON.stringify(users));
-      renderUsers();
-      showSuccessNotification(
-        "🗑️ Xóa Thành công!",
-        `Người dùng <strong>${u.name}</strong> đã được xóa khỏi hệ thống.`
-      );
-    }
-  );
-}
-
-// ====== HỘP THOẠI XÁC NHẬN (CONFIRM DIALOG) ======
 function showConfirmDialog(title, message, onConfirm) {
-  // Tạo overlay
   const overlay = document.createElement("div");
   overlay.style.cssText = `
     position: fixed;
@@ -507,7 +126,6 @@ function showConfirmDialog(title, message, onConfirm) {
     animation: fadeIn 0.2s ease;
   `;
 
-  // Tạo dialog box
   const dialog = document.createElement("div");
   dialog.style.cssText = `
     background: white;
@@ -523,7 +141,7 @@ function showConfirmDialog(title, message, onConfirm) {
     <h3 style="margin: 0 0 15px 0; font-size: 20px; color: #1f2937;">${title}</h3>
     <p style="margin: 0 0 25px 0; font-size: 15px; color: #4b5563; line-height: 1.6;">${message}</p>
     <div style="display: flex; gap: 10px; justify-content: flex-end;">
-      <button id="confirmCancel" style="
+      <button class="btn-cancel" style="
         background: #f3f4f6;
         color: #374151;
         border: none;
@@ -531,9 +149,8 @@ function showConfirmDialog(title, message, onConfirm) {
         border-radius: 8px;
         font-weight: 600;
         cursor: pointer;
-        transition: 0.2s;
       ">Hủy</button>
-      <button id="confirmOk" style="
+      <button class="btn-ok" style="
         background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
         color: white;
         border: none;
@@ -541,7 +158,6 @@ function showConfirmDialog(title, message, onConfirm) {
         border-radius: 8px;
         font-weight: 600;
         cursor: pointer;
-        transition: 0.2s;
       ">Xác nhận</button>
     </div>
   `;
@@ -549,103 +165,1248 @@ function showConfirmDialog(title, message, onConfirm) {
   overlay.appendChild(dialog);
   document.body.appendChild(overlay);
 
-  // Xử lý sự kiện
-  const btnCancel = dialog.querySelector("#confirmCancel");
-  const btnOk = dialog.querySelector("#confirmOk");
-
-  btnCancel.onclick = () => {
-    overlay.remove();
-  };
-
-  btnOk.onclick = () => {
+  dialog.querySelector(".btn-cancel").onclick = () => overlay.remove();
+  dialog.querySelector(".btn-ok").onclick = () => {
     overlay.remove();
     if (onConfirm) onConfirm();
   };
+  overlay.onclick = (e) => {
+    if (e.target === overlay) overlay.remove();
+  };
+}
 
-  // Đóng khi click overlay
+// ====== STATISTICS UPDATE ======
+function updateStatistics() {
+  const totalUsers = users.length;
+  const activeUsers = users.filter((u) => u.trangthai === "active").length;
+  const lockedUsers = users.filter((u) => u.trangthai === "locked").length;
+  const totalOrders = users.reduce((sum, u) => sum + (u.orders || 0), 0);
+
+  document.getElementById("totalUsersCount").textContent = totalUsers;
+  document.getElementById("activeUsersCount").textContent = activeUsers;
+  document.getElementById("lockedUsersCount").textContent = lockedUsers;
+  document.getElementById("totalOrdersCount").textContent = totalOrders;
+}
+
+// ====== RENDER USERS ======
+function renderUsers() {
+  console.log("🔍 [renderUsers] Bắt đầu render, tổng users:", users.length);
+
+  if (!userTableBody) {
+    console.error("❌ Không tìm thấy userTableBody element!");
+    return;
+  }
+
+  userTableBody.innerHTML = "";
+
+  // Filter
+  let filteredUsers = users;
+
+  if (searchQuery) {
+    filteredUsers = filteredUsers.filter(
+      (u) =>
+        u.name.toLowerCase().includes(searchQuery) ||
+        u.email.toLowerCase().includes(searchQuery) ||
+        u.phone.toLowerCase().includes(searchQuery) ||
+        (u.address && u.address.toLowerCase().includes(searchQuery))
+    );
+  }
+
+  if (statusFilter !== "all") {
+    filteredUsers = filteredUsers.filter((u) => u.trangthai === statusFilter);
+  }
+
+  // Sort
+  filteredUsers.sort((a, b) => {
+    if (sortBy === "name") return a.name.localeCompare(b.name);
+    if (sortBy === "joinDate") {
+      const dateA = parseVietnameseDate(a.joinDate);
+      const dateB = parseVietnameseDate(b.joinDate);
+      return dateB - dateA;
+    }
+    if (sortBy === "orders") return (b.orders || 0) - (a.orders || 0);
+    return a.id - b.id;
+  });
+
+  // Check if no results
+  if (filteredUsers.length === 0) {
+    userTableBody.innerHTML = `
+      <div style="text-align: center; padding: 60px 20px; color: #64748b;">
+        <div style="font-size: 64px; margin-bottom: 16px;">🔍</div>
+        <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">Không tìm thấy khách hàng</div>
+        <div style="font-size: 14px;">Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm</div>
+      </div>
+    `;
+    totalFilteredUsers = 0;
+    renderPagination(0);
+    updateUserInfo(0);
+    updateStatistics();
+    return;
+  }
+
+  // Reset currentPage nếu vượt quá số trang
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+  if (currentPage > totalPages) {
+    currentPage = totalPages;
+  }
+
+  // Pagination
+  const start = (currentPage - 1) * usersPerPage;
+  const end = start + usersPerPage;
+  const userToShow = filteredUsers.slice(start, end);
+
+  // Render rows
+  userToShow.forEach((user, index) => {
+    const actualIndex = users.findIndex((u) => u.id === user.id);
+    const isActive = user.trangthai === "active";
+    const statusBadge = isActive
+      ? '<span style="background: #d1fae5; color: #065f46; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">👌 Hoạt động</span>'
+      : '<span style="background: #fee2e2; color: #991b1b; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">🔒 Đã khóa</span>';
+
+    const lockIcon = isActive ? "khoa.png" : "3d-unlocked.png";
+    const lockTitle = isActive ? "Khóa tài khoản" : "Mở khóa tài khoản";
+
+    const row = document.createElement("div");
+    row.style.cssText =
+      "display: grid; grid-template-columns: 70px 1.5fr 2fr 130px 2.5fr 130px 90px 130px 200px; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #e2e8f0; align-items: center; transition: all 0.2s; font-size: 13px;";
+    row.onmouseover = () => (row.style.background = "#f8fafc");
+    row.onmouseout = () => (row.style.background = "white");
+
+    const truncateText = (text, maxLength) => {
+      if (!text) return "Chưa cập nhật";
+      return text.length > maxLength
+        ? text.substring(0, maxLength) + "..."
+        : text;
+    };
+
+    row.innerHTML = `
+      <div style="text-align: center; font-weight: 700; color: #667eea;">#${
+        user.id
+      }</div>
+      <div style="font-weight: 600; color: #1e293b;">${user.name}</div>
+      <div style="color: #64748b; font-size: 12px;">${user.email}</div>
+      <div style="color: #475569;">${user.phone}</div>
+      <div style="color: #64748b; font-size: 12px;" title="${
+        user.address || "Chưa cập nhật"
+      }">${truncateText(user.address, 40)}</div>
+      <div style="text-align: center;">${statusBadge}</div>
+      <div style="text-align: center; font-weight: 700; color: #f59e0b;">${
+        user.orders || 0
+      }</div>
+      <div style="text-align: center; color: #64748b; font-size: 12px;">${
+        user.joinDate
+      }</div>
+      <div style="display: flex; gap: 8px; justify-content: center;">
+        <button onclick="viewUser(${actualIndex})" title="Xem chi tiết" style="padding: 8px 12px; border: 2px solid #3b82f6; background: white; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
+          <img src="assets/images/icons/eye1.png" alt="Xem" style="width: 16px; height: 16px;" />
+        </button>
+        <button onclick="editUser(${actualIndex})" title="Chỉnh sửa" style="padding: 8px 12px; border: 2px solid #10b981; background: white; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
+          <img src="assets/images/icons/sua.png" alt="Sửa" style="width: 16px; height: 16px;" />
+        </button>
+        <button onclick="toggleLockUser(${actualIndex})" title="${lockTitle}" style="padding: 8px 12px; border: 2px solid #f59e0b; background: white; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
+          <img src="assets/images/icons/${lockIcon}" alt="Khóa" style="width: 16px; height: 16px;" />
+        </button>
+        <button onclick="deleteUser(${actualIndex})" title="Xóa" style="padding: 8px 12px; border: 2px solid #ef4444; background: white; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
+          <img src="assets/images/icons/xoa.png" alt="Xóa" style="width: 16px; height: 16px;" />
+        </button>
+      </div>
+    `;
+
+    userTableBody.appendChild(row);
+  });
+
+  // Lưu số lượng users sau khi filter vào biến global
+  totalFilteredUsers = filteredUsers.length;
+
+  renderPagination(totalFilteredUsers);
+  updateUserInfo(totalFilteredUsers);
+  updateStatistics();
+}
+
+// ====== PARSE VIETNAMESE DATE ======
+function parseVietnameseDate(dateStr) {
+  const parts = dateStr.split("/");
+  return new Date(parts[2], parts[1] - 1, parts[0]);
+}
+
+// ====== PAGINATION ======
+function renderPagination(totalCount) {
+  const totalPages = Math.ceil(totalCount / usersPerPage);
+  const pageNumbers = document.getElementById("pageNumbers");
+  pageNumbers.innerHTML = "";
+
+  // If no pages, disable all
+  if (totalPages === 0) {
+    document.getElementById("prevPage").disabled = true;
+    document.getElementById("nextPage").disabled = true;
+    return;
+  }
+
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i;
+    btn.style.cssText = `
+      padding: 8px 14px;
+      border: 2px solid ${i === currentPage ? "#667eea" : "#e2e8f0"};
+      background: ${
+        i === currentPage
+          ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+          : "white"
+      };
+      color: ${i === currentPage ? "white" : "#475569"};
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+    `;
+    btn.onclick = () => {
+      currentPage = i;
+      renderUsers();
+    };
+    pageNumbers.appendChild(btn);
+  }
+
+  document.getElementById("prevPage").disabled = currentPage === 1;
+  document.getElementById("nextPage").disabled =
+    currentPage === totalPages || totalPages === 0;
+}
+
+function updateUserInfo(filteredCount) {
+  if (filteredCount === 0) {
+    document.getElementById("userInfoText").textContent =
+      "Không có khách hàng nào";
+    return;
+  }
+  const start = (currentPage - 1) * usersPerPage + 1;
+  const end = Math.min(currentPage * usersPerPage, filteredCount);
+  document.getElementById(
+    "userInfoText"
+  ).textContent = `Hiển thị ${start}-${end} trong tổng số ${filteredCount} khách hàng`;
+}
+
+// ====== NOTE: Event listeners đã được chuyển vào setupEventListeners() ======
+// ====== Các modal giờ được tạo động, không cần event listeners tĩnh ======
+
+// ====== SHOW ADD USER MODAL ======
+window.showAddUserModal = function () {
+  console.log("🔧 [showAddUserModal] Đang mở modal thêm khách hàng");
+  const overlay = document.createElement("div");
+  overlay.id = "addUserOverlay";
+  overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+  `;
+
+  const addModal = document.createElement("div");
+  addModal.style.cssText = `
+    background: white;
+    border-radius: 20px;
+    max-width: 650px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.3s ease;
+    position: relative;
+  `;
+
+  addModal.innerHTML = `
+    <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px; border-radius: 20px 20px 0 0; position: relative;">
+      <button onclick="document.getElementById('addUserOverlay').remove()" style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.2); border: none; color: white; font-size: 28px; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">×</button>
+      
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 32px;">
+          ➕
+        </div>
+        <div>
+          <h2 style="margin: 0 0 4px 0; color: white; font-size: 28px; font-weight: 700;">Thêm khách hàng mới</h2>
+          <p style="margin: 0; color: rgba(255,255,255,0.9); font-size: 14px;">Điền đầy đủ thông tin bên dưới</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding: 30px;">
+      <form id="addUserForm" style="display: grid; gap: 20px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
+              Họ tên <span style="color: #ef4444;">*</span>
+            </label>
+            <input type="text" id="addNameNew" placeholder="Nhập họ tên đầy đủ" required
+              style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; transition: all 0.3s; box-sizing: border-box;" />
+          </div>
+          
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
+              Email <span style="color: #ef4444;">*</span>
+            </label>
+            <input type="email" id="addEmailNew" placeholder="example@email.com" required
+              style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; transition: all 0.3s; box-sizing: border-box;" />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
+              Số điện thoại <span style="color: #ef4444;">*</span>
+            </label>
+            <input type="text" id="addPhoneNew" placeholder="0123456789" required
+              style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; transition: all 0.3s; box-sizing: border-box;" />
+          </div>
+          
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
+              Trạng thái
+            </label>
+            <select id="addTrangThaiNew"
+              style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; cursor: pointer; box-sizing: border-box; background: white;">
+              <option value="active">👌 Hoạt động</option>
+              <option value="locked">🔒 Đã khóa</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
+              Tỉnh/Thành phố
+            </label>
+            <select id="addProvince" onchange="updateAddDistricts()"
+              style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; cursor: pointer; box-sizing: border-box; background: white;">
+              <option value="">-- Chọn Tỉnh/Thành phố --</option>
+            </select>
+          </div>
+          
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
+              Quận/Huyện
+            </label>
+            <select id="addDistrict" disabled
+              style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; cursor: pointer; box-sizing: border-box; background: white;">
+              <option value="">-- Chọn Quận/Huyện --</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
+            Xã/Phường/Đường cụ thể
+          </label>
+          <input type="text" id="addWard" placeholder="Ví dụ: 123 Đường ABC, Phường Bến Nghé"
+            style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; transition: all 0.3s; box-sizing: border-box;" />
+        </div>
+
+        <div>
+          <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
+            Mật khẩu <span style="color: #ef4444;">*</span>
+          </label>
+          <div style="position: relative;">
+            <input type="password" id="addPasswordNew" placeholder="Nhập mật khẩu (tối thiểu 6 ký tự)" required
+              style="width: 100%; padding: 12px 16px; padding-right: 50px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; transition: all 0.3s; box-sizing: border-box;" />
+            <button type="button" onclick="toggleAddPassword()" 
+              style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 4px;">
+              <img id="addPasswordIcon" src="assets/images/icons/eye.png" alt="Toggle" style="width: 20px; height: 20px;" />
+            </button>
+          </div>
+          <p style="margin: 8px 0 0 0; font-size: 12px; color: #64748b;">
+            💡 Mật khẩu phải có ít nhất 6 ký tự
+          </p>
+        </div>
+
+        <div style="background: #f0f9ff; border-left: 4px solid #3b82f6; padding: 16px; border-radius: 8px; margin-top: 10px;">
+          <p style="margin: 0; font-size: 13px; color: #1e40af; line-height: 1.6;">
+            <strong>📋 Lưu ý:</strong> Các trường có dấu <span style="color: #ef4444;">*</span> là bắt buộc. 
+            Email sẽ được sử dụng để đăng nhập và không thể trùng với khách hàng khác.
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 10px;">
+          <button type="button" onclick="document.getElementById('addUserOverlay').remove()" 
+            style="padding: 12px 24px; background: #f1f5f9; color: #475569; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+            ❌ Hủy
+          </button>
+          <button type="submit"
+            style="padding: 12px 24px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);">
+            💾 Lưu khách hàng
+          </button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  overlay.appendChild(addModal);
+  document.body.appendChild(overlay);
+
+  // Close on overlay click
   overlay.onclick = (e) => {
     if (e.target === overlay) overlay.remove();
   };
 
-  // Hover effects
-  btnCancel.onmouseover = () => {
-    btnCancel.style.background = "#e5e7eb";
+  // Populate provinces
+  const provinceSelect = document.getElementById("addProvince");
+  getProvinces().forEach((province) => {
+    const option = document.createElement("option");
+    option.value = province;
+    option.textContent = province;
+    provinceSelect.appendChild(option);
+  });
+
+  // Focus first input
+  setTimeout(() => document.getElementById("addNameNew").focus(), 100);
+
+  // Handle form submit
+  document.getElementById("addUserForm").onsubmit = (e) => {
+    e.preventDefault();
+    handleAddUser();
   };
-  btnCancel.onmouseout = () => {
-    btnCancel.style.background = "#f3f4f6";
+
+  // Add focus styles
+  addModal.querySelectorAll("input, select").forEach((input) => {
+    input.onfocus = () => {
+      input.style.borderColor = "#10b981";
+      input.style.boxShadow = "0 0 0 3px rgba(16, 185, 129, 0.1)";
+    };
+    input.onblur = () => {
+      input.style.borderColor = "#e2e8f0";
+      input.style.boxShadow = "none";
+    };
+  });
+};
+
+// Toggle password visibility in add modal
+window.toggleAddPassword = function () {
+  const input = document.getElementById("addPasswordNew");
+  const icon = document.getElementById("addPasswordIcon");
+
+  if (input.type === "password") {
+    input.type = "text";
+    icon.src = "assets/images/icons/eyeoff.png";
+  } else {
+    input.type = "password";
+    icon.src = "assets/images/icons/eye.png";
+  }
+};
+
+// ====== UPDATE DISTRICTS FOR ADD MODAL ======
+window.updateAddDistricts = function () {
+  const province = document.getElementById("addProvince").value;
+  const districtSelect = document.getElementById("addDistrict");
+
+  // Clear and disable if no province
+  districtSelect.innerHTML = '<option value="">-- Chọn Quận/Huyện --</option>';
+
+  if (!province) {
+    districtSelect.disabled = true;
+    return;
+  }
+
+  // Load districts
+  const districts = getDistricts(province);
+  districts.forEach((district) => {
+    const option = document.createElement("option");
+    option.value = district;
+    option.textContent = district;
+    districtSelect.appendChild(option);
+  });
+
+  districtSelect.disabled = false;
+};
+
+// ====== HANDLE ADD USER ======
+function handleAddUser() {
+  const name = document.getElementById("addNameNew").value.trim();
+  const email = document.getElementById("addEmailNew").value.trim();
+  const phone = document.getElementById("addPhoneNew").value.trim();
+  const password = document.getElementById("addPasswordNew").value.trim();
+  const trangthai = document.getElementById("addTrangThaiNew").value;
+
+  // Get address from 3 fields
+  const ward = document.getElementById("addWard").value.trim();
+  const district = document.getElementById("addDistrict").value;
+  const province = document.getElementById("addProvince").value;
+
+  // Build full address
+  let address = "";
+  if (ward) address += ward;
+  if (district) address += (address ? ", " : "") + district;
+  if (province) address += (address ? ", " : "") + province;
+  if (!address) address = "Chưa cập nhật";
+
+  // Validation
+  if (!name || !email || !phone || !password) {
+    showNotification(
+      "⚠️ Thiếu thông tin",
+      "Vui lòng nhập đầy đủ các trường bắt buộc!",
+      "error"
+    );
+    return;
+  }
+
+  if (!isValidEmail(email)) {
+    showNotification(
+      "📧 Email không hợp lệ",
+      "Vui lòng nhập đúng định dạng email!",
+      "error"
+    );
+    return;
+  }
+
+  if (!isValidPhone(phone)) {
+    showNotification(
+      "📱 SĐT không hợp lệ",
+      "Số điện thoại phải có 10-11 số!",
+      "error"
+    );
+    return;
+  }
+
+  if (users.some((u) => u.email.toLowerCase() === email.toLowerCase())) {
+    showNotification(
+      "❌ Email đã tồn tại",
+      "Email này đã được sử dụng!",
+      "error"
+    );
+    return;
+  }
+
+  if (password.length < 6) {
+    showNotification(
+      "🔒 Mật khẩu quá ngắn",
+      "Mật khẩu phải có ít nhất 6 ký tự!",
+      "error"
+    );
+    return;
+  }
+
+  // Create new user
+  const newUser = {
+    id: users.length > 0 ? Math.max(...users.map((u) => u.id)) + 1 : 1,
+    name,
+    email,
+    phone,
+    address: address || "Chưa cập nhật",
+    trangthai,
+    joinDate: new Date().toLocaleDateString("vi-VN"),
+    orders: 0,
+    password,
   };
-  btnOk.onmouseover = () => {
-    btnOk.style.transform = "scale(1.05)";
-  };
-  btnOk.onmouseout = () => {
-    btnOk.style.transform = "scale(1)";
-  };
+
+  users.push(newUser);
+  localStorage.setItem("users", JSON.stringify(users));
+  document.getElementById("addUserOverlay").remove();
+  renderUsers();
+
+  showNotification(
+    "✅ Thêm khách hàng thành công!",
+    `Đã thêm <strong>${name}</strong> vào hệ thống.`
+  );
 }
 
-// ====== THÔNG BÁO THÀNH CÔNG (SUCCESS NOTIFICATION) ======
-function showSuccessNotification(title, message) {
-  // Tạo notification box
-  const notification = document.createElement("div");
-  notification.style.cssText = `
+// ====== VIEW USER ======
+window.viewUser = function (index) {
+  editingIndex = index;
+  const u = users[index];
+
+  // Create a beautiful profile view modal
+  const isActive = u.trangthai === "active";
+  const statusBadge = isActive
+    ? '<span style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;"><span style="font-size: 16px;">✅</span> Đang hoạt động</span>'
+    : '<span style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;"><span style="font-size: 16px;">🔒</span> Đã khóa</span>';
+
+  const overlay = document.createElement("div");
+  overlay.id = "viewUserOverlay";
+  overlay.style.cssText = `
     position: fixed;
-    top: 20px;
-    right: 20px;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: white;
-    padding: 20px 25px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
-    z-index: 10000;
-    max-width: 400px;
-    animation: slideInRight 0.4s ease;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
   `;
 
-  notification.innerHTML = `
-    <div style="display: flex; align-items: start; gap: 12px;">
-      <div style="font-size: 24px;">✓</div>
-      <div style="flex: 1;">
-        <h4 style="margin: 0 0 8px 0; font-size: 16px; font-weight: 700;">${title}</h4>
-        <p style="margin: 0; font-size: 14px; opacity: 0.95; line-height: 1.5;">${message}</p>
+  const viewModal = document.createElement("div");
+  viewModal.style.cssText = `
+    background: white;
+    border-radius: 20px;
+    max-width: 700px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.3s ease;
+    position: relative;
+  `;
+
+  viewModal.innerHTML = `
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; border-radius: 20px 20px 0 0; position: relative;">
+      <button onclick="document.getElementById('viewUserOverlay').remove()" style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.2); border: none; color: white; font-size: 28px; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">×</button>
+      
+      <div style="display: flex; align-items: center; gap: 24px;">
+        <div style="width: 100px; height: 100px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: bold; color: #667eea; box-shadow: 0 8px 20px rgba(0,0,0,0.2);">
+          ${u.name.charAt(0).toUpperCase()}
+    </div>
+        <div style="flex: 1;">
+          <h2 style="margin: 0 0 8px 0; color: white; font-size: 32px; font-weight: 700;">${
+            u.name
+          }</h2>
+          <p style="margin: 0 0 12px 0; color: rgba(255,255,255,0.9); font-size: 16px;">📧 ${
+            u.email
+          }</p>
+          ${statusBadge}
+        </div>
       </div>
-      <button id="closeNotification" style="
-        background: none;
-        border: none;
-        color: white;
-        font-size: 20px;
-        cursor: pointer;
-        padding: 0;
-        line-height: 1;
-        opacity: 0.8;
-        transition: 0.2s;
-      ">×</button>
+    </div>
+
+    <div style="padding: 30px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+        <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 20px; border-radius: 12px; border-left: 4px solid #3b82f6;">
+          <div style="font-size: 13px; color: #64748b; margin-bottom: 6px; font-weight: 600;">👤 ID KHÁCH HÀNG</div>
+          <div style="font-size: 24px; font-weight: 700; color: #1e293b;">#${
+            u.id
+          }</div>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 20px; border-radius: 12px; border-left: 4px solid #f59e0b;">
+          <div style="font-size: 13px; color: #64748b; margin-bottom: 6px; font-weight: 600;">🛒 ĐỢN HÀNG</div>
+          <div style="font-size: 24px; font-weight: 700; color: #1e293b;">${
+            u.orders || 0
+          } đơn</div>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 20px; border-radius: 12px; border-left: 4px solid #10b981;">
+          <div style="font-size: 13px; color: #64748b; margin-bottom: 6px; font-weight: 600;">📅 NGÀY THAM GIA</div>
+          <div style="font-size: 18px; font-weight: 700; color: #1e293b;">${
+            u.joinDate
+          }</div>
+        </div>
+      </div>
+
+      <div style="background: #f8fafc; border-radius: 12px; padding: 24px; margin-bottom: 20px;">
+        <h3 style="margin: 0 0 20px 0; color: #1e293b; font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 24px;">📋</span> Thông tin chi tiết
+        </h3>
+        
+        <div style="display: grid; gap: 16px;">
+          <div style="display: flex; padding-bottom: 12px; border-bottom: 2px solid #e2e8f0;">
+            <div style="flex: 0 0 140px; color: #64748b; font-weight: 600; font-size: 14px;">📱 Số điện thoại:</div>
+            <div style="flex: 1; color: #1e293b; font-weight: 600; font-size: 14px;">${
+              u.phone
+            }</div>
+          </div>
+          
+          <div style="display: flex; padding-bottom: 12px; border-bottom: 2px solid #e2e8f0;">
+            <div style="flex: 0 0 140px; color: #64748b; font-weight: 600; font-size: 14px;">📍 Địa chỉ:</div>
+            <div style="flex: 1; color: #1e293b; font-size: 14px; line-height: 1.6;">${
+              u.address || "Chưa cập nhật"
+            }</div>
+          </div>
+          
+          <div style="display: flex; padding-bottom: 12px; border-bottom: 2px solid #e2e8f0;">
+            <div style="flex: 0 0 140px; color: #64748b; font-weight: 600; font-size: 14px;">🔐 Mật khẩu:</div>
+            <div style="flex: 1; display: flex; align-items: center; gap: 8px;">
+              <input type="password" id="viewPassword_${index}" value="${
+    u.password || ""
+  }" readonly style="border: none; background: white; padding: 8px 12px; border-radius: 6px; font-size: 14px; color: #1e293b; font-weight: 600; flex: 1;" />
+              <button onclick="toggleViewPassword(${index})" style="padding: 8px 12px; background: white; border: 2px solid #e2e8f0; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
+                <img id="viewPasswordIcon_${index}" src="assets/images/icons/eye.png" alt="Toggle" style="width: 18px; height: 18px; display: block;" />
+              </button>
+            </div>
+          </div>
+          
+          <div style="display: flex;">
+            <div style="flex: 0 0 140px; color: #64748b; font-weight: 600; font-size: 14px;">⚡ Trạng thái:</div>
+            <div style="flex: 1;">${statusBadge}</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button onclick="document.getElementById('viewUserOverlay').remove()" style="padding: 12px 24px; background: #f1f5f9; color: #475569; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+          ❌ Đóng
+        </button>
+        <button onclick="document.getElementById('viewUserOverlay').remove(); editUser(${index});" style="padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);">
+          ✏️ Chỉnh sửa
+        </button>
+      </div>
     </div>
   `;
 
-  document.body.appendChild(notification);
+  overlay.appendChild(viewModal);
+  document.body.appendChild(overlay);
 
-  // Nút đóng
-  const closeBtn = notification.querySelector("#closeNotification");
-  closeBtn.onclick = () => {
-    notification.style.animation = "slideOutRight 0.3s ease";
-    setTimeout(() => notification.remove(), 300);
+  // Close on overlay click
+  overlay.onclick = (e) => {
+    if (e.target === overlay) overlay.remove();
   };
-  closeBtn.onmouseover = () => {
-    closeBtn.style.opacity = "1";
-  };
-  closeBtn.onmouseout = () => {
-    closeBtn.style.opacity = "0.8";
-  };
+};
 
-  // Tự động đóng sau 5 giây
-  setTimeout(() => {
-    if (document.body.contains(notification)) {
-      notification.style.animation = "slideOutRight 0.3s ease";
-      setTimeout(() => notification.remove(), 300);
+// Helper function for password toggle in view mode
+window.toggleViewPassword = function (index) {
+  const input = document.getElementById(`viewPassword_${index}`);
+  const icon = document.getElementById(`viewPasswordIcon_${index}`);
+
+  if (input.type === "password") {
+    input.type = "text";
+    icon.src = "assets/images/icons/eyeoff.png";
+  } else {
+    input.type = "password";
+    icon.src = "assets/images/icons/eye.png";
+  }
+};
+
+// ====== EDIT USER ======
+window.editUser = function (index) {
+  editingIndex = index;
+  const u = users[index];
+
+  // Parse existing address (format: "Ward, District, Province")
+  let userWard = "",
+    userDistrict = "",
+    userProvince = "";
+  if (u.address && u.address !== "Chưa cập nhật") {
+    const parts = u.address.split(",").map((p) => p.trim());
+    if (parts.length >= 3) {
+      userProvince = parts[parts.length - 1];
+      userDistrict = parts[parts.length - 2];
+      userWard = parts.slice(0, -2).join(", ");
+    } else if (parts.length === 2) {
+      userProvince = parts[1];
+      userWard = parts[0];
+    } else {
+      userWard = u.address;
     }
-  }, 5000);
+  }
+
+  const overlay = document.createElement("div");
+  overlay.id = "editUserOverlay";
+  overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+  `;
+
+  const editModalNew = document.createElement("div");
+  editModalNew.style.cssText = `
+    background: white;
+    border-radius: 20px;
+    max-width: 650px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.3s ease;
+    position: relative;
+  `;
+
+  editModalNew.innerHTML = `
+    <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding: 30px; border-radius: 20px 20px 0 0; position: relative;">
+      <button onclick="document.getElementById('editUserOverlay').remove()" style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.2); border: none; color: white; font-size: 28px; cursor: pointer; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">×</button>
+      
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 32px;">
+          ✏️
+      </div>
+        <div>
+          <h2 style="margin: 0 0 4px 0; color: white; font-size: 28px; font-weight: 700;">Chỉnh sửa khách hàng</h2>
+          <p style="margin: 0; color: rgba(255,255,255,0.9); font-size: 14px;">Cập nhật thông tin cho <strong>${
+            u.name
+          }</strong></p>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding: 30px;">
+      <form id="editUserForm" style="display: grid; gap: 20px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
+              Họ tên <span style="color: #ef4444;">*</span>
+            </label>
+            <input type="text" id="editNameNew" value="${
+              u.name
+            }" placeholder="Nhập họ tên đầy đủ" required
+              style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; transition: all 0.3s; box-sizing: border-box;" />
+          </div>
+          
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
+              Email <span style="color: #ef4444;">*</span>
+            </label>
+            <input type="email" id="editEmailNew" value="${
+              u.email
+            }" placeholder="example@email.com" required
+              style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; transition: all 0.3s; box-sizing: border-box;" />
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
+              Số điện thoại <span style="color: #ef4444;">*</span>
+            </label>
+            <input type="text" id="editPhoneNew" value="${
+              u.phone
+            }" placeholder="0123456789" required
+              style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; transition: all 0.3s; box-sizing: border-box;" />
+          </div>
+          
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
+              Trạng thái
+            </label>
+            <select id="editTrangThaiNew"
+              style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; cursor: pointer; box-sizing: border-box; background: white;">
+              <option value="active" ${
+                u.trangthai === "active" ? "selected" : ""
+              }>👌 Hoạt động</option>
+              <option value="locked" ${
+                u.trangthai === "locked" ? "selected" : ""
+              }>🔒 Đã khóa</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
+              Tỉnh/Thành phố
+            </label>
+            <select id="editProvince" onchange="updateEditDistricts()"
+              style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; cursor: pointer; box-sizing: border-box; background: white;">
+              <option value="">-- Chọn Tỉnh/Thành phố --</option>
+            </select>
+          </div>
+          
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
+              Quận/Huyện
+            </label>
+            <select id="editDistrict"
+              style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; cursor: pointer; box-sizing: border-box; background: white;">
+              <option value="">-- Chọn Quận/Huyện --</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
+            Xã/Phường/Đường cụ thể
+          </label>
+          <input type="text" id="editWard" value="${userWard}" placeholder="Ví dụ: 123 Đường ABC, Phường Bến Nghé"
+            style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; transition: all 0.3s; box-sizing: border-box;" />
+        </div>
+
+        <div>
+          <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
+            Mật khẩu <span style="color: #ef4444;">*</span>
+          </label>
+          <div style="position: relative;">
+            <input type="password" id="editPasswordNew" value="${
+              u.password || ""
+            }" placeholder="Nhập mật khẩu mới" required
+              style="width: 100%; padding: 12px 16px; padding-right: 50px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; transition: all 0.3s; box-sizing: border-box;" />
+            <button type="button" onclick="toggleEditPassword()" 
+              style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 4px;">
+              <img id="editPasswordIcon" src="assets/images/icons/eye.png" alt="Toggle" style="width: 20px; height: 20px;" />
+            </button>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
+            <p style="margin: 0; font-size: 12px; color: #64748b; flex: 1;">
+              💡 Để trống nếu không muốn đổi
+            </p>
+            <button type="button" onclick="resetToDefault()" 
+              style="padding: 6px 12px; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">
+              🔄 Reset về 123123
+            </button>
+          </div>
+        </div>
+
+        <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 16px; border-radius: 8px;">
+          <p style="margin: 0; font-size: 13px; color: #92400e; line-height: 1.6;">
+            <strong>⚠️ Lưu ý:</strong> Việc thay đổi email hoặc mật khẩu sẽ ảnh hưởng đến khả năng đăng nhập của khách hàng này. 
+            Hãy chắc chắn bạn đã thông báo cho họ về các thay đổi.
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 10px;">
+          <button type="button" onclick="document.getElementById('editUserOverlay').remove()" 
+            style="padding: 12px 24px; background: #f1f5f9; color: #475569; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+            ❌ Hủy
+          </button>
+          <button type="submit"
+            style="padding: 12px 24px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">
+            💾 Lưu thay đổi
+          </button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  overlay.appendChild(editModalNew);
+  document.body.appendChild(overlay);
+
+  // Close on overlay click
+  overlay.onclick = (e) => {
+    if (e.target === overlay) overlay.remove();
+  };
+
+  // Focus first input
+  setTimeout(() => document.getElementById("editNameNew").focus(), 100);
+
+  // Handle form submit
+  document.getElementById("editUserForm").onsubmit = (e) => {
+    e.preventDefault();
+    handleEditUser(index);
+  };
+
+  // Populate provinces and pre-select
+  const editProvinceSelect = document.getElementById("editProvince");
+  getProvinces().forEach((province) => {
+    const option = document.createElement("option");
+    option.value = province;
+    option.textContent = province;
+    if (province === userProvince) option.selected = true;
+    editProvinceSelect.appendChild(option);
+  });
+
+  // If province is selected, load districts
+  if (userProvince) {
+    const editDistrictSelect = document.getElementById("editDistrict");
+    const districts = getDistricts(userProvince);
+    districts.forEach((district) => {
+      const option = document.createElement("option");
+      option.value = district;
+      option.textContent = district;
+      if (district === userDistrict) option.selected = true;
+      editDistrictSelect.appendChild(option);
+    });
+  }
+
+  // Add focus styles
+  editModalNew.querySelectorAll("input, select").forEach((input) => {
+    input.onfocus = () => {
+      input.style.borderColor = "#f59e0b";
+      input.style.boxShadow = "0 0 0 3px rgba(245, 158, 11, 0.1)";
+    };
+    input.onblur = () => {
+      input.style.borderColor = "#e2e8f0";
+      input.style.boxShadow = "none";
+    };
+  });
+};
+
+// Toggle password visibility in edit modal
+window.toggleEditPassword = function () {
+  const input = document.getElementById("editPasswordNew");
+  const icon = document.getElementById("editPasswordIcon");
+
+  if (input.type === "password") {
+    input.type = "text";
+    icon.src = "assets/images/icons/eyeoff.png";
+  } else {
+    input.type = "password";
+    icon.src = "assets/images/icons/eye.png";
+  }
+};
+
+// ====== UPDATE DISTRICTS FOR EDIT MODAL ======
+window.updateEditDistricts = function () {
+  const province = document.getElementById("editProvince").value;
+  const districtSelect = document.getElementById("editDistrict");
+
+  // Clear
+  districtSelect.innerHTML = '<option value="">-- Chọn Quận/Huyện --</option>';
+
+  if (!province) {
+    return;
+  }
+
+  // Load districts
+  const districts = getDistricts(province);
+  districts.forEach((district) => {
+    const option = document.createElement("option");
+    option.value = district;
+    option.textContent = district;
+    districtSelect.appendChild(option);
+  });
+};
+
+// Reset password to default
+window.resetToDefault = function () {
+  showConfirmDialog(
+    "🔄 Xác nhận Reset Mật khẩu",
+    "Bạn có chắc chắn muốn reset mật khẩu về <strong>123123</strong>?",
+    () => {
+      document.getElementById("editPasswordNew").value = "123123";
+      showNotification(
+        "✅ Đã reset!",
+        "Mật khẩu tạm thời: <strong>123123</strong>"
+      );
+    }
+  );
+};
+
+// ====== HANDLE EDIT USER ======
+function handleEditUser(index) {
+  const name = document.getElementById("editNameNew").value.trim();
+  const email = document.getElementById("editEmailNew").value.trim();
+  const phone = document.getElementById("editPhoneNew").value.trim();
+  const password = document.getElementById("editPasswordNew").value.trim();
+  const trangthai = document.getElementById("editTrangThaiNew").value;
+
+  // Get address from 3 fields
+  const ward = document.getElementById("editWard").value.trim();
+  const district = document.getElementById("editDistrict").value;
+  const province = document.getElementById("editProvince").value;
+
+  // Build full address
+  let address = "";
+  if (ward) address += ward;
+  if (district) address += (address ? ", " : "") + district;
+  if (province) address += (address ? ", " : "") + province;
+  if (!address) address = "Chưa cập nhật";
+
+  // Validation
+  if (!name || !email || !phone || !password) {
+    showNotification(
+      "⚠️ Thiếu thông tin",
+      "Vui lòng nhập đầy đủ thông tin!",
+      "error"
+    );
+    return;
+  }
+
+  if (!isValidEmail(email)) {
+    showNotification(
+      "📧 Email không hợp lệ",
+      "Vui lòng nhập đúng định dạng email!",
+      "error"
+    );
+    return;
+  }
+
+  if (!isValidPhone(phone)) {
+    showNotification(
+      "📱 SĐT không hợp lệ",
+      "Số điện thoại phải có 10-11 số!",
+      "error"
+    );
+    return;
+  }
+
+  // Check email duplicate (exclude current user)
+  if (
+    users.some(
+      (u, i) => i !== index && u.email.toLowerCase() === email.toLowerCase()
+    )
+  ) {
+    showNotification(
+      "❌ Email đã tồn tại",
+      "Email này đã được sử dụng bởi người khác!",
+      "error"
+    );
+    return;
+  }
+
+  if (password.length < 6) {
+    showNotification(
+      "🔒 Mật khẩu quá ngắn",
+      "Mật khẩu phải có ít nhất 6 ký tự!",
+      "error"
+    );
+    return;
+  }
+
+  // Update user
+  users[index] = {
+    ...users[index],
+    name,
+    email,
+    phone,
+    address: address || "Chưa cập nhật",
+    password,
+    trangthai,
+  };
+
+  localStorage.setItem("users", JSON.stringify(users));
+  document.getElementById("editUserOverlay").remove();
+  renderUsers();
+
+  showNotification(
+    "👌  Cập nhật thành công!",
+    `Đã cập nhật thông tin cho <strong>${name}</strong>.`
+  );
 }
 
-// ====== KEYFRAMES CHO ANIMATIONS ======
+// ====== TOGGLE LOCK USER ======
+window.toggleLockUser = function (index) {
+  const u = users[index];
+  const isLocked = u.trangthai === "locked";
+  const action = isLocked ? "mở khóa" : "khóa";
+  const icon = isLocked ? "🔓" : "🔒";
+
+  showConfirmDialog(
+    `${icon} Xác nhận ${action} tài khoản`,
+    `Bạn có chắc chắn muốn <strong>${action}</strong> tài khoản của <strong>${u.name}</strong>?<br><small style="color: #64748b;">Email: ${u.email}</small>`,
+    () => {
+      users[index].trangthai = isLocked ? "active" : "locked";
+      localStorage.setItem("users", JSON.stringify(users));
+      renderUsers();
+
+      showNotification(
+        `${icon} ${
+          action.charAt(0).toUpperCase() + action.slice(1)
+        } thành công!`,
+        `Tài khoản <strong>${u.name}</strong> đã được ${action}.`
+      );
+    }
+  );
+};
+
+// ====== DELETE USER ======
+window.deleteUser = function (index) {
+  const u = users[index];
+  showConfirmDialog(
+    "⚠️ Xác nhận xóa khách hàng",
+    `Bạn có chắc chắn muốn <strong style="color: #ef4444;">xóa vĩnh viễn</strong> khách hàng <strong>${u.name}</strong>?<br><small style="color: #64748b;">Email: ${u.email}</small><br><br><strong style="color: #ef4444;">⚠️ Hành động này không thể hoàn tác!</strong>`,
+    () => {
+      users.splice(index, 1);
+      localStorage.setItem("users", JSON.stringify(users));
+      renderUsers();
+
+      showNotification(
+        "🗑️ Xóa thành công!",
+        `Khách hàng <strong>${u.name}</strong> đã được xóa khỏi hệ thống.`
+      );
+    }
+  );
+};
+
+// ====== SETUP EVENT LISTENERS ======
+function setupEventListeners() {
+  console.log("🔧 [Setup] Thiết lập event listeners");
+
+  // Search
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      searchQuery = e.target.value.toLowerCase();
+      currentPage = 1;
+      renderUsers();
+    });
+  }
+
+  // Filter status
+  if (filterStatusSelect) {
+    filterStatusSelect.addEventListener("change", (e) => {
+      statusFilter = e.target.value;
+      currentPage = 1;
+      renderUsers();
+    });
+  }
+
+  // Sort
+  if (sortBySelect) {
+    sortBySelect.addEventListener("change", (e) => {
+      sortBy = e.target.value;
+      renderUsers();
+    });
+  }
+
+  // Add button
+  if (btnAdd) {
+    console.log("✅ [Setup] Đã thêm event listener cho nút Thêm");
+    btnAdd.addEventListener("click", showAddUserModal);
+  } else {
+    console.error("❌ [Setup] Không tìm thấy nút btnAddUser!");
+  }
+
+  // Pagination
+  const prevPageBtn = document.getElementById("prevPage");
+  const nextPageBtn = document.getElementById("nextPage");
+
+  if (prevPageBtn) {
+    prevPageBtn.addEventListener("click", () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderUsers();
+      }
+    });
+  }
+
+  if (nextPageBtn) {
+    nextPageBtn.addEventListener("click", () => {
+      const totalPages = Math.ceil(totalFilteredUsers / usersPerPage);
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderUsers();
+      }
+    });
+  }
+}
+
+// ====== INITIALIZE ======
+window.addEventListener("DOMContentLoaded", () => {
+  console.log("🔧 [Init] DOM Content Loaded");
+
+  // Lấy DOM elements
+  modal = document.getElementById("modal");
+  editModal = document.getElementById("editModal");
+  btnAdd = document.getElementById("btnAddUser");
+  userTableBody = document.getElementById("userTableBody");
+  searchInput = document.getElementById("userSearchInput");
+  filterStatusSelect = document.getElementById("filterStatus");
+  sortBySelect = document.getElementById("sortBy");
+
+  console.log("🔍 [Init] btnAdd element:", btnAdd);
+  console.log("🔍 [Init] userTableBody element:", userTableBody);
+  console.log("🔍 [Init] searchInput element:", searchInput);
+
+  // Load users from localStorage
+  const savedUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+  console.log(
+    "🔍 [Quản lý khách hàng] Số lượng khách hàng trong localStorage:",
+    savedUsers.length
+  );
+
+  // Migration: ensure all users have correct trangthai format (active/locked)
+  users = savedUsers.map((user) => ({
+    ...user,
+    address: user.address || "Chưa cập nhật",
+    trangthai:
+      user.trangthai === "Hoạt động"
+        ? "active"
+        : user.trangthai === "Đã khóa"
+        ? "locked"
+        : user.trangthai || "active",
+  }));
+
+  // Save migrated data
+  localStorage.setItem("users", JSON.stringify(users));
+
+  console.log("✅ [Quản lý khách hàng] Đã load", users.length, "khách hàng");
+
+  // Initial render
+  renderUsers();
+
+  // Setup event listeners
+  setupEventListeners();
+});
+
+// ====== ANIMATIONS ======
 const style = document.createElement("style");
 style.textContent = `
   @keyframes fadeIn {
@@ -672,15 +1433,28 @@ style.textContent = `
       transform: translateX(0);
     }
   }
-  @keyframes slideOutRight {
-    from {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    to {
-      opacity: 0;
-      transform: translateX(100px);
-    }
+  .stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15) !important;
+  }
+  #userSearchInput:focus,
+  #filterStatus:focus,
+  #sortBy:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    outline: none;
+  }
+  #btnAddUser:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+  }
+  .pagination button:not(:disabled):hover {
+    border-color: #667eea;
+    background: #f8fafc;
+  }
+  .pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 `;
 document.head.appendChild(style);
