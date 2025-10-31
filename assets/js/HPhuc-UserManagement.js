@@ -665,7 +665,7 @@ function handleAddUser() {
   };
 
   users.push(newUser);
-  localStorage.setItem("users", JSON.stringify(users));
+  localStorage.setItem("phonestore_users", JSON.stringify(users));
   document.getElementById("addUserOverlay").remove();
   renderUsers();
 
@@ -1208,7 +1208,7 @@ function handleEditUser(index) {
     trangthai,
   };
 
-  localStorage.setItem("users", JSON.stringify(users));
+  localStorage.setItem("phonestore_users", JSON.stringify(users));
   document.getElementById("editUserOverlay").remove();
   renderUsers();
 
@@ -1230,7 +1230,7 @@ window.toggleLockUser = function (index) {
     `Bạn có chắc chắn muốn <strong>${action}</strong> tài khoản của <strong>${u.name}</strong>?<br><small style="color: #64748b;">Email: ${u.email}</small>`,
     () => {
       users[index].trangthai = isLocked ? "active" : "locked";
-      localStorage.setItem("users", JSON.stringify(users));
+      localStorage.setItem("phonestore_users", JSON.stringify(users));
       renderUsers();
 
       showNotification(
@@ -1251,7 +1251,7 @@ window.deleteUser = function (index) {
     `Bạn có chắc chắn muốn <strong style="color: #ef4444;">xóa vĩnh viễn</strong> khách hàng <strong>${u.name}</strong>?<br><small style="color: #64748b;">Email: ${u.email}</small><br><br><strong style="color: #ef4444;">⚠️ Hành động này không thể hoàn tác!</strong>`,
     () => {
       users.splice(index, 1);
-      localStorage.setItem("users", JSON.stringify(users));
+      localStorage.setItem("phonestore_users", JSON.stringify(users));
       renderUsers();
 
       showNotification(
@@ -1342,7 +1342,78 @@ window.addEventListener("DOMContentLoaded", () => {
   console.log("🔍 [Init] searchInput element:", searchInput);
 
   // Load users from localStorage
-  const savedUsers = JSON.parse(localStorage.getItem("users")) || [];
+  let savedUsers = JSON.parse(localStorage.getItem("phonestore_users")) || [];
+
+  // Nếu chưa có dữ liệu, khởi tạo dữ liệu mẫu
+  if (savedUsers.length === 0) {
+    console.log(
+      "📦 [Quản lý khách hàng] Chưa có dữ liệu, đang khởi tạo dữ liệu mẫu..."
+    );
+    const sampleUsers = [
+      {
+        id: 1,
+        name: "Lư Hồng Phúc",
+        email: "phucga150625@email.com",
+        phone: "0866680197",
+        address: "123 ABC, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh",
+        trangthai: "active",
+        joinDate: "01/01/2024",
+        orders: 0,
+        password: "Password1",
+      },
+      {
+        id: 2,
+        name: "Nguyễn Văn An",
+        email: "nguyenvana@gmail.com",
+        phone: "3173849265",
+        address: "23 DEF, Phường 4, Quận 5, Thành phố Hồ Chí Minh",
+        trangthai: "active",
+        joinDate: "21/09/2025",
+        orders: 5,
+        password: "Password2",
+      },
+      {
+        id: 3,
+        name: "Hoàng Văn Lâm",
+        email: "hoangvanlam@gmail.com",
+        phone: "5554103873",
+        address: "621 GHS, Phường Bến Nghé, Quận 1, Thành phố Hồ Chí Minh",
+        trangthai: "active",
+        joinDate: "14/08/2024",
+        orders: 6,
+        password: "Password3",
+      },
+      {
+        id: 4,
+        name: "Trương Tuấn Tài",
+        email: "tuantai@email.com",
+        phone: "8123054412",
+        address: "106 AMC, Phường 1, Quận 4, Thành phố Hồ Chí Minh",
+        trangthai: "locked",
+        joinDate: "25/10/2025",
+        orders: 12,
+        password: "Password4",
+      },
+      {
+        id: 5,
+        name: "Ngô Văn Liêm",
+        email: "ngovanliem@gmail.com",
+        phone: "5361847112",
+        address: "402 AMC, Phường 3, Quận 7, Thành phố Hồ Chí Minh",
+        trangthai: "active",
+        joinDate: "28/10/2025",
+        orders: 3,
+        password: "Password5",
+      },
+    ];
+    savedUsers = sampleUsers;
+    localStorage.setItem("phonestore_users", JSON.stringify(sampleUsers));
+    console.log(
+      "✅ [Quản lý khách hàng] Đã khởi tạo",
+      sampleUsers.length,
+      "khách hàng mẫu"
+    );
+  }
 
   console.log(
     "🔍 [Quản lý khách hàng] Số lượng khách hàng trong localStorage:",
@@ -1353,6 +1424,7 @@ window.addEventListener("DOMContentLoaded", () => {
   users = savedUsers.map((user) => ({
     ...user,
     address: user.address || "Chưa cập nhật",
+    orders: user.orders || 0,
     trangthai:
       user.trangthai === "Hoạt động"
         ? "active"
@@ -1361,8 +1433,8 @@ window.addEventListener("DOMContentLoaded", () => {
         : user.trangthai || "active",
   }));
 
-  // Save migrated data
-  localStorage.setItem("users", JSON.stringify(users));
+  // Save migrated data nếu có thay đổi
+  localStorage.setItem("phonestore_users", JSON.stringify(users));
 
   console.log("✅ [Quản lý khách hàng] Đã load", users.length, "khách hàng");
 

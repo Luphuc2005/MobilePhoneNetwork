@@ -1,5 +1,3 @@
-
-
 // 🧩 Hàm phụ hiển thị 1 section
 function showSection(id) {
   const el = document.getElementById(id);
