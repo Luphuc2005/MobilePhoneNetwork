@@ -1,0 +1,614 @@
+html, body
+{ 
+    width:100%;
+    height:100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* Form dang ky va dang nhap */
+.close-form {
+    background:none;
+    border: none;
+    font-size: x-large;
+    font-weight: 500;
+    cursor: pointer;
+    position: absolute;
+    top: 25px;
+    right: 30px;
+}
+
+.close-form:hover {
+    color: gray;
+}
+
+.form-background {
+    position: fixed;
+    overflow: auto;
+    z-index: 1001;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.7);
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: safe center;
+    align-items: center;
+    flex-direction: column;
+}
+
+
+.form-container {
+    background-color: white;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position:relative;
+}
+
+.form-container p {
+    font-size: small;
+}
+
+.form-container a {
+    text-decoration: none;
+}
+
+.form-container a:hover {
+    text-decoration: underline;
+}
+
+.form-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 3%;
+    margin-bottom: 3%;
+}
+
+.form-header > img{
+    margin: 0;
+    margin-top: 5%;
+    margin-bottom: 5%;
+}
+
+.form-header > * {
+    margin: 0;
+}
+
+
+.form {
+    display: flex;
+    flex-flow: column;
+    padding: 0 3dvw 0 3dvw;
+}
+
+
+#hoVaTenDangKy {
+    background: url(../images/icons/auth/name.svg);
+}
+
+.email {
+    background: url(../images/icons/auth/email.svg);
+}
+
+.matKhau {
+    background: url(../images/icons/auth/password.svg);
+    margin-bottom: 1%;
+}
+
+#formDangKy input[type="text"], 
+#formDangKy input[type="email"], 
+#formDangKy input[type="password"],
+#formDangNhap input[type="text"], 
+#formDangNhap input[type="email"], 
+#formDangNhap input[type="password"]  {
+    width: 100%;
+    min-height: 35px;
+    height: 4dvh;
+    padding-left: 40px;
+    padding-right: 10px;
+    margin-top: 2%;
+    border-radius: 7px;
+    background-repeat: no-repeat !important;
+    background-size: 20px !important;
+    background-position: 10px center !important;
+    border: solid 0.3px lightgray;
+}
+
+#formDangKy legend,
+#formDangNhap legend {
+    font-weight: bold;
+    font-size: small;
+}
+
+#formDangKy fieldset,
+#formDangNhap fieldset {
+    padding: 0;
+    margin-top: 5%;
+    margin-bottom: 2%;
+    border: none;
+}
+
+#formDangKy fieldset div,
+#formDangNhap fieldset div {
+    margin-top: 1%; 
+}
+
+#formDangKy .submitButton,
+#formDangNhap .submitButton {
+    width: 100%;
+    height: 5dvh;
+    min-height: 40px;
+    border-radius: 7px;
+    margin-top: 0;
+    color: #FFFFFF;
+    font-weight: bolder;
+    font-size:medium;
+}
+
+#agreement {
+    height: 100%;
+    margin-left: 0;
+    padding: 0;
+}
+
+/* Container cua trang */
+#main-container {
+    display: flex;
+    justify-content: center;
+}
+/* Trang thông tin cá nhân */
+#user-container {
+    width: 60%;
+    min-width: fit-content;
+    display: flex;
+    gap: 30px;
+    margin-top: 1.5%;
+    margin-bottom: 1.5%;
+}
+
+/* Sidebar */
+#user-sidebar {
+    width: 30%;
+    min-width: fit-content;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius:  10px;
+    padding: 10px;
+}
+
+#user-sidebar ul {
+    margin: 0;
+    margin-top: 5%;
+    margin-left: 5%;
+}
+
+#sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    margin: 0;
+    margin-top: 5%;
+    margin-left: 5%;
+}
+
+#header-title {
+    font-size: 1.5em;
+    font-weight: 500;
+}
+
+#user-sidebar li{
+    list-style-type: none;
+    margin: 5% 0;
+    font-size:large;
+    font-weight: 450;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    transition: transform 1s;
+}
+
+#user-sidebar button{
+    background: none;
+    border: none;
+    font-size:large;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+#user-sidebar button:hover{
+    color: red;
+    transform: translateX(7px);
+}
+
+/*Content*/
+#user-content {
+    width: 70%;
+    background-color: white;
+    border-radius: 10px;
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    padding-bottom: 3%;
+}
+
+#user-info {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#user-info #updateInfo {
+    font-size: 1em;
+    background: none;
+    border: none;
+    padding-right: 0.6em;
+    cursor: pointer;
+    color: red;
+    align-items: baseline;
+}
+
+#user-info #updateInfo:hover {
+    text-decoration: underline;
+}
+
+#user-info table {
+    width: 100%;
+    border-spacing: 0.6em 2em;
+}
+
+#user-info tr, 
+#user-info th,
+#user-info td {
+    height: 2em;
+}
+
+#user-info th {
+    width: 20%;
+    text-align: right;
+}
+
+#user-info td {
+    border: solid 1px lightgray;
+    border-radius: 5px;
+    padding-left: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#user-info #passwordCell {
+    width: 55%;
+}
+
+#user-info #changePasswordCell {
+    width: 25%;
+    border: none;
+}
+
+#user-info #changePassword {
+    color: mediumblue;
+    width: fit-content;
+    font-size: 1em;
+    text-align: right;
+    background: none;
+    border: none;
+    cursor: pointer;
+    float: right;
+}
+
+#user-info #changePassword:hover {
+    text-decoration:underline;
+}
+
+#user-info #userPassword {
+    width: 90%;
+    background: none;
+    border: none;
+    font-size: 1em;
+}
+
+.showPassword {
+    appearance: none;
+    width: 8%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url(../images/icons/auth/showPassword.svg);
+}
+
+.showPassword:checked {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(../images/icons/auth/hidePassword.svg);
+}
+
+#user-info #joinDate {
+    width: 20%;
+    min-width: max-content;
+}
+
+#user-info #joinDateVal {
+    text-align: right;
+    border: none;
+}
+
+/* Form cập nhật thông tin */
+.modal-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(0,0,0,0.4);
+    z-index: 1001;
+    display: none;
+}
+
+#update-form {
+    position: fixed;
+    min-height: 100px;
+    min-width: 100px;
+    height: 90%;
+    width: 30%;
+    background-color: white;
+    top: 50%;
+    right: 15px;
+    transform:translateY(-50%);
+    border-radius: 10px;
+    z-index: 1002;
+}
+
+#update-form fieldset {
+    display: flex;
+    flex-direction: column;
+    margin: 15px 15px;
+    border: none;
+}
+
+#update-form input {
+    height: 2.5em;
+    font-size: 1em;
+    padding-left: 10px;
+    border: solid 0.7px lightgray;
+    border-radius: 7px;
+}
+
+#update-form select {
+    padding: 1em 0;
+    border-radius: 7px;
+    border: solid 0.7px lightgray;
+}
+
+#update-form legend {
+    margin-bottom: 0.5em;
+    font-size: 1em;
+    font-weight: 500;
+}
+
+#update-form #new-address {
+    margin-top: 1em;
+}
+
+#update-form #save-changes-button, 
+#update-form #reset-form-button {
+    height: 100%;
+    width: 40%;
+    padding: 0;
+}
+
+#update-form #save-changes-button {
+    background-color:crimson;
+    color: white;
+    font-weight: 600;
+}
+
+#update-form #reset-form-button {
+    background-color: white;
+    border: solid 1px lightgray;
+}
+
+#update-form .close-form{
+    top: 5px;
+    right: 20px;
+}
+
+#update-form #new-city {
+    width: 40%;
+}
+
+#update-form #new-district {
+    width: 25%;
+}
+
+#update-form #new-ward {
+    width: 25%;
+}
+
+#reset-password-form {
+    background-color: white;
+    width: 30%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 15px;
+    padding: 10px;
+}
+
+#reset-password-form .close-form {
+    top: 15px;
+    right: 25px;
+}
+
+#reset-password-form fieldset {
+    margin: 3% 3%;
+    border: none;
+}
+
+#reset-password-form legend {
+    font-size: 1.5em;
+    margin-bottom: 1%;
+}
+
+#reset-password-form div {
+    display: flex;
+    border: solid 0.5px gray;
+    margin: 3% 0;
+    margin-bottom: 0;
+    border-radius: 7px;
+}
+
+#reset-password-form input {
+    font-size: 1em;
+    height: 2.5em;
+    margin: 1% 0;
+    width: 100%;
+    border: none;
+    outline: none;
+    padding-left: 15px;
+}
+
+#reset-password-form input:focus {
+    border: none;
+}
+
+#reset-password-form .showPassword {
+    width: 4%;
+    min-width: 20px;
+    margin-right: 10px;
+}
+
+#reset-password-button {
+    border-radius: 25px;
+    background-color: #4681f4;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+}
+
+#reset-password-button:hover {
+    background-color: #5783db;
+    cursor: pointer;
+}
+
+#reset-password-button:disabled {
+    background-color: #365085;
+    cursor: default;
+}
+
+@media screen and (max-width: 1317px){
+    #user-container {
+        width: 90%;
+    }
+}
+
+@media screen and (max-width: 1024px){
+    #user-container {
+        width: 100%;
+    }
+
+    #user-content input[type="button"] {
+        padding: 0;
+        font-size: medium !important;
+    }
+
+    #user-content table {
+        border-spacing: 1em 0.5em;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    main {
+        margin-top: 3%;
+        margin-bottom: 5%;
+    }
+
+    #user-container {
+        width: 100%;
+        height: 100%;
+        flex-direction: column;
+    }
+
+    #user-sidebar ul {
+        margin: 0;
+        margin-top: 0;
+        margin-left: 0;
+    }
+
+    #user-sidebar {
+        width: 100%;
+        height: fit-content
+    }
+
+    #user-content {
+        width: 100%;
+        height: 80%;
+    }
+
+    #sidebar-header {
+        display: flex;
+        align-items: center;
+        gap: 1em;
+        margin: 0;
+        margin-top: 1%;
+        margin-left: 1%;
+    }
+
+    #sidebar-header img {
+            width: 3em !important;
+        }
+
+    #user-sidebar hr {
+        margin-top: 2% !important;
+    }
+
+    .userName {
+        font-size: large;
+        font-weight: 500;
+    }
+    
+    
+    #user-sidebar li{
+        list-style-type: none;
+        margin: 5% 0;
+        font-size:large;
+        font-weight: 450;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+    }
+
+    #user-sidebar button{
+        background: none;
+        border: none;
+        font-size:large;
+        cursor: pointer;
+    }
+
+    #user-content table {
+        border-spacing: 10px 10px;
+    }
+
+    #user-content input[type="button"] {
+        padding: 0;
+        font-size: small !important;
+        font-weight: 600 !important;
+    }
+
+    .main-header {
+        position: relative;
+    }
+}
