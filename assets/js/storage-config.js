@@ -71,26 +71,26 @@ const STORAGE_KEYS = {
 };
 // ========== STORAGE HELPER ==========
 const StorageHelper = {
-    
-    save(key, data,source) {
+    save(key, data, source) {
         try {
-            // lưu dữ liệu (String)
+            // Lưu dữ liệu (String)
             localStorage.setItem(key, JSON.stringify(data));
             console.log(`[Storage] Đã lưu ${key}:`, Array.isArray(data) ? `${data.length} items` : 'object');
             
             // Trigger custom event để sync trong cùng tab
-            // custom = key+'-page'
-            this.triggerSync(key,source);
+            this.triggerSync(key, source);
             return true;
         } catch (e) {
             console.error(`[Storage] Lỗi lưu ${key}:`, e);
-            //Dung lượng vượt quá mức
+            // Dung lượng vượt quá mức
             if (e.name === 'QuotaExceededError') {
                 alert('Dung lượng lưu trữ đã đầy! Vui lòng xóa dữ liệu cũ.');
             }
             return false;
         }
     },
+    
+
 
     /**
      * Đọc dữ liệu từ localStorage

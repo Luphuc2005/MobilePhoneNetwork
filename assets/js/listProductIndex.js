@@ -97,6 +97,39 @@ function changePage(page) {
   renderPagination();
 }
 
+// ====== HÀM RELOAD DATA TỪ LOCALSTORAGE ======
+function reloadProducts() {
+  products = JSON.parse(localStorage.getItem("product")) || [];
+  console.log(
+    "🔄 Đã reload products từ localStorage:",
+    products.length,
+    "items"
+  );
+  renderProducts(currentPage);
+  renderPagination();
+}
+
+// ====== LẮNG NGHE THAY ĐỔI TỪ ADMIN (ĐA TAB) ======
+// Lắng nghe storage event (khi admin ở tab khác thay đổi)
+window.addEventListener("storage", (e) => {
+  if (e.key === "product") {
+    console.log("📢 Admin đã cập nhật giá sản phẩm!");
+    reloadProducts();
+  }
+});
+
+// Lắng nghe custom event (khi admin ở cùng tab)
+window.addEventListener("phonestore-sync", (e) => {
+  if (e.detail && e.detail.key === "product") {
+    console.log("📢 Admin đã cập nhật giá sản phẩm (same tab)!");
+    reloadProducts();
+  }
+});
+
 // ====== CHẠY LẦN ĐẦU ======
 renderProducts();
 renderPagination();
+
+console.log(
+  "✅ Trang người dùng sẵn sàng - Tự động cập nhật khi admin thay đổi giá"
+);

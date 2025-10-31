@@ -2,12 +2,30 @@
 
 // Biến toàn cục
 let products = JSON.parse(localStorage.getItem("product")) || [];
+
+// % Lợi nhuận theo LOẠI sản phẩm (VD: tất cả iPhone = 20%)
 let categoryProfits = JSON.parse(localStorage.getItem("categoryProfits")) || {};
+
+// % Lợi nhuận theo TỪNG SẢN PHẨM cụ thể (VD: iPhone 15 Pro Max = 25%)
+// ⚡ ƯU TIÊN: Nếu có productProfits thì dùng, không có mới dùng categoryProfits
 let productProfits = JSON.parse(localStorage.getItem("productProfits")) || {};
 
 // ====== HELPER: LƯU PRODUCTS ======
 function saveProductsToStorage() {
   localStorage.setItem("product", JSON.stringify(products));
+
+  // Trigger custom event để thông báo cho trang người dùng
+  window.dispatchEvent(
+    new CustomEvent("phonestore-sync", {
+      detail: {
+        key: "product",
+        timestamp: Date.now(),
+        source: "pricing-page",
+      },
+    })
+  );
+
+  console.log("💾 Đã lưu products và trigger sync event");
 }
 
 // ====== CALCULATE PROFIT (LỢI NHUẬN) ======
@@ -282,10 +300,20 @@ function loadAdjustedProducts(searchTerm = "") {
   const grid = document.getElementById("adjustedProductsGrid");
   if (!grid) return;
 
-  // Lọc sản phẩm đã điều chỉnh giá (từ cache local)
-  let adjustedProducts = products.filter(
-    (p) => p.oldPrice > 0 || p.discount != 0 || (p.giavon && p.gia > p.giavon)
-  );
+  // Lọc sản phẩm đã điều chỉnh (có trong productProfits hoặc categoryProfits)
+  let adjustedProducts = products.filter((product) => {
+    // Kiểm tra xem sản phẩm này có được áp dụng % lợi nhuận chưa
+    const hasProductProfit = productProfits[product.tensanpham] !== undefined;
+    const hasCategoryProfit = categoryProfits[product.danhmuc] !== undefined;
+
+    // Hiển thị nếu có % lợi nhuận riêng HOẶC theo category
+    // VÀ có giá vốn để tính toán
+    return (
+      (hasProductProfit || hasCategoryProfit) &&
+      product.giavon &&
+      product.giavon > 0
+    );
+  });
 
   // Tìm kiếm nếu có
   if (searchTerm) {
@@ -300,11 +328,28 @@ function loadAdjustedProducts(searchTerm = "") {
 
   if (adjustedProducts.length === 0) {
     grid.innerHTML = `
-      <div style="text-align: center; padding: 40px; color: #6b7280; font-style: italic;">
+      <div style="text-align: center; padding: 40px; color: #6b7280;">
+        <div style="font-size: 48px; margin-bottom: 16px;">📦</div>
+        <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">
+          ${
+            searchTerm
+              ? "Không tìm thấy sản phẩm phù hợp"
+              : "Chưa có sản phẩm nào được điều chỉnh giá"
+          }
+        </div>
+        <div style="font-size: 14px; color: #9ca3af; margin-bottom: 20px;">
+          ${
+            searchTerm
+              ? "Thử tìm kiếm với từ khóa khác"
+              : 'Vào tab "⚡ Áp dụng % Lợi nhuận" để thiết lập giá cho sản phẩm'
+          }
+        </div>
         ${
-          searchTerm
-            ? "Không tìm thấy sản phẩm phù hợp"
-            : "Chưa có sản phẩm nào được điều chỉnh giá"
+          !searchTerm
+            ? `<button onclick="switchTab('profit')" style="padding: 10px 20px; background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+            ⚡ Thiết lập % lợi nhuận
+          </button>`
+            : ""
         }
       </div>
     `;
@@ -340,7 +385,7 @@ function createProductCard(product) {
     <div class="product-image-container">
       <img src="${product.hinhanh}" alt="${
     product.tensanpham
-  }" onerror="this.src='/assets/images/products/ip15prm.webp'">
+  }" onerror="this.src='./assets/images/products/ip15prm.webp'">
       ${discount < 0 ? `<div class="discount-badge">${discount}%</div>` : ""}
     </div>
     <div class="product-info-pricing">
@@ -840,6 +885,14 @@ function applyCategoryProfitToPrice() {
     return;
   }
 
+  // ⚡ LOGIC ƯU TIÊN: Kiểm tra xem có sản phẩm nào có % riêng không
+  const productsWithOwnProfit = categoryProducts.filter(
+    (p) => productProfits[p.tensanpham]
+  );
+  const productsToUpdate = categoryProducts.filter(
+    (p) => !productProfits[p.tensanpham]
+  );
+
   // Tính ví dụ
   const exampleCost = 2000000;
   const exampleListPrice = Math.round(exampleCost * (1 + profit / 100));
@@ -854,13 +907,33 @@ function applyCategoryProfitToPrice() {
       : 0;
 
   // Xác nhận trước khi áp dụng
-  showConfirmModal(
-    `Áp dụng ${profit}% lợi nhuận${
-      discountPercent > 0 ? ` + ${discountPercent}% KM` : ""
-    } cho ${category}`,
-    `Bạn có chắc muốn áp dụng cho <strong>${
-      categoryProducts.length
-    } sản phẩm</strong> trong loại "${category}"?<br><br>
+  let confirmTitle = `Áp dụng ${profit}% lợi nhuận${
+    discountPercent > 0 ? ` + ${discountPercent}% KM` : ""
+  } cho ${category}`;
+
+  let confirmMessage = `Bạn có chắc muốn áp dụng cho <strong>${productsToUpdate.length} sản phẩm</strong> trong loại "${category}"?`;
+
+  if (productsWithOwnProfit.length > 0) {
+    confirmMessage += `<br><br>
+    <div style="background: #fef3c7; padding: 12px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #f59e0b;">
+      <strong>⚡ Lưu ý:</strong> Có ${
+        productsWithOwnProfit.length
+      } sản phẩm đã có % riêng, sẽ KHÔNG bị ảnh hưởng:<br>
+      <small style="color: #78350f;">
+        ${productsWithOwnProfit
+          .slice(0, 3)
+          .map((p) => `• ${p.tensanpham} (${productProfits[p.tensanpham]}%)`)
+          .join("<br>")}
+        ${
+          productsWithOwnProfit.length > 3
+            ? `<br>• ... và ${productsWithOwnProfit.length - 3} sản phẩm khác`
+            : ""
+        }
+      </small>
+    </div>`;
+  }
+
+  confirmMessage += `<br><br>
     
     <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); padding: 12px; border-radius: 8px; border: 2px solid #3b82f6; margin-bottom: 12px;">
       <strong style="color: #1e40af; font-size: 14px;">📐 CÔNG THỨC TÍNH:</strong><br>
@@ -937,13 +1010,17 @@ function applyCategoryProfitToPrice() {
       </div>`
           : ""
       }
-    </div>`,
+    </div>`;
+
+  showConfirmModal(
+    confirmTitle,
+    confirmMessage,
     () => {
       let updatedCount = 0;
       let totalProfit = 0;
 
-      categoryProducts.forEach((product) => {
-        //   LOGIC HOÀN HẢO: LUÔN dựa trên giá vốn
+      productsToUpdate.forEach((product) => {
+        // ✅ LOGIC HOÀN HẢO: LUÔN dựa trên giá vốn
         if (!product.giavon || product.giavon === 0) {
           showNotification(
             "❌ Lỗi",
@@ -973,15 +1050,23 @@ function applyCategoryProfitToPrice() {
         }
       });
 
-      // Lưu vào localStorage
+      // ✅ LƯU % LỢI NHUẬN VÀO categoryProfits
+      categoryProfits[category] = profit;
+      localStorage.setItem("categoryProfits", JSON.stringify(categoryProfits));
+
+      // Lưu giá vào localStorage
       saveProductsToStorage();
 
       // Broadcast
       broadcastPriceUpdate(`${updatedCount} sản phẩm ${category}`);
 
+      // Reload profit table để hiển thị % vừa lưu
+      loadProfitTable();
+
       // Reset form
       categorySelect.value = "";
       categoryProfitInput.value = "";
+      if (categoryDiscountInput) categoryDiscountInput.value = "";
 
       // Reload adjusted products nếu đang ở tab đó
       if (
@@ -990,13 +1075,18 @@ function applyCategoryProfitToPrice() {
         loadAdjustedProducts();
       }
 
-      showNotification(
-        "  Thành công",
-        `Đã áp dụng ${profit}% lợi nhuận cho ${updatedCount} sản phẩm ${category}! Tổng lợi nhuận: ~${formatPrice(
-          totalProfit
-        )}`,
-        "success"
-      );
+      const message =
+        productsWithOwnProfit.length > 0
+          ? `Đã áp dụng ${profit}% cho ${updatedCount} sản phẩm. ${
+              productsWithOwnProfit.length
+            } sản phẩm giữ nguyên % riêng. Tổng lời: ~${formatPrice(
+              totalProfit
+            )}`
+          : `Đã áp dụng ${profit}% lợi nhuận cho ${updatedCount} sản phẩm ${category}! Tổng lời: ~${formatPrice(
+              totalProfit
+            )}`;
+
+      showNotification("  Thành công", message, "success");
     },
     () => {
       showNotification("ℹ️ Đã hủy", "Không thay đổi giá sản phẩm.", "info");
@@ -1167,7 +1257,11 @@ function applyProductProfitToPrice() {
       product.oldPrice = discountPercent > 0 ? listPrice : 0; // Giá niêm yết (nếu có KM)
       product.discount = discountPercent > 0 ? -discountPercent : 0; // % KM (âm)
 
-      // Lưu vào localStorage
+      // ✅ LƯU % LỢI NHUẬN VÀO productProfits
+      productProfits[product.tensanpham] = profit;
+      localStorage.setItem("productProfits", JSON.stringify(productProfits));
+
+      // Lưu giá vào localStorage
       const productIndex = products.findIndex((p) => p.id === productId);
       products[productIndex] = product;
       saveProductsToStorage();
@@ -1175,9 +1269,13 @@ function applyProductProfitToPrice() {
       // Broadcast
       broadcastPriceUpdate(product.tensanpham);
 
+      // Reload profit table để hiển thị % vừa lưu
+      loadProfitTable();
+
       // Reset form
       productSelect.value = "";
       productProfitInput.value = "";
+      if (productDiscountInput) productDiscountInput.value = "";
 
       // Reload adjusted products nếu đang ở tab đó
       if (
@@ -1215,14 +1313,44 @@ function applyProfitFromTable(name, profit, type) {
       return;
     }
 
+    // ⚡ LOGIC ƯU TIÊN: Kiểm tra xem có sản phẩm nào có % riêng không
+    const productsWithOwnProfit = categoryProducts.filter(
+      (p) => productProfits[p.tensanpham]
+    );
+    const productsToUpdate = categoryProducts.filter(
+      (p) => !productProfits[p.tensanpham]
+    );
+
+    let confirmMessage = `Áp dụng ${profit}% lợi nhuận đã lưu cho <strong>${productsToUpdate.length} sản phẩm</strong> trong loại "${name}"?`;
+
+    if (productsWithOwnProfit.length > 0) {
+      confirmMessage += `<br><br>
+      <div style="background: #fef3c7; padding: 12px; border-radius: 8px; margin-top: 12px; border-left: 4px solid #f59e0b;">
+        <strong>⚡ Lưu ý:</strong> Có ${
+          productsWithOwnProfit.length
+        } sản phẩm đã có % riêng, sẽ KHÔNG bị ảnh hưởng:<br>
+        <small style="color: #78350f;">
+          ${productsWithOwnProfit
+            .slice(0, 3)
+            .map((p) => `• ${p.tensanpham} (${productProfits[p.tensanpham]}%)`)
+            .join("<br>")}
+          ${
+            productsWithOwnProfit.length > 3
+              ? `<br>• ... và ${productsWithOwnProfit.length - 3} sản phẩm khác`
+              : ""
+          }
+        </small>
+      </div>`;
+    }
+
     showConfirmModal(
       `Áp dụng ${profit}% lợi nhuận`,
-      `Áp dụng ${profit}% lợi nhuận đã lưu cho <strong>${categoryProducts.length} sản phẩm</strong> trong loại "${name}"?`,
+      confirmMessage,
       () => {
         let updatedCount = 0;
 
-        categoryProducts.forEach((product) => {
-          //   LOGIC HOÀN HẢO: LUÔN dựa trên giá vốn
+        productsToUpdate.forEach((product) => {
+          // ✅ LOGIC HOÀN HẢO: LUÔN dựa trên giá vốn
           if (!product.giavon || product.giavon === 0) {
             console.warn(
               `Sản phẩm "${product.tensanpham}" chưa có giá vốn, bỏ qua.`
@@ -1253,11 +1381,12 @@ function applyProfitFromTable(name, profit, type) {
           loadAdjustedProducts();
         }
 
-        showNotification(
-          "  Thành công",
-          `Đã áp dụng ${profit}% lợi nhuận cho ${updatedCount} sản phẩm ${name}!`,
-          "success"
-        );
+        const message =
+          productsWithOwnProfit.length > 0
+            ? `Đã áp dụng ${profit}% cho ${updatedCount} sản phẩm. ${productsWithOwnProfit.length} sản phẩm giữ nguyên % riêng.`
+            : `Đã áp dụng ${profit}% lợi nhuận cho ${updatedCount} sản phẩm ${name}!`;
+
+        showNotification("  Thành công", message, "success");
       },
       () => {
         showNotification("ℹ️ Đã hủy", "Không thay đổi giá sản phẩm.", "info");
@@ -1371,33 +1500,39 @@ function showConfirmModal(title, message, onConfirm, onCancel) {
     <div style="
       background: white;
       border-radius: 12px;
-      padding: 24px;
-      max-width: 400px;
+      max-width: 600px;
       width: 90%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
       box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     ">
-      <div style="font-weight: 600; font-size: 18px; margin-bottom: 12px; color: #1f2937;">${title}</div>
-      <div style="font-size: 14px; line-height: 1.5; color: #6b7280; margin-bottom: 20px;">${message}</div>
-      <div style="display: flex; gap: 12px; justify-content: flex-end;">
-        <button id="cancelBtn" style="
+      <div style="padding: 24px; overflow-y: auto; flex: 1;">
+        <div style="font-weight: 600; font-size: 18px; margin-bottom: 12px; color: #1f2937;">${title}</div>
+        <div style="font-size: 14px; line-height: 1.5; color: #6b7280;">${message}</div>
+      </div>
+      <div style="padding: 20px 24px; border-top: 1px solid #e5e7eb; background: #f9fafb; display: flex; gap: 12px; justify-content: flex-end; border-radius: 0 0 12px 12px;">
+        <button id="cancelBtnhehe" style="
           background: #f3f4f6;
           color: #6b7280;
           border: none;
-          padding: 8px 16px;
+          padding: 10px 20px;
           border-radius: 6px;
           cursor: pointer;
           font-size: 14px;
+          font-weight: 600;
           transition: all 0.2s ease;
         ">Hủy</button>
         <button id="confirmBtn" style="
           background: #10b981;
           color: white;
           border: none;
-          padding: 8px 16px;
+          padding: 10px 20px;
           border-radius: 6px;
           cursor: pointer;
           font-size: 14px;
+          font-weight: 600;
           transition: all 0.2s ease;
         ">Xác nhận</button>
       </div>
@@ -1407,7 +1542,7 @@ function showConfirmModal(title, message, onConfirm, onCancel) {
   document.body.appendChild(modal);
 
   // Event listeners
-  const cancelBtn = document.getElementById("cancelBtn");
+  const cancelBtn = document.getElementById("cancelBtnhehe");
   const confirmBtn = document.getElementById("confirmBtn");
 
   cancelBtn.addEventListener("click", () => {
@@ -1799,18 +1934,157 @@ function editProfit(name, currentProfit, type) {
 
 // ====== DELETE PROFIT ======
 function deleteProfit(name, type) {
-  if (!confirm(`Bạn có chắc muốn xóa % lợi nhuận của ${name}?`)) return;
+  // Đếm số sản phẩm bị ảnh hưởng
+  let affectedProducts = [];
 
   if (type === "category") {
-    delete categoryProfits[name];
-    localStorage.setItem("categoryProfits", JSON.stringify(categoryProfits));
+    affectedProducts = products.filter(
+      (p) => p.danhmuc === name && p.giavon && p.gia > p.giavon
+    );
   } else {
-    delete productProfits[name];
-    localStorage.setItem("productProfits", JSON.stringify(productProfits));
+    affectedProducts = products.filter(
+      (p) => p.tensanpham === name && p.giavon && p.gia > p.giavon
+    );
   }
 
-  loadProfitTable();
-  showNotification("  Thành công", `Đã xóa % lợi nhuận của ${name}`, "success");
+  // Tạo modal với 2 lựa chọn
+  const overlay = document.createElement("div");
+  overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+  `;
+
+  const modal = document.createElement("div");
+  modal.style.cssText = `
+    background: white;
+    border-radius: 16px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideDown 0.3s ease;
+  `;
+
+  modal.innerHTML = `
+    <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 24px; border-radius: 16px 16px 0 0; color: white;">
+      <h2 style="margin: 0; font-size: 20px; font-weight: 700;">🗑️ Xóa % lợi nhuận</h2>
+    </div>
+
+    <div style="padding: 30px;">
+      <p style="margin: 0 0 20px 0; font-size: 15px; color: #1e293b;">
+        Xóa % lợi nhuận của <strong>${name}</strong>?
+      </p>
+
+      ${
+        affectedProducts.length > 0
+          ? `
+      <div style="background: #fef3c7; padding: 16px; border-radius: 8px; border-left: 4px solid #f59e0b; margin-bottom: 20px;">
+        <div style="font-size: 14px; color: #92400e; margin-bottom: 8px;">
+          <strong>📊 Có ${affectedProducts.length} sản phẩm đang có lợi nhuận</strong>
+        </div>
+        <div style="font-size: 12px; color: #78350f; line-height: 1.6;">
+          • <strong>Chỉ xóa %</strong>: Giá sản phẩm giữ nguyên<br>
+          • <strong>Xóa % + reset</strong>: TẤT CẢ về giá vốn
+        </div>
+      </div>
+      `
+          : `
+      <div style="background: #e0f2fe; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; color: #075985;">
+        ℹ️ Không có sản phẩm nào đang có lợi nhuận
+      </div>
+      `
+      }
+
+      <div style="display: flex; gap: 12px; justify-content: flex-end;">
+        <button id="btnCancelDelete" style="padding: 12px 24px; background: #e2e8f0; color: #1e293b; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+          Hủy
+        </button>
+        <button id="btnDeleteOnly" style="padding: 12px 24px; background: #f97316; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+          Chỉ xóa %
+        </button>
+        ${
+          affectedProducts.length > 0
+            ? `
+        <button id="btnDeleteAndReset" style="padding: 12px 24px; background: #ef4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+          Xóa % + reset giá
+        </button>
+        `
+            : ""
+        }
+      </div>
+    </div>
+  `;
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  // Hàm xóa %
+  const doDeleteOnly = () => {
+    if (type === "category") {
+      delete categoryProfits[name];
+      localStorage.setItem("categoryProfits", JSON.stringify(categoryProfits));
+    } else {
+      delete productProfits[name];
+      localStorage.setItem("productProfits", JSON.stringify(productProfits));
+    }
+
+    loadProfitTable();
+    showNotification(
+      "  Đã xóa %",
+      `${name} - Giá sản phẩm giữ nguyên`,
+      "success"
+    );
+    overlay.remove();
+  };
+
+  // Hàm xóa % + reset giá
+  const doDeleteAndReset = () => {
+    // Xóa %
+    if (type === "category") {
+      delete categoryProfits[name];
+      localStorage.setItem("categoryProfits", JSON.stringify(categoryProfits));
+    } else {
+      delete productProfits[name];
+      localStorage.setItem("productProfits", JSON.stringify(productProfits));
+    }
+
+    // Reset giá
+    affectedProducts.forEach((product) => {
+      product.gia = product.giavon;
+      product.oldPrice = 0;
+      product.discount = 0;
+      const idx = products.findIndex((p) => p.id === product.id);
+      if (idx !== -1) products[idx] = product;
+    });
+
+    saveProductsToStorage();
+    broadcastPriceUpdate(`${affectedProducts.length} sản phẩm ${name}`);
+
+    loadProfitTable();
+    loadAdjustedProducts();
+    showNotification(
+      "  Đã xóa % + reset",
+      `${name}: ${affectedProducts.length} sản phẩm về giá vốn`,
+      "success"
+    );
+    overlay.remove();
+  };
+
+  // Event listeners
+  document.getElementById("btnCancelDelete").onclick = () => overlay.remove();
+  document.getElementById("btnDeleteOnly").onclick = doDeleteOnly;
+  if (affectedProducts.length > 0) {
+    document.getElementById("btnDeleteAndReset").onclick = doDeleteAndReset;
+  }
+
+  overlay.onclick = (e) => {
+    if (e.target === overlay) overlay.remove();
+  };
 }
 
 // ====== CALCULATE PRICE ======
@@ -2217,7 +2491,7 @@ function loadProfitReport(
   if (summary) {
     summary.innerHTML = `
       <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <div style="font-size: 13px; opacity: 0.9; margin-bottom: 4px;">💰 Tổng lợi nhuận</div>
+        <div style="font-size: 13px; opacity: 0.9; margin-bottom: 4px;"> Tổng lợi nhuận</div>
         <div style="font-size: 24px; font-weight: bold;">${formatPrice(
           totalProfit
         )}</div>
@@ -2227,31 +2501,31 @@ function loadProfitReport(
       </div>
       
       <div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <div style="font-size: 13px; opacity: 0.9; margin-bottom: 4px;">📊 % LN trung bình</div>
+        <div style="font-size: 13px; opacity: 0.9; margin-bottom: 4px;"> % LN trung bình</div>
         <div style="font-size: 24px; font-weight: bold;">${avgPercent}%</div>
         <div style="font-size: 12px; opacity: 0.8; margin-top: 4px;">Trên tổng vốn</div>
       </div>
       
       <div style="background: white; border: 2px solid #10b981; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <div style="font-size: 13px; color: #6b7280; margin-bottom: 4px;">🔥 Lời cao (≥20%)</div>
+        <div style="font-size: 13px; color: #6b7280; margin-bottom: 4px;"> Lời cao (≥20%)</div>
         <div style="font-size: 24px; font-weight: bold; color: #10b981;">${highProfitCount}</div>
         <div style="font-size: 12px; color: #9ca3af; margin-top: 4px;">sản phẩm</div>
       </div>
       
       <div style="background: white; border: 2px solid #f59e0b; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <div style="font-size: 13px; color: #6b7280; margin-bottom: 4px;">📊 Lời TB (10-20%)</div>
+        <div style="font-size: 13px; color: #6b7280; margin-bottom: 4px;"> Lời TB (10-20%)</div>
         <div style="font-size: 24px; font-weight: bold; color: #f59e0b;">${mediumProfitCount}</div>
         <div style="font-size: 12px; color: #9ca3af; margin-top: 4px;">sản phẩm</div>
       </div>
       
       <div style="background: white; border: 2px solid #ef4444; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <div style="font-size: 13px; color: #6b7280; margin-bottom: 4px;">⚠️ Lời thấp (<10%)</div>
+        <div style="font-size: 13px; color: #6b7280; margin-bottom: 4px;"> Lời thấp (<10%)</div>
         <div style="font-size: 24px; font-weight: bold; color: #ef4444;">${lowProfitCount}</div>
         <div style="font-size: 12px; color: #9ca3af; margin-top: 4px;">sản phẩm</div>
       </div>
       
       <div style="background: white; border: 2px solid #6b7280; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <div style="font-size: 13px; color: #6b7280; margin-bottom: 4px;">❌ Lỗ/Hòa vốn</div>
+        <div style="font-size: 13px; color: #6b7280; margin-bottom: 4px;">Lỗ/Hòa vốn</div>
         <div style="font-size: 24px; font-weight: bold; color: #6b7280;">${lossCount}</div>
         <div style="font-size: 12px; color: #9ca3af; margin-top: 4px;">sản phẩm</div>
       </div>

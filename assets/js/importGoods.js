@@ -1,42 +1,4 @@
-function navigateTo(section, event) {
-  event.preventDefault();
 
-  // Ẩn tất cả phần nội dung
-  document
-    .querySelectorAll(
-      "#dashboard-content, #customers-content, #pricing-content, #other-content, #products-content, #import-content"
-    )
-    .forEach((div) => (div.style.display = "none"));
-
-  // Hiển thị phần được chọn
-  if (section === "dashboard") {
-    document.getElementById("dashboard-content").style.display = "block";
-  } else if (section === "customers") {
-    document.getElementById("customers-content").style.display = "block";
-  } else if (section === "pricing") {
-    document.getElementById("pricing-content").style.display = "block";
-  } else if (section === "products") {
-    const productsContent = document.getElementById("products-content");
-    productsContent.style.display = "block";
-
-    // Nếu chưa render thì render và init
-    if (!document.getElementById("productTable")) {
-      productsContent.innerHTML = page;
-      initProductPage();
-    }
-  } else if (section === "import") {
-    const importContent = document.getElementById("import-content");
-    importContent.style.display = "block";
-
-    // Nếu chưa render thì render và init
-    if (!document.getElementById("importTable")) {
-      importContent.innerHTML = pageImport;
-      initImportPage();
-    }
-  } else {
-    document.getElementById("other-content").style.display = "block";
-  }
-}
 let pageImport = `
   <div class="import-container">
     <h2>📦 Quản lý phiếu nhập hàng</h2>
