@@ -259,7 +259,7 @@ window.addEventListener('storage', function(e) {
     }
     if (e.key === 'product') {
         allProducts = JSON.parse(e.newValue || '[]');
-        searchInventory();
+        renderFilteredProducts();
     }
 });
 
