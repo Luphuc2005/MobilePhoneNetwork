@@ -12,7 +12,7 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "40",
-    hinhanh: "/assets/images/products/ip15prm",
+    hinhanh: "./assets/images/products/ip15prm",
   },
   {
     id: 2,
@@ -27,7 +27,7 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "35",
-    hinhanh: "/assets/images/products/ip14prm.jpg",
+    hinhanh: "./assets/images/products/ip14prm.jpg",
   },
   {
     id: 3,
@@ -42,7 +42,7 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "50",
-    hinhanh: "/assets/images/products/ip13.jpg",
+    hinhanh: "./assets/images/products/ip13.jpg",
   },
   {
     id: 4,
@@ -57,7 +57,7 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "25",
-    hinhanh: "/assets/images/products/ipse.webp",
+    hinhanh: "./assets/images/products/ipse.webp",
   },
   {
     id: 5,
@@ -72,7 +72,7 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "30",
-    hinhanh: "/assets/images/products/samsung-galaxy-s24-ultra.png",
+    hinhanh: "./assets/images/products/samsung-galaxy-s24-ultra.png",
   },
   {
     id: 6,
@@ -87,7 +87,7 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "20",
-    hinhanh: "/assets/images/products/samsung-galaxy-z-fold-5.png",
+    hinhanh: "./assets/images/products/samsung-galaxy-z-fold-5.png",
   },
   {
     id: 7,
@@ -102,7 +102,7 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "45",
-    hinhanh: "/assets/images/products/samsung-galaxy-a54.webp",
+    hinhanh: "./assets/images/products/samsung-galaxy-a54.webp",
   },
   {
     id: 8,
@@ -117,7 +117,7 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "40",
-    hinhanh: "/assets/images/products/xiaomi-13t-pro.png",
+    hinhanh: "./assets/images/products/xiaomi-13t-pro.png",
   },
   {
     id: 9,
@@ -132,7 +132,7 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "60",
-    hinhanh: "/assets/images/products/xiaomi-redmi-note-12.jpg",
+    hinhanh: "./assets/images/products/xiaomi-redmi-note-12.jpg",
   },
   {
     id: 10,
@@ -147,7 +147,7 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "25",
-    hinhanh: "/assets/images/products/oppo-find-x6-pro.webp",
+    hinhanh: "./assets/images/products/oppo-find-x6-pro.webp",
   },
   {
     id: 11,
@@ -162,7 +162,7 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "40",
-    hinhanh: "/assets/images/products/oppo-reno-10.png",
+    hinhanh: "./assets/images/products/oppo-reno-10.png",
   },
   {
     id: 12,
@@ -177,7 +177,7 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "30",
-    hinhanh: "/assets/images/products/vivo-v29.webp",
+    hinhanh: "./assets/images/products/vivo-v29.webp",
   },
   {
     id: 13,
@@ -192,7 +192,7 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "55",
-    hinhanh: "/assets/images/products/vivo-y36.webp",
+    hinhanh: "./assets/images/products/vivo-y36.webp",
   },
   {
     id: 14,
@@ -207,7 +207,7 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "35",
-    hinhanh: "/assets/images/products/realme-11pro.webp",
+    hinhanh: "./assets/images/products/realme-11pro.webp",
   },
   {
     id: 15,
@@ -222,7 +222,7 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "50",
-    hinhanh: "/assets/images/products/Nokia-G50.jpg",
+    hinhanh: "./assets/images/products/Nokia-G50.jpg",
   },
   {
     id: 16,
@@ -237,8 +237,31 @@ const data = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "20",
-    hinhanh: "/assets/images/products/ip17.png",
+    hinhanh: "./assets/images/products/ip17.png",
   },
 ];
 
+// Lưu data vào localStorage
 localStorage.setItem("product", JSON.stringify(data));
+
+// Fix đường dẫn ảnh cũ trong localStorage (nếu có)
+function fixImagePaths() {
+  let products = JSON.parse(localStorage.getItem("product")) || [];
+  let needsUpdate = false;
+
+  products = products.map((product) => {
+    if (product.hinhanh && product.hinhanh.startsWith("/assets/")) {
+      product.hinhanh = "." + product.hinhanh;
+      needsUpdate = true;
+    }
+    return product;
+  });
+
+  if (needsUpdate) {
+    localStorage.setItem("product", JSON.stringify(products));
+    console.log("✅ Đã cập nhật đường dẫn ảnh sản phẩm");
+  }
+}
+
+// Chạy fix khi load trang
+fixImagePaths();

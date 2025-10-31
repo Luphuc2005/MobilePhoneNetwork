@@ -188,7 +188,7 @@ document.querySelector('.apply-filter')?.addEventListener('click', function() {
                 break;
         }
     });
-
+    document.querySelector('.search-product-content')?.scrollIntoView({ behavior: 'smooth' });
     filterProducts(filters);
 });
 
@@ -238,6 +238,50 @@ document.querySelector('.search-bar-btn').addEventListener('click', function() {
     document.querySelector('.search-product-content')?.scrollIntoView({ behavior: 'smooth' });
 })
 
+let typeProduct = JSON.parse(localStorage.getItem('phonestore_categories')) || [];
+
+function renderTypeProduct() {
+    let typeProductContainer = document.querySelector('.search-product-type');
+    typeProductContainer.innerHTML = ``;
+    typeProduct.forEach(type => {
+        if (type.status === "Hoạt động") {
+            typeProductContainer.innerHTML += `
+                <label><input type="checkbox" value="${type.name}">${type.name}</label>
+            `
+        }
+    });
+}
+
+window.addEventListener('storage', function(e) {
+    if (e.key === 'phonestore_categories') {
+        typeProduct = JSON.parse(e.newValue || '[]');
+        renderTypeProduct();
+    }
+    if (e.key === 'product') {
+        allProducts = JSON.parse(e.newValue || '[]');
+        renderFilteredProducts();
+    }
+});
+
+
+function checkForUpdates() {
+    const currentTypes = JSON.parse(localStorage.getItem('phonestore_categories') || '[]');
+    const currentInventory = JSON.parse(localStorage.getItem('product') || '[]');
+
+    if (JSON.stringify(currentTypes) !== JSON.stringify(typeProduct)) {
+        typeProduct = currentTypes;
+        renderTypeProduct();
+    }
+
+    if (JSON.stringify(currentInventory) !== JSON.stringify(allProducts)) {
+        allProducts = currentInventory;
+        renderFilteredProducts();
+    }
+}
+
+setInterval(checkForUpdates, 2000);
+
 document.addEventListener('DOMContentLoaded', () => {
     renderFilteredProducts();
+    renderTypeProduct();
 });

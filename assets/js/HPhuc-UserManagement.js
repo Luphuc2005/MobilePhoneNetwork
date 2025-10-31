@@ -3,39 +3,6 @@
 // Đọc dữ liệu từ user-local-storage.js
 // ============================================================
 
-// ====== NAVIGATION FUNCTION ======
-function navigateTo(section, event) {
-  if (event) event.preventDefault();
-
-  // Ẩn tất cả phần nội dung
-  document
-    .querySelectorAll(".section-content")
-    .forEach((div) => (div.style.display = "none"));
-
-  // Hiển thị phần tương ứng
-  const sectionMap = {
-    dashboard: "dashboard-content",
-    customers: "customers-content",
-    pricing: "pricing-content",
-    products: "products-content",
-    categories: "categories-content",
-    orders: "orders-content",
-    inventory: "inventory-content",
-    import: "import-content",
-  };
-
-  const contentId = sectionMap[section];
-  if (contentId) {
-    const element = document.getElementById(contentId);
-    if (element) {
-      element.style.display = "block";
-    }
-  }
-}
-
-// Make navigateTo available globally
-window.navigateTo = navigateTo;
-
 // ====== BIẾN TOÀN CỤC ======
 let users = [];
 let currentPage = 1;

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Đăng Nhập Admin</title>
+    <link rel="stylesheet" href="./assets/css/admin.css">
+    <link rel="stylesheet" href="./assets/css/duyddawng-logout.css">
+    <link rel="stylesheet" href="./assets/css/duyddawng-components.css">
+</head>
+
+<body>
+    <div id="login-card">
+        <div id="div-header">
+            <h1>
+                <img class="logo logo-header" src="../assets/images/icons/logo-admin.png" alt="logoo đăng nhập">
+            </h1>
+            <h2 class="title">Quản Trị Viên</h2>
+            <p class="subtitle">Đăng Nhập Vào Hệ Thống Quản Lý</p>
+        </div>
+        <div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Tài Khoản Quản Trị</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="username" placeholder="adimin" class="input-field">
+                        <img src="../assets/images/icons/logo-account.png" alt="Logo account" class="input-icon">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Mật Khẩu</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" class="input-field" placeholder="password">
+                        <img src="../assets/images/icons/logo-password.png" alt="Logo Password" class="input-icon">
+                    </div>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="remember-me" name="remember-me">
+                    <label for="remember-me">Ghi nhớ đăng nhập</label>
+                </div>
+                <button type="submit" class="login-button">Đăng Nhập</button>
+            </form>
+            <div class="warning-box">
+                <img src="../assets/images/icons/logo-warning.png" alt="Logo cảnh báo" class="warning-icon">
+                <span>
+                    Chỉ dành cho cho quản trị viên. Mọi hoạt động sẽ được ghi lại và giám sát
+                </span>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
