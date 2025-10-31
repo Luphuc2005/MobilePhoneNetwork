@@ -1,13 +1,6 @@
-
-
-// 🧩 Hàm phụ hiển thị 1 section
-function showSection(id) {
-  const el = document.getElementById(id);
-  if (el) el.style.display = "block";
-}
-
-// ====================== TEMPLATE PAGE ======================
-let page = `
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    let page = `
   <h1>📦 Quản lý sản phẩm</h1>
   <div class="product-header">
     <input type="text" id="inputSearch" placeholder="🔍 Tìm kiếm sản phẩm..." />
@@ -35,9 +28,22 @@ let page = `
   </table>
   <div id="pagination" style="margin-top:15px; display:flex; gap:5px; justify-content:center;"></div>
 `;
+    const productsContent = document.getElementById("products-content");
+    productsContent.innerHTML = page;
+    initProductPage();
+  });
+  initProductPage();
+} else {
+}
 
 // ====================== PRODUCT PAGE ======================
 function initProductPage() {
+  // Inject HTML vào container nếu chưa có
+  const container = document.getElementById("product-management");
+  if (container && !document.getElementById("productTable")) {
+    container.innerHTML = page;
+  }
+
   renderForm();
   const table = document.getElementById("productTable");
   const pagination = document.getElementById("pagination");
@@ -45,7 +51,13 @@ function initProductPage() {
   const filterCategory = document.getElementById("filterCategory");
   const ITEMS_PER_PAGE = 5;
   let currentPage = 1;
-  let products = JSON.parse(localStorage.getItem("product")) || [];
+  let products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
+
+  // Chuẩn hóa số lượng thành số nếu là chuỗi
+  products = products.map((p) => ({
+    ...p,
+    soluong: typeof p.soluong === "string" ? parseInt(p.soluong) : p.soluong,
+  }));
 
   function renderTable(page = 1) {
     table.innerHTML = "";
@@ -64,7 +76,7 @@ function initProductPage() {
           </div>
         </td>
         <td><span class="badge">${p.danhmuc}</span></td>
-        <td>${p.gia.toLocaleString()}₫</td>
+        <td>${p.giavon.toLocaleString()}₫</td>
         <td class="${p.soluong === 0 ? "out-stock" : "in-stock"}">${
         p.soluong
       }</td>
@@ -86,7 +98,7 @@ function initProductPage() {
       row.querySelector(".delete").addEventListener("click", () => {
         if (confirm(`Xóa "${p.tensanpham}"?`)) {
           products = products.filter((x) => x.id !== p.id);
-          localStorage.setItem("product", JSON.stringify(products));
+          localStorage.setItem("phonestore_products", JSON.stringify(products));
           reload();
         }
       });
@@ -143,7 +155,7 @@ function initProductPage() {
     pagination.appendChild(next);
   }
   function reload() {
-    products = JSON.parse(localStorage.getItem("product")) || [];
+    products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
     renderTable(currentPage);
     renderPagination();
   }
@@ -175,10 +187,9 @@ function openEditForm(p, onSaved) {
   const form = document.querySelector(".edit-form-overlay");
   form.style.display = "flex";
   form.querySelector(".form-title").textContent = "✏️ Sửa sản phẩm";
-
   form.querySelector(".editName").value = p.tensanpham;
   form.querySelector(".editCategory").value = p.danhmuc;
-  form.querySelector(".editPrice").value = p.gia;
+  form.querySelector(".editPrice").value = p.giavon;
   form.querySelector(".editQuantity").value = p.soluong;
   form.querySelector(".editDescription").value = p.description || "";
 
@@ -199,7 +210,7 @@ function openEditForm(p, onSaved) {
     // ✅ Kiểm tra hợp lệ trước khi lưu
     if (!validateEditForm(form)) return;
 
-    const products = JSON.parse(localStorage.getItem("product")) || [];
+    const products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
     const idx = products.findIndex((x) => x.id === p.id);
 
     if (idx > -1) {
@@ -207,13 +218,14 @@ function openEditForm(p, onSaved) {
         ...products[idx],
         tensanpham: form.querySelector(".editName").value.trim(),
         danhmuc: form.querySelector(".editCategory").value,
-        gia: +form.querySelector(".editPrice").value,
+        giavon: +form.querySelector(".editPrice").value,
         soluong: +form.querySelector(".editQuantity").value,
         description: form.querySelector(".editDescription").value.trim(),
         hinhanh: document.querySelector("#editImagePreview")?.src || p.hinhanh, // ✅ giữ ảnh cũ nếu chưa chọn mới
       };
 
-      localStorage.setItem("product", JSON.stringify(products));
+      localStorage.setItem("phonestore_products", JSON.stringify(products));
+
       alert("✅ Cập nhật thành công!");
       form.style.display = "none";
       onSaved && onSaved();
@@ -236,12 +248,12 @@ function openAddForm(onSaved) {
     // ✅ Gọi hàm kiểm tra
     if (!validateEditForm(form)) return;
 
-    const products = JSON.parse(localStorage.getItem("product")) || [];
+    const products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
     const newProduct = {
       id: products.length ? Math.max(...products.map((x) => x.id)) + 1 : 1,
       tensanpham: form.querySelector(".editName").value.trim(),
       danhmuc: form.querySelector(".editCategory").value,
-      gia: +form.querySelector(".editPrice").value,
+      giavon: +form.querySelector(".editPrice").value,
       soluong: +form.querySelector(".editQuantity").value,
       description: form.querySelector(".editDescription").value.trim(),
       hinhanh:
@@ -250,7 +262,7 @@ function openAddForm(onSaved) {
     };
 
     products.unshift(newProduct);
-    localStorage.setItem("product", JSON.stringify(products));
+    localStorage.setItem("phonestore_products", JSON.stringify(products));
 
     alert("✅ Thêm sản phẩm thành công!");
     form.style.display = "none";

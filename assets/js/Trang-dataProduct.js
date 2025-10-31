@@ -242,11 +242,11 @@ const data = [
 ];
 
 // Lưu data vào localStorage
-localStorage.setItem("product", JSON.stringify(data));
+localStorage.setItem("phonestore_products", JSON.stringify(data));
 
 // Fix đường dẫn ảnh cũ trong localStorage (nếu có)
 function fixImagePaths() {
-  let products = JSON.parse(localStorage.getItem("product")) || [];
+  let products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
   let needsUpdate = false;
 
   products = products.map((product) => {
@@ -258,7 +258,7 @@ function fixImagePaths() {
   });
 
   if (needsUpdate) {
-    localStorage.setItem("product", JSON.stringify(products));
+    localStorage.setItem("phonestore_products", JSON.stringify(products));
     console.log("✅ Đã cập nhật đường dẫn ảnh sản phẩm");
   }
 }

@@ -1,5 +1,5 @@
 // ====== LẤY DỮ LIỆU TỪ LOCALSTORAGE ======
-let products = JSON.parse(localStorage.getItem("product")) || [];
+let products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
 
 // ====== CHỌN PHẦN TỬ DOM ======
 const layoutProduct = document.querySelector(".products-flex");
@@ -99,7 +99,7 @@ function changePage(page) {
 
 // ====== HÀM RELOAD DATA TỪ LOCALSTORAGE ======
 function reloadProducts() {
-  products = JSON.parse(localStorage.getItem("product")) || [];
+  products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
   console.log(
     "🔄 Đã reload products từ localStorage:",
     products.length,
