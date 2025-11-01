@@ -270,4 +270,3 @@ function initImportPage() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => navigateTo("import"));
