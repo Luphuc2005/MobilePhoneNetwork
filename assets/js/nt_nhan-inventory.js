@@ -1,4 +1,4 @@
-let inventory = JSON.parse(localStorage.getItem('product')) || [];
+let inventory = JSON.parse(localStorage.getItem('phonestore_products')) || [];
 let inventoryType = JSON.parse(localStorage.getItem('phonestore_categories')) || [];
 
 const nameInput = document.getElementById("inventory-name");
@@ -21,7 +21,7 @@ window.addEventListener('storage', function(e) {
 
 function checkForUpdates() {
     const currentTypes = JSON.parse(localStorage.getItem('phonestore_categories') || '[]');
-    const currentInventory = JSON.parse(localStorage.getItem('product') || '[]');
+    const currentInventory = JSON.parse(localStorage.getItem('phonestore_products') || '[]');
     
     if (JSON.stringify(currentTypes) !== JSON.stringify(inventoryType)) {
         inventoryType = currentTypes;
@@ -37,7 +37,7 @@ function checkForUpdates() {
 setInterval(checkForUpdates, 2000);
 
 function initInventory() {
-    inventory = JSON.parse(localStorage.getItem('product')) || [];
+    inventory = JSON.parse(localStorage.getItem('phonestore_products')) || [];
     inventoryType = JSON.parse(localStorage.getItem('phonestore_categories')) || [];
     renderType();
     renderInventory(inventory);

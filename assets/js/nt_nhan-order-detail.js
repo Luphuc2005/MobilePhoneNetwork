@@ -1,4 +1,4 @@
-let allProducts = JSON.parse(localStorage.getItem('product'));
+let allProductsDetail = JSON.parse(localStorage.getItem('phonestore_products'));
 
 function renderOrderDetail(order) {
     let detailOrderId = document.getElementById('detail-order-id');
@@ -18,20 +18,20 @@ function renderOrderDetail(order) {
 
     detailProductList.innerHTML = ``;
     for (let [idProduct, quantity] of order.product_list) {
-        let idx = allProducts.findIndex(product => product.id == idProduct);
+        let idx = allProductsDetail.findIndex(product => product.id == idProduct);
         console.log(idx);
         detailProductList.innerHTML += `
             <li class = "detail-product-item">
                 <div class = "detail-product-img-wrapper"> 
-                    <img src="${allProducts[idx].hinhanh}" alt="${allProducts[idx].tensanpham}" align = "center">
+                    <img src="${allProductsDetail[idx].hinhanh}" alt="${allProductsDetail[idx].tensanpham}" align = "center">
                 </div>
                 <div class = "detail-product-info">
-                    <p class = "detail-type-product">${allProducts[idx].danhmuc}</p>
-                    <p class = "detail-product-name">${allProducts[idx].tensanpham}</p> 
+                    <p class = "detail-type-product">${allProductsDetail[idx].danhmuc}</p>
+                    <p class = "detail-product-name">${allProductsDetail[idx].tensanpham}</p> 
                     <p class = "detail-product-quantity">x${quantity}</p> 
                 </div>
                 <div class = "detail-product-price">
-                    ${allProducts[idx].gia}đ
+                    ${allProductsDetail[idx].gia}đ
                 </div>
             </li>
         `;
