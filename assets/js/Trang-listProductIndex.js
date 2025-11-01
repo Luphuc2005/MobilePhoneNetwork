@@ -112,7 +112,7 @@ function reloadProducts() {
 // ====== LẮNG NGHE THAY ĐỔI TỪ ADMIN (ĐA TAB) ======
 // Lắng nghe storage event (khi admin ở tab khác thay đổi)
 window.addEventListener("storage", (e) => {
-  if (e.key === "product") {
+  if (e.key === "phonestore_products") {
     console.log("📢 Admin đã cập nhật giá sản phẩm!");
     reloadProducts();
   }
@@ -120,7 +120,11 @@ window.addEventListener("storage", (e) => {
 
 // Lắng nghe custom event (khi admin ở cùng tab)
 window.addEventListener("phonestore-sync", (e) => {
-  if (e.detail && e.detail.key === "product") {
+  if (
+    e.detail &&
+    (e.detail.key === "phonestore_products" ||
+      e.detail.action === "price_updated")
+  ) {
     console.log("📢 Admin đã cập nhật giá sản phẩm (same tab)!");
     reloadProducts();
   }

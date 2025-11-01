@@ -1,4 +1,4 @@
-const data = [
+let allProducts = [
   {
     id: 1,
     tensanpham: "Iphone 15 ProMax",
@@ -241,12 +241,27 @@ const data = [
   },
 ];
 
-// Lưu data vào localStorage
-localStorage.setItem("phonestore_products", JSON.stringify(data));
+// Lưu vào local storage
+function storeProductsInLocalStorage() {
+  // Lấy sản phẩm hiện có
+  const existingProducts = localStorage.getItem("phonestore_products");
+  // Nếu sản phẩm chưa tồn tại thì lưu vào local storage
+  if (!existingProducts) {
+    localStorage.setItem("phonestore_products", JSON.stringify(allProducts));
+    console.log("✅ Đã khởi tạo dữ liệu mẫu cho sản phẩm");
+  } else {
+    console.log("✅ Đã có dữ liệu sản phẩm trong localStorage");
+  }
+}
+
+// Lấy sản phẩm trong local storage
+function getAllProducts() {
+  return JSON.parse(localStorage.getItem("phonestore_products"));
+}
 
 // Fix đường dẫn ảnh cũ trong localStorage (nếu có)
 function fixImagePaths() {
-  let products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
+  let products = getAllProducts() || [];
   let needsUpdate = false;
 
   products = products.map((product) => {
@@ -263,5 +278,6 @@ function fixImagePaths() {
   }
 }
 
-// Chạy fix khi load trang
+//---------------Main---------------------//
+storeProductsInLocalStorage();
 fixImagePaths();
