@@ -1,4 +1,4 @@
-let allProducts = JSON.parse(localStorage.getItem('product')) || [];
+let allProducts = JSON.parse(localStorage.getItem('phonestore_products')) || [];
 let filteredProducts = [...allProducts];
 
 let currentPageSearchProduct = 1;
@@ -259,7 +259,7 @@ window.addEventListener('storage', function(e) {
     }
     if (e.key === 'product') {
         allProducts = JSON.parse(e.newValue || '[]');
-        renderFilteredProducts();
+        searchInventory();
     }
 });
 

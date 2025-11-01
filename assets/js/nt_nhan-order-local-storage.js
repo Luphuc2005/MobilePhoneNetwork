@@ -301,6 +301,8 @@ function addOrder(date, address, customer_id, amount, purchase, product_list) {
     preProcessing(5, allOrder, customerData, allOrder.length);
 }
 
+// addOrder("20/10/2025 16:35", "Quận 6", 5, 17990000, "Ví điện tử", [[5, 1], [14, 1]]);
+
 function cancelOrder(order_id) {
     let index = allOrders.findIndex(o => o.order_id == order_id);
     if (index != -1) {
