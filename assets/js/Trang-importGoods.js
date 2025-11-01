@@ -1,70 +1,79 @@
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    let pageImport = `
+<div class="import-container">
+  <h2>📦 Quản lý phiếu nhập hàng</h2>
+  <div class="import-toolbar">
+    <input type="text" id="searchImport" placeholder="🔍 Tìm phiếu nhập..." />
+    <button id="btnAddImport" class="btn-primary">➕ Thêm phiếu nhập</button>
+  </div>
 
-let pageImport = `
-  <div class="import-container">
-    <h2>📦 Quản lý phiếu nhập hàng</h2>
-    <div class="import-toolbar">
-      <input type="text" id="searchImport" placeholder="🔍 Tìm phiếu nhập..." />
-      <button id="btnAddImport" class="btn-primary">➕ Thêm phiếu nhập</button>
-    </div>
+  <table id="importTable" class="import-table">
+    <thead>
+      <tr>
+        <th>Mã phiếu</th>
+        <th>Ngày nhập</th>
+        <th>Số mặt hàng</th>
+        <th>Tổng giá trị</th>
+        <th>Trạng thái</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody id="importTableBody"></tbody>
+  </table>
 
-    <table id="importTable" class="import-table">
-      <thead>
-        <tr>
-          <th>Mã phiếu</th>
-          <th>Ngày nhập</th>
-          <th>Số mặt hàng</th>
-          <th>Tổng giá trị</th>
-          <th>Trạng thái</th>
-          <th>Hành động</th>
-        </tr>
-      </thead>
-      <tbody id="importTableBody"></tbody>
-    </table>
+  <!-- Modal thêm/sửa -->
+  <div id="importModal" class="modal">
+    <div class="modal-card">
+      <h3 id="formTitle">➕ Thêm phiếu nhập</h3>
+      <form id="importForm">
+        <label>Ngày nhập:</label>
+        <input type="date" id="importDate" required />
 
-    <!-- Modal thêm/sửa -->
-    <div id="importModal" class="modal">
-      <div class="modal-card">
-        <h3 id="formTitle">➕ Thêm phiếu nhập</h3>
-        <form id="importForm">
-          <label>Ngày nhập:</label>
-          <input type="date" id="importDate" required />
+        <h4>Danh sách sản phẩm</h4>
+        <table class="sub-table" id="productDetailTable">
+          <thead>
+            <tr>
+              <th>Sản phẩm</th>
+              <th>Giá nhập</th>
+              <th>Số lượng</th>
+              <th>Thành tiền</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="productDetailBody"></tbody>
+        </table>
+        <button type="button" id="btnAddDetail" class="btn-ghost">➕ Thêm sản phẩm</button>
 
-          <h4>Danh sách sản phẩm</h4>
-          <table class="sub-table" id="productDetailTable">
-            <thead>
-              <tr>
-                <th>Sản phẩm</th>
-                <th>Giá nhập</th>
-                <th>Số lượng</th>
-                <th>Thành tiền</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="productDetailBody"></tbody>
-          </table>
-          <button type="button" id="btnAddDetail" class="btn-ghost">➕ Thêm sản phẩm</button>
-
-          <div class="form-actions">
-            <button type="button" id="btnCancelForm" class="btn-ghost">Hủy</button>
-            <button type="submit" class="btn-primary">Lưu phiếu</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Modal xem chi tiết -->
-    <div id="detailModal" class="modal">
-      <div class="modal-card">
-        <h3>📄 Chi tiết phiếu nhập</h3>
-        <div id="detailBody"></div>
         <div class="form-actions">
-          <button type="button" id="btnCloseDetail" class="btn-primary">Đóng</button>
+          <button type="button" id="btnCancelForm" class="btn-ghost">Hủy</button>
+          <button type="submit" class="btn-primary">Lưu phiếu</button>
         </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal xem chi tiết -->
+  <div id="detailModal" class="modal">
+    <div class="modal-card">
+      <h3>📄 Chi tiết phiếu nhập</h3>
+      <div id="detailBody"></div>
+      <div class="form-actions">
+        <button type="button" id="btnCloseDetail" class="btn-primary">Đóng</button>
       </div>
     </div>
   </div>
+</div>
 `;
 
+    const productsContent = document.getElementById("import-content");
+    productsContent.innerHTML = pageImport;
+
+    initImportPage();
+  });
+  initImportPage();
+} else {
+}
 function initImportPage() {
   const tableBody = document.getElementById("importTableBody");
   const btnAdd = document.getElementById("btnAddImport");
@@ -270,4 +279,3 @@ function initImportPage() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => navigateTo("import"));
