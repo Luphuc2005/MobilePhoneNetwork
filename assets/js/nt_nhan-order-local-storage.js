@@ -311,3 +311,8 @@ function cancelOrder(order_id) {
         preProcessing(5, allOrder, customerData, allOrder.length);
     }
 }
+
+function initAddress() {
+    const dictrictSearch = document.getElementById('dictrict-select');
+    const districts = vietnamAddress["Thành phố Hồ Chí Minh"].districts;
+}

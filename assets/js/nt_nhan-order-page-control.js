@@ -164,5 +164,34 @@ document.getElementById('next-page-btn').addEventListener('click', function () {
     }
 });
 
+function initAddress() {
+    const dictrictSearch = document.getElementById('dictrict-select');
+    const districts = vietnamAddress["Thành phố Hồ Chí Minh"].districts;
+    districts.forEach(dictrict => {
+        dictrictSearch.innerHTML += `
+            <option value="${dictrict}">${dictrict}</option>;
+        `
+    })
+}
+
+window.addEventListener('storage', function(e) {
+    if (e.key === 'phonestore_users') {
+        customerData = JSON.parse(e.newValue || '[]');
+        preProcessing(numberOrderPerPage, allOrder, customerData, allOrder.length);
+    }
+});
+
+function checkForUpdates() {
+    const currentUser = JSON.parse(localStorage.getItem('phonestore_users') || '[]');
+    
+    if (JSON.stringify(currentUser) !== JSON.stringify(customerData)) {
+        customerData = currentUser;
+        preProcessing(numberOrderPerPage, allOrder, customerData, allOrder.length);
+    }
+}
+
+setInterval(2000, checkForUpdates);
+
 // Khởi tạo ban đầu
 preProcessing(numberOrderPerPage, allOrder, customerData, allOrder.length);
+initAddress();
