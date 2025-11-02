@@ -114,6 +114,16 @@ function drawDropdownMenu()
             profile.addEventListener("click", (event) => {
                 location.href="auth.html";
             })
+
+            profile.onmouseenter = function ()
+            { 
+                localStorage.setItem("navigating", true);
+            }
+
+            profile.onmouseleave = function ()
+            { 
+                localStorage.removeItem("navigating");
+            }
         }
         //Đăng xuất
         const signout = document.getElementById("sign-out");
@@ -122,6 +132,7 @@ function drawDropdownMenu()
             signout.addEventListener("click", (event) => {
             console.log("sign out");
             localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+            localStorage.removeItem(STORAGE_KEYS.REMEMBER_ME);
             //Đưa dropdown menu về lúc chưa đăng nhập
             listItems.forEach((li) => {
                 li.style.minWidth="fit-content";

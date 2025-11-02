@@ -277,6 +277,8 @@ form[1].addEventListener("submit", (e) => {
         else
         {
             console.log(agree);
+            if (agree)
+                sessionStorage.setItem(STORAGE_KEYS.REMEMBER_ME, agree)
             drawDropdownMenu();
         }
     }
@@ -300,11 +302,13 @@ window.onclick = function (event) {
     {
         formDangKy.style.display="none";
         form[0].reset();
+        showPassword.forEach((button) => button.style.visibility="hidden");
     }
     else if (event.target == formBackground[1] || event.target == closeButton[1])
     {
         formDangNhap.style.display="none";
         form[1].reset();
+        showPassword.forEach((button) => button.style.visibility="hidden");
     }
 }
 
@@ -379,4 +383,15 @@ function loginUser(logEmail, logPass)
     }
     //Sai mật khẩu
     return 2;
+}
+
+window.onbeforeunload = function (event)
+{ 
+    const remember = this.sessionStorage.getItem(STORAGE_KEYS.REMEMBER_ME) || false;
+    const navigating = this.localStorage.getItem("navigating") || false;
+    if (remember == false && navigating == false)
+    { 
+        this.localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+    }
+    this.localStorage.removeItem("navigating");
 }

@@ -240,6 +240,8 @@ passwordResetForm.onsubmit = function (e)
         formBackground[1].style.display="none";
         alert("Thay đổi mật khẩu thành công");
         passwordResetForm.reset();
+        resetPasswordButton.disabled=true;
+        insertUserInfo();
     }
 }
 
@@ -249,7 +251,7 @@ function insertUserInfo()
     sidebarHeader.textContent = currentUser.name;
     hoTen.textContent = currentUser.name;
     email.textContent = currentUser.email;
-    password.value=currentUser.password;
+    password.value = currentUser.password;
     if (currentUser.phone != "") {
         sdt.textContent = currentUser.phone;
         sdt.style.color="black";
