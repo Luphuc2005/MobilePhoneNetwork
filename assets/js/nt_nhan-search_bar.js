@@ -77,9 +77,9 @@ function renderFilteredProducts() {
                 </span>
             </div>
             <div class="product-price-wrapper">
-                <div class="product-price">${formatCurrency(item.gia)}</div>
+                <div class="product-price">${formatPrice(item.gia)}</div>
                 <div>
-                    <span class="product-old-price">${formatCurrency(item.oldPrice || item.gia * 1.1)}</span>
+                    <span class="product-old-price">${formatPrice(item.oldPrice || item.gia * 1.1)}</span>
                     <span class="product-discount">-${item.discount || 6}%</span>
                 </div>
                 <div class="product-promotions">

@@ -39,12 +39,33 @@ function renderOrderDetail(order) {
 }
 
 function showOrderDetail(order) {
-    renderOrderDetail(order)
-    document.getElementsByClassName("detail-order-wrapper")[0].classList.remove("hidden");
+    renderOrderDetail(order);
+    const detailWrapper = document.getElementsByClassName("detail-order-wrapper")[0];
+    detailWrapper.classList.remove("hidden");
+    // Thêm style để modal phủ toàn màn hình
+    detailWrapper.style.position = 'fixed';
+    detailWrapper.style.top = '0';
+    detailWrapper.style.left = '0';
+    detailWrapper.style.width = '100%';
+    detailWrapper.style.height = '100vh';
+    detailWrapper.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    detailWrapper.style.zIndex = '9999';
+    detailWrapper.style.display = 'flex';
+    detailWrapper.style.justifyContent = 'center';
+    detailWrapper.style.alignItems = 'flex-start';
+    detailWrapper.style.overflowY = 'auto';
+    detailWrapper.style.padding = '20px 0';
+    
+    // Khóa scroll của body
+    document.body.style.overflow = 'hidden';
 }
 
 function closeOrderDetail() {
-    document.getElementsByClassName("detail-order-wrapper")[0].classList.add("hidden");
+    const detailWrapper = document.getElementsByClassName("detail-order-wrapper")[0];
+    detailWrapper.classList.add("hidden");
+    console.log(detailWrapper);
+    // Khôi phục scroll của body
+    document.body.style.overflow = '';
 }
 
 function initDetail() {
