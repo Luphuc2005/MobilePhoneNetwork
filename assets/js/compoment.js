@@ -78,7 +78,7 @@ dropdownMenu.style.visibility="hidden";
 drawDropdownMenu();
 function drawDropdownMenu() 
 {      
-    let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
+    let currentUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER)) || null;
     if (currentUser != null)
     {
         dropdownMenu.innerHTML = `
@@ -121,7 +121,7 @@ function drawDropdownMenu()
         {
             signout.addEventListener("click", (event) => {
             console.log("sign out");
-            localStorage.removeItem("currentUser");
+            localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
             //Đưa dropdown menu về lúc chưa đăng nhập
             listItems.forEach((li) => {
                 li.style.minWidth="fit-content";

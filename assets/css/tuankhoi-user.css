@@ -59,6 +59,7 @@ html, body
 
 .form-container a {
     text-decoration: none;
+    cursor: pointer;
 }
 
 .form-container a:hover {
@@ -140,7 +141,9 @@ html, body
 
 #formDangKy fieldset div,
 #formDangNhap fieldset div {
-    margin-top: 1%; 
+    margin-top: 1%;
+    display: flex;
+    position: relative;
 }
 
 #formDangKy .submitButton,
@@ -319,6 +322,12 @@ html, body
 }
 
 .showPassword {
+    visibility: hidden;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-40%);
+    right: 10px;
+    height: 50%;
     appearance: none;
     width: 8%;
     background-position: center;
@@ -469,6 +478,12 @@ html, body
     margin: 3% 0;
     margin-bottom: 0;
     border-radius: 7px;
+    position: relative;
+}
+
+#reset-password-form .showPassword {
+    transform: translateY(0);
+    top: 0;
 }
 
 #reset-password-form input {
