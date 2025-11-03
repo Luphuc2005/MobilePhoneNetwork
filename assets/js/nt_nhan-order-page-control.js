@@ -1,9 +1,7 @@
 let currentPageOrder = 1;
+let totalOrders = allOrder.length; 
 let numberOrderPerPage = 5;
-
-function calculateTotalPages(totalItems, itemsPerPage) {
-    return Math.ceil(totalItems / itemsPerPage);
-}
+let totalPages = Math.floor((totalOrders + numberOrderPerPage - 1)/numberOrderPerPage);
 
 //----------- function---------------------//
 function processStatus(status) {
@@ -47,17 +45,9 @@ function addEllipsis() {
 }
 
 function renderOrders(startOrder, numberOrderPerPage, allOrders, allCustomers, totalOrders) {
-    const orderList = document.getElementsByClassName('order-list')[0];
-    const pageNumbers = document.getElementsByClassName('page-numbers')[0];
-    
-    orderList.innerHTML = '';
-    pageNumbers.innerHTML = '';
-
-    // Tính toán chỉ số kết thúc thực tế
-    const endOrder = Math.min(startOrder + numberOrderPerPage, totalOrders);
-
-    for (let i = startOrder; i < endOrder; i++) {
-        if (i >= totalOrders) break;
+    document.getElementsByClassName('order-list')[0].innerHTML = ``;
+    document.getElementsByClassName('page-numbers')[0].innerHTML = ``;
+    for (let i = startOrder; i <= startOrder + numberOrderPerPage - 1; ++i) {
         let customer = allCustomers.find(customer => customer.id === allOrders[i].customer_id);
         document.getElementsByClassName('order-list')[0].innerHTML += `
             <div class = "order-item">
@@ -116,34 +106,29 @@ function renderOrders(startOrder, numberOrderPerPage, allOrders, allCustomers, t
         `;
     }
     
-    const totalPages = calculateTotalPages(totalOrders, numberOrderPerPage);
-    const maxVisible = 4;
-    let start = Math.max(1, currentPageOrder - Math.floor(maxVisible / 2));
+    let maxVisible = 4;
+    let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
     let end = Math.min(totalPages, start + maxVisible - 1);
+
 
     if (end - start < maxVisible - 1) {
         start = Math.max(1, end - maxVisible + 1);
     }
-
-    // Luôn hiển thị trang đầu
     if (start > 1) {
         addPageButton(1, numberOrderPerPage, allOrders, allCustomers, totalOrders);
         if (start > 2) addEllipsis();
     }
 
-    // Hiển thị các trang ở giữa
     for (let i = start; i <= end; i++) {
         addPageButton(i, numberOrderPerPage, allOrders, allCustomers, totalOrders);
     } 
 
-    // Luôn hiển thị trang cuối
     if (end < totalPages) {
         if (end < totalPages - 1) addEllipsis();
         addPageButton(totalPages, numberOrderPerPage, allOrders, allCustomers, totalOrders);
     }
 
-    // Cập nhật thông tin phân trang
-    document.getElementById('now-page').innerHTML = `${startOrder + 1} - ${endOrder}`;
+    document.getElementById('now-page').innerHTML = `${startOrder + 1} - ${startOrder + numberOrderPerPage}`;
     document.getElementById('all-page').innerHTML = `${totalOrders}`;
     initDropdown();
     initDetail();
@@ -152,46 +137,14 @@ function renderOrders(startOrder, numberOrderPerPage, allOrders, allCustomers, t
 document.getElementById('pre-page-btn').addEventListener('click', function () {
     if (currentPageOrder > 1) {
         currentPageOrder -= 1;
-        renderOrders((currentPageOrder - 1) * numberOrderPerPage, numberOrderPerPage, allOrder, customerData, allOrder.length);
+        renderOrders((currentPageOrder - 1) * numberOrderPerPage, numberOrderPerPage, allOrders, allCustomers, totalOrders)
     }
-});
-
+})
 document.getElementById('next-page-btn').addEventListener('click', function () {
-    const totalPages = calculateTotalPages(allOrder.length, numberOrderPerPage);
     if (currentPageOrder < totalPages) {
         currentPageOrder += 1;
-        renderOrders((currentPageOrder - 1) * numberOrderPerPage, numberOrderPerPage, allOrder, customerData, allOrder.length);
+        renderOrders((currentPageOrder - 1) * numberOrderPerPage, numberOrderPerPage, allOrders, allCustomers, totalOrders)
     }
-});
+})
 
-function initAddress() {
-    const dictrictSearch = document.getElementById('dictrict-select');
-    const districts = vietnamAddress["Thành phố Hồ Chí Minh"].districts;
-    districts.forEach(dictrict => {
-        dictrictSearch.innerHTML += `
-            <option value="${dictrict}">${dictrict}</option>;
-        `
-    })
-}
-
-window.addEventListener('storage', function(e) {
-    if (e.key === 'phonestore_users') {
-        customerData = JSON.parse(e.newValue || '[]');
-        preProcessing(numberOrderPerPage, allOrder, customerData, allOrder.length);
-    }
-});
-
-function checkForUpdates() {
-    const currentUser = JSON.parse(localStorage.getItem('phonestore_users') || '[]');
-    
-    if (JSON.stringify(currentUser) !== JSON.stringify(customerData)) {
-        customerData = currentUser;
-        preProcessing(numberOrderPerPage, allOrder, customerData, allOrder.length);
-    }
-}
-
-setInterval(2000, checkForUpdates);
-
-// Khởi tạo ban đầu
-preProcessing(numberOrderPerPage, allOrder, customerData, allOrder.length);
-initAddress();
+preProcessing(5, allOrder, customerData, allOrder.length);

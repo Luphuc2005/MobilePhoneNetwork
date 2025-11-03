@@ -1,4 +1,4 @@
-let allProducts = JSON.parse(localStorage.getItem('phonestore_products')) || [];
+let allProducts = JSON.parse(localStorage.getItem('product')) || [];
 let filteredProducts = [...allProducts];
 
 let currentPageSearchProduct = 1;
@@ -77,9 +77,9 @@ function renderFilteredProducts() {
                 </span>
             </div>
             <div class="product-price-wrapper">
-                <div class="product-price">${formatPrice(item.gia)}</div>
+                <div class="product-price">${formatCurrency(item.gia)}</div>
                 <div>
-                    <span class="product-old-price">${formatPrice(item.oldPrice || item.gia * 1.1)}</span>
+                    <span class="product-old-price">${formatCurrency(item.oldPrice || item.gia * 1.1)}</span>
                     <span class="product-discount">-${item.discount || 6}%</span>
                 </div>
                 <div class="product-promotions">
@@ -259,7 +259,7 @@ window.addEventListener('storage', function(e) {
     }
     if (e.key === 'product') {
         allProducts = JSON.parse(e.newValue || '[]');
-        searchInventory();
+        renderFilteredProducts();
     }
 });
 
