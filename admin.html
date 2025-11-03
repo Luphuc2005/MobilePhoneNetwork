@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./assets/css/admin.css">
     <link rel="stylesheet" href="./assets/css/duyddawng-components.css">
     <link rel="stylesheet" href="./assets/css/duyddawng-logout.css">
     <link href="./assets/css/admin.css" rel="stylesheet">
@@ -16,10 +15,11 @@
         integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="">
-    <title>Trang Quản Lý (ADMIM)</title>
+    <title>Trang Chính Admin</title>
 </head>
 
 <body>
+    <!-- =============LOGIN=============== -->
     <div id="loginPage">
         <div id="login-card">
             <div id="div-header">
@@ -73,7 +73,7 @@
                     <span id="admin-name">Duy Đăng</span>
                     <span>Quản trị viên</span>
                 </div>
-                <button class="logout-btn" id="logoutButton">
+                <button class="logout-btn" onclick="handleLogout()">
                     <span>🚪</span>
                     Đăng xuất
                 </button>
@@ -247,8 +247,7 @@
                                             style="font-size: 14px; opacity: 0.9; margin-bottom: 8px; font-weight: 500;">
                                             👥
                                             Tổng khách hàng</div>
-                                        <div id="totalUsersCount" style="font-size: 36px; font-weight: bold;">0
-                                        </div>
+                                        <div id="totalUsersCount" style="font-size: 36px; font-weight: bold;">0</div>
                                     </div>
                                     <div style="font-size: 48px; opacity: 0.3;">👤</div>
                                 </div>
@@ -261,8 +260,7 @@
                                             style="font-size: 14px; opacity: 0.9; margin-bottom: 8px; font-weight: 500;">
                                             ✅
                                             Đang hoạt động</div>
-                                        <div id="activeUsersCount" style="font-size: 36px; font-weight: bold;">0
-                                        </div>
+                                        <div id="activeUsersCount" style="font-size: 36px; font-weight: bold;">0</div>
                                     </div>
                                     <div style="font-size: 48px; opacity: 0.3;">✓</div>
                                 </div>
@@ -275,8 +273,7 @@
                                             style="font-size: 14px; opacity: 0.9; margin-bottom: 8px; font-weight: 500;">
                                             🔒
                                             Đã khóa</div>
-                                        <div id="lockedUsersCount" style="font-size: 36px; font-weight: bold;">0
-                                        </div>
+                                        <div id="lockedUsersCount" style="font-size: 36px; font-weight: bold;">0</div>
                                     </div>
                                     <div style="font-size: 48px; opacity: 0.3;">🔐</div>
                                 </div>
@@ -289,8 +286,7 @@
                                             style="font-size: 14px; opacity: 0.9; margin-bottom: 8px; font-weight: 500;">
                                             🛒
                                             Tổng đơn hàng</div>
-                                        <div id="totalOrdersCount" style="font-size: 36px; font-weight: bold;">0
-                                        </div>
+                                        <div id="totalOrdersCount" style="font-size: 36px; font-weight: bold;">0</div>
                                     </div>
                                     <div style="font-size: 48px; opacity: 0.3;">📦</div>
                                 </div>
@@ -499,8 +495,7 @@
                                 </div>
                                 <button id="saveCategoryBtn">💾 Lưu %</button>
                                 <button id="applyCategoryProfitBtn"
-                                    style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">⚡ Áp dụng
-                                    vào
+                                    style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">⚡ Áp dụng vào
                                     giá</button>
                             </div>
 
@@ -528,8 +523,7 @@
                                 </div>
                                 <button id="saveProductBtn">💾 Lưu %</button>
                                 <button id="applyProductProfitBtn"
-                                    style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">⚡ Áp dụng
-                                    vào
+                                    style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">⚡ Áp dụng vào
                                     giá</button>
                             </div>
 
@@ -792,86 +786,85 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- THANH NHÀN - Quản lý tồn kho -->
-            <div id="inventory-content" class="section-content" style="display: none;">
-                <div class="page-title">
-                    <h2>Quản lý tồn kho</h2>
-                    <p>Tra cứu và theo dõi tình trạng nhập xuất tồn kho</p>
-                </div>
+                <!-- THANH NHÀN - Quản lý tồn kho -->
+                <div id="inventory-content" class="section-content" style="display: none;">
+                    <div class="page-title">
+                        <h2>Quản lý tồn kho</h2>
+                        <p>Tra cứu và theo dõi tình trạng nhập xuất tồn kho</p>
+                    </div>
 
-                <div class="inventory-search-panel">
-                    <div class="search-row">
-                        <div class="search-group">
-                            <label>Sản phẩm:</label>
-                            <select id="inventory-product" class="search-element-inventory">
-                                <option value="">-- Chọn sản phẩm --</option>
-                            </select>
+                    <div class="inventory-search-panel">
+                        <div class="search-row">
+                            <div class="search-group">
+                                <label>Sản phẩm:</label>
+                                <select id="inventory-product" class="search-element-inventory">
+                                    <option value="">-- Chọn sản phẩm --</option>
+                                </select>
+                            </div>
+                            <div class="search-group">
+                                <label>Loại sản phẩm:</label>
+                                <select id="inventory-type" class="search-element-inventory">
+                                    <option value="">-- Tất cả loại --</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="search-group">
-                            <label>Loại sản phẩm:</label>
-                            <select id="inventory-type" class="search-element-inventory">
-                                <option value="">-- Tất cả loại --</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="search-row">
-                        <div class="search-group">
-                            <label>Từ ngày:</label>
-                            <input type="date" id="inventory-start-date" class="search-element-inventory">
-                        </div>
-                        <div class="search-group">
-                            <label>Đến ngày:</label>
-                            <input type="date" id="inventory-end-date" class="search-element-inventory">
-                        </div>
-                        <button id="btn-search-inventory" class="search-button">
-                            Tra cứu
-                        </button>
-                    </div>
-                </div>
 
-                <div class="inventory-summary">
-                    <div class="summary-card">
-                        <h3>Tổng tồn kho</h3>
-                        <p class="summary-value" id="total-inventory">0</p>
+                        <div class="search-row">
+                            <div class="search-group">
+                                <label>Từ ngày:</label>
+                                <input type="date" id="inventory-start-date" class="search-element-inventory">
+                            </div>
+                            <div class="search-group">
+                                <label>Đến ngày:</label>
+                                <input type="date" id="inventory-end-date" class="search-element-inventory">
+                            </div>
+                            <button id="btn-search-inventory" class="search-button">
+                                Tra cứu
+                            </button>
+                        </div>
                     </div>
-                    <div class="summary-card">
-                        <h3>Tổng giá trị tồn</h3>
-                        <p class="summary-value" id="total-value">0 ₫</p>
-                    </div>
-                    <div class="summary-card">
-                        <h3>Sản phẩm gần hết</h3>
-                        <p class="summary-value" id="low-stock">0</p>
-                    </div>
-                </div>
 
-                <div class="inventory-result">
-                    <h3>Bảng nhập xuất tồn</h3>
-                    <div class="inventory-table-wrapper">
-                        <table class="inventory-table">
-                            <thead>
-                                <tr>
-                                    <th>Sản phẩm</th>
-                                    <th>Loại</th>
-                                    <th>Tồn đầu kỳ</th>
-                                    <th>Nhập trong kỳ</th>
-                                    <th>Xuất trong kỳ</th>
-                                    <th>Tồn cuối kỳ</th>
-                                    <th>Đơn giá</th>
-                                    <th>Giá trị tồn</th>
-                                    <th>Trạng thái</th>
-                                </tr>
-                            </thead>
-                            <tbody id="inventory-list">
-                                <!-- Dữ liệu sẽ được thêm bằng JavaScript -->
-                            </tbody>
-                        </table>
+                    <div class="inventory-summary">
+                        <div class="summary-card">
+                            <h3>Tổng tồn kho</h3>
+                            <p class="summary-value" id="total-inventory">0</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Tổng giá trị tồn</h3>
+                            <p class="summary-value" id="total-value">0 ₫</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Sản phẩm gần hết</h3>
+                            <p class="summary-value" id="low-stock">0</p>
+                        </div>
+                    </div>
+
+                    <div class="inventory-result">
+                        <h3>Bảng nhập xuất tồn</h3>
+                        <div class="inventory-table-wrapper">
+                            <table class="inventory-table">
+                                <thead>
+                                    <tr>
+                                        <th>Sản phẩm</th>
+                                        <th>Loại</th>
+                                        <th>Tồn đầu kỳ</th>
+                                        <th>Nhập trong kỳ</th>
+                                        <th>Xuất trong kỳ</th>
+                                        <th>Tồn cuối kỳ</th>
+                                        <th>Đơn giá</th>
+                                        <th>Giá trị tồn</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inventory-list">
+                                    <!-- Dữ liệu sẽ được thêm bằng JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!-- HUYỀN TRANG - Quản lý nhập hàng -->
-            <div id="import-content" class="section-content" style="display: none;">
+                <!-- HUYỀN TRANG - Quản lý nhập hàng -->
+                <div id="import-content" class="section-content" style="display: none;">
 
                 </div>
                 <!-- OTHER SECTIONS (Placeholder) -->
