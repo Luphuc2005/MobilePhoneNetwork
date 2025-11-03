@@ -99,7 +99,12 @@ function renderFilteredProducts() {
         ${productsHTML}
     `;
 
-    renderPagination(totalPages);
+        renderPagination(totalPages);
+    
+    // Sử dụng hàm setup từ listProductIndex.js (đã xử lý cả btn-detail và btn-cart)
+    if (typeof setupProductCardEvents === 'function') {
+        setupProductCardEvents();
+    }
 }
 
 function renderPagination(totalPages) {
@@ -159,6 +164,10 @@ window.changePage = function(page) {
 
 function formatPrice(price) {
     return new Intl.NumberFormat('vi-VN').format(price);
+}
+
+function formatCurrency(value) {
+    return value.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
 }
 
 document.querySelector('.apply-filter')?.addEventListener('click', function() {
