@@ -24,7 +24,10 @@ formDangKy.innerHTML = `
                     </fieldset>
                     <fieldset>
                         <legend>Mật khẩu <span style="color: red">*</span></legend>
-                        <input class="matKhau" required type="password" placeholder="Ít nhất 8 ký tự">
+                        <div>
+                            <input class="matKhau" required type="password" placeholder="Ít nhất 8 ký tự">
+                            <input type="checkbox" class="showPassword">
+                        </div>
                         <div style="height: 1em; display: flex; align-items: center; gap: 0.3em">
                             <img src="./assets/images/icons/auth/check.svg">
                             <p name="password-req" style="height: fit-content">Ít nhất 8 ký tự</p>
@@ -36,7 +39,10 @@ formDangKy.innerHTML = `
                     </fieldset>
                     <fieldset>
                         <legend>Xác nhận mật khẩu <span style="color: red">*</span></legend>
-                        <input class="matKhau" required type="password" name="passwordConfirm" placeholder="Nhập lại mật khẩu">
+                        <div>
+                            <input class="matKhau" required type="password" name="passwordConfirm" placeholder="Nhập lại mật khẩu">
+                            <input type="checkbox" class="showPassword">
+                        </div>
                     </fieldset>
                     <fieldset style="margin-top: 0; margin-bottom: 3%;">
                         <label style="display: flex; align-items: center; gap: 0.3rem; font-size: small;">
@@ -47,7 +53,7 @@ formDangKy.innerHTML = `
                     <button type="submit" class="submitButton" style="background-color: #16A34A;">Đăng ký</button>
                 </form>
                 <div class="footer" title="footer" style="text-align: center; margin-bottom: 7%; margin-top: 3%;">
-                    Đã có tài khoản? <a href ="" style="color: #16A34A; font-weight: bold;"> Đăng nhập ngay </a>
+                    Đã có tài khoản? <a style="color: #16A34A; font-weight: bold;"> Đăng nhập ngay </a>
                 </div>
             </div>
         </div>
@@ -73,19 +79,22 @@ formDangNhap.innerHTML = `
                     </fieldset>
                     <fieldset>
                         <legend>Mật khẩu <span style="color: red">*</span></legend>
-                        <input class="matKhau" required type="password" placeholder="Nhập mật khẩu">
+                        <div>
+                            <input class="matKhau" required type="password" placeholder="Nhập mật khẩu">
+                            <input type="checkbox" class="showPassword">
+                        <div>
                     </fieldset>
                     <fieldset style="margin-top: 3%;margin-bottom: 5%;">
                             <label for="rememberMe" style="display: flex; align-items: center; gap: 0.3em; font-size: small; width: fit-content; float: left;">
                                 <input type="checkbox" id="rememberMe">
                                 Nhớ đăng nhập
                             </label>
-                            <a href="" style="float:right; color: #2563EB; font-size: small">Quên mật khẩu?</a>
+                            <a style="float:right; color: #2563EB; font-size: small">Quên mật khẩu?</a>
                     </fieldset>
                     <button type="submit" class="submitButton" name="submitBtn" style="background-color: #2563EB;">Đăng nhập</button>
                 </form>
-                <div class="footer" title="footer" style="display: flex; flex-direction: column; align-items: center;">
-                    <p style="width:fit-content;">Chưa có tài khoản? <a href ="" style="color: #2563EB; font-weight:bold;"> Đăng kí ngay </a></p>
+                <div class="footer" title="footer" style="display: flex; flex-direction: column; align-items: center; margin-top: 3%">
+                    <p style="width:fit-content; font-size: 1em">Chưa có tài khoản? <a style="color: #2563EB; font-weight:bold;"> Đăng kí ngay </a></p>
                     <hr style="border: solid 0.1px #E5E7EB; margin: 0; margin-left: 10%; margin-right: 10%; align-self: normal;">
                     <p style="font-size:small; text-align: center; margin: 3% 15% ;">Bằng việc đăng nhập, bạn đồng ý với <a href="" style="color: #2563EB">Điều khoản sử dụng</a> và <a href="" style="color: #2563EB">Chính sách bảo mật</a>
                 </div>
@@ -102,7 +111,50 @@ const form = document.getElementsByClassName("form");
 const passreq = document.getElementsByName("password-req");
 const agreement = document.getElementById("agreement");
 const rememberMe = document.getElementById("rememberMe");
+const showPassword = document.querySelectorAll(".showPassword");
 
+const signinFormFooter = formDangNhap.querySelector(".footer");
+const signUpRedirect = signinFormFooter.querySelector("a");
+
+const signupFormFooter = formDangKy.querySelector(".footer");
+const signInRedirect = signupFormFooter.querySelector("a");
+
+showPassword.keys().forEach((key) => {
+    showPassword[key].onclick = function (event) {
+        if (password[key].type == "password")
+            password[key].type = "text";
+        else
+            password[key].type = "password";
+    }
+
+    password[key].oninput = function (event) {
+            password[key].setCustomValidity("");
+            if (password[key].value != "")
+            {
+                showPassword[key].style.visibility="visible";
+            }
+            else
+            { 
+                showPassword[key].style.visibility="hidden";
+            }
+        }
+
+    password[key].onclick = function e() {
+        password[key].select();
+    }
+});
+
+signUpRedirect.onclick = function (event) { 
+    formDangNhap.style.display="none";
+    formDangKy.style.display="";
+    console.log("Test");
+}
+
+signInRedirect.onclick = function (event) {
+    formDangKy.style.display="none";
+    formDangNhap.style.display="";
+    console.log("Test");
+}
 //Tắt thông báo kiểm tra hợp lệ khi người dùng input
 regname.oninput = function e() {
     regname.setCustomValidity("");
@@ -111,16 +163,6 @@ regname.oninput = function e() {
 Array.from(email).forEach(address => {
     address.oninput = function e() {
         address.setCustomValidity("");
-    }
-});
-
-Array.from(password).forEach(matkhau => {
-    matkhau.oninput = function e() {
-        matkhau.setCustomValidity("");
-    }
-
-    matkhau.onclick = function e() {
-        matkhau.select();
     }
 });
 
@@ -218,17 +260,25 @@ form[1].addEventListener("submit", (e) => {
     {       
         let agree = rememberMe.checked;
         let loginStatus = loginUser(email[1].value, password[2].value);
+        console.log(loginStatus);
         //Dang nhap khong thanh cong
-        if (!loginStatus)
+        if (loginStatus == 2)
         {
             password[2].setCustomValidity("Mật khẩu không chính xác");
             form[1].reportValidity();
             console.log("Wrong password");
         }
         //Dang nhap thanh cong
+        else if (loginStatus == 1)
+        {
+            //Thông báo tài khoản bị khóa
+            alert("Tài khoản bị khóa");
+        }
         else
         {
             console.log(agree);
+            if (agree)
+                sessionStorage.setItem(STORAGE_KEYS.REMEMBER_ME, agree)
             drawDropdownMenu();
         }
     }
@@ -252,22 +302,28 @@ window.onclick = function (event) {
     {
         formDangKy.style.display="none";
         form[0].reset();
+        showPassword.forEach((button) => button.style.visibility="hidden");
     }
     else if (event.target == formBackground[1] || event.target == closeButton[1])
     {
         formDangNhap.style.display="none";
         form[1].reset();
+        showPassword.forEach((button) => button.style.visibility="hidden");
     }
 }
 
+function fetchUsersData() {
+    let userList = [];
+    let userFetch = localStorage.getItem(STORAGE_KEYS.USERS) || [];
+    userList = JSON.parse(userFetch);
+    return userList;
+}
 // ===================Xử lý đăng nhập đăng xuất=================
-let userList = [];
-let userFetch = localStorage.getItem("users") || [];
-userList = JSON.parse(userFetch);
 
 //Xử lý đăng ký
 function registerUser(regName, regMail, regPass)
 {
+    const userList = fetchUsersData(); 
     //Tài khoản tồn tại hay chưa
     let existAccount = userList.find((user) => user.email == regMail) || false;
     console.log(existAccount);
@@ -295,7 +351,7 @@ function registerUser(regName, regMail, regPass)
     };
 
     userList.push(account);
-    localStorage.setItem("users", JSON.stringify(userList));
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(userList));
     formDangKy.getElementsByClassName("form")[0].reset();
     Array.from(passreq).forEach(req => {
         req.style.color="initial";
@@ -307,18 +363,35 @@ function registerUser(regName, regMail, regPass)
 //Xử lý đăng nhập
 function loginUser(logEmail, logPass)
 {
+    const userList=fetchUsersData();
     for (let i = 0; i < userList.length; i++)
     { 
         console.log(userList[i].email + userList[i].password);
         if (logEmail == userList[i].email && logPass == userList[i].password)
         { 
-            formDangNhap.getElementsByClassName("form")[0].reset();
-            localStorage.setItem("currentUser", JSON.stringify(userList[i]));
-            formDangNhap.style.display="none";
-            console.log("Login thanh cong, line 316");
-            return true;
+            if (userList[i].trangthai != "locked") {
+                formDangNhap.getElementsByClassName("form")[0].reset();
+                localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(userList[i]));
+                formDangNhap.style.display="none";
+                return 0;
+            }
+            else{
+                //Tài khoản bị khóa
+                return 1;
+            }
         }
     }
-    console.log("Login khong thanh cong, 320");
-    return false;
+    //Sai mật khẩu
+    return 2;
+}
+
+window.onbeforeunload = function (event)
+{ 
+    const remember = this.sessionStorage.getItem(STORAGE_KEYS.REMEMBER_ME) || false;
+    const navigating = this.localStorage.getItem("navigating") || false;
+    if (remember == false && navigating == false)
+    { 
+        this.localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+    }
+    this.localStorage.removeItem("navigating");
 }
