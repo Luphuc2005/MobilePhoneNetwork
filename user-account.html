@@ -8,7 +8,18 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/css/cuong-user-account.css">
     <link rel="stylesheet" href="assets/css/tuankhoi-user.css">
-    <script src="assets/js/cart.js" defer></script>
+    <link rel="stylesheet" href="assets/css/QuoocsCuongwf-order-success.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Load storage config trước để định nghĩa STORAGE_KEYS -->
+    <script src="assets/js/storage-config.js"></script>
+    
+    <!-- <script type="module" src="assets/js/customer.js" defer></script> -->
+    <script type="module" src="assets/js/QuoocsCuongwf-datacart.js"></script>
+    <!-- <script type="module" src="assets/js/nt_nhan-order-local-storage.js" defer></script> -->
+    <script src="assets/js/QuoocsCuongwf-order-success.js"></script>
+    <script type="module" src="assets/js/quoocscuongwf-cart.js" defer></script>
+    <script src="assets/js/card-payment.js" defer></script>
 </head>
 
 <body class="user-account-page">
@@ -99,88 +110,260 @@
                 <span>Mua từ 2 sản phẩm giảm 5%, từ 3 sản phẩm giảm 10%</span>
             </div>
         </div>
-        <div class="background-user-info">
+        <div class="background-user-info" id="background-user-info">
             <div class="user-info" id="user-info-container">
+                <!-- Nút đóng form -->
+                <button type="button" class="close-form-btn" id="close-user-info">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                
                 <h2>Thông tin người nhận</h2>
 
-                <form action="/dat-hang" method="POST">
-
+                <form id="checkout-form">
+                    <!-- Thông tin cá nhân -->
                     <div class="form-group">
-                        <label for="name">Họ và tên:</label>
-                        <input type="text" id="name" name="name" required>
+                        <label for="name">Họ và tên: <span class="required">*</span></label>
+                        <input type="text" id="name" name="name" placeholder="Nhập họ và tên" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="phone">Số điện thoại:</label>
-                        <input type="tel" id="phone" name="phone" required>
+                        <label for="phone">Số điện thoại: <span class="required">*</span></label>
+                        <input type="tel" id="phone" name="phone" placeholder="Nhập số điện thoại" pattern="[0-9]{10}" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="email">Email:</label>
-                        <input type="email" id="email" name="email" required>
+                        <label for="email">Email: <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" placeholder="Nhập email" required>
+                    </div>
+
+                    <!-- Địa chỉ giao hàng -->
+                    <h3>Địa chỉ giao hàng</h3>
+                    
+                    <div class="form-group">
+                        <label>Chọn địa chỉ đã lưu:</label>
+                        <div class="saved-addresses">
+                            <label class="custom-radio">
+                                <input type="radio" name="saved_address" value="address1" id="address1" checked>
+                                <span class="checkmark"></span>
+                                <div id="address1-detail">Số 1 Đường A, Phường X, Quận Y, TP. HCM</div>
+                            </label>
+                            <label class="custom-radio">
+                                <input type="radio" name="saved_address" value="new" id="address-new">
+                                <span class="checkmark"></span>
+                                Nhập địa chỉ mới
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Form nhập địa chỉ mới (ẩn mặc định) -->
+                    <div class="new-address-form" style="display: none;">
+                        <div class="form-group">
+                            <label for="tinh-thanh">Tỉnh/Thành phố: <span class="required">*</span></label>
+                            <select name="tinh-thanh" id="tinh-thanh">
+                                <option value="">-- Chọn Tỉnh/Thành phố --</option>
+                                <option value="hn">Hà Nội</option>
+                                <option value="hcm">Hồ Chí Minh</option>
+                                <option value="dn">Đà Nẵng</option>
+                                <option value="hp">Hải Phòng</option>
+                                <option value="ct">Cần Thơ</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="quan-huyen">Quận/Huyện: <span class="required">*</span></label>
+                            <select name="quan-huyen" id="quan-huyen">
+                                <option value="">-- Chọn Quận/Huyện --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phuong-xa">Phường/Xã: <span class="required">*</span></label>
+                            <select name="phuong-xa" id="phuong-xa">
+                                <option value="">-- Chọn Phường/Xã --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address-detail">Địa chỉ chi tiết: <span class="required">*</span></label>
+                            <input type="text" id="address-detail" name="address-detail" placeholder="Số nhà, tên đường...">
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="tinh-thanh">Tỉnh/Thành phố:</label>
-                        <select name="tinh-thanh" id="tinh-thanh" required>
-                            <option value="">-- Chọn Tỉnh/Thành --</option>
-                            <option value="hn">Hà Nội</option>
-                            <option value="hcm">Hồ Chí Minh</option>
-                            <option value="dn">Đà Nẵng</option>
-                        </select>
+                        <label for="notes">Ghi chú đơn hàng:</label>
+                        <textarea id="notes" name="notes" rows="4" placeholder="Ghi chú cho đơn hàng (nếu có)"></textarea>
                     </div>
 
-                    <div class="form-group">
-                        <label for="phuongxa">Phường/xã:</label>
-                        <select name="phuongxa" id="phuongxa" required>
-                            <option value="">-- Chọn Phường/Xã --</option>
-                            <option value="px1">Phường/Xã 1</option>
-                            <option value="px2">Phường/Xã 2</option>
-                            <option value="px3">Phường/Xã 3</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="address">Địa chỉ:</label>
-                        <input type="radio" name="address" id=""> Số 1 Đường A
-                        <br>
-                        <input type="radio" name="address" id=""> Số 2 Đường B
-                        <br>
-                        <input type="text" name="address" id="" placeholder="Nhập địa chỉ khác">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="notes">Ghi chú:</label>
-                        <textarea id="notes" name="notes" rows="4"
-                            placeholder="Ghi chú cho đơn hàng (nếu có)"></textarea>
-                    </div>
-
-                    <h3>Bạn thanh toán bằng hình thức nào?</h3>
+                    <!-- Phương thức thanh toán -->
+                    <h3>Phương thức thanh toán</h3>
 
                     <div class="payment-options">
-                        <label class="custom-radio">Thanh toán khi nhận hàng (COD)
+                        <label class="custom-radio">
                             <input type="radio" id="cod" name="payment_method" value="cod" checked>
                             <span class="checkmark"></span>
+                            <div class="payment-info">
+                                <strong>Thanh toán khi nhận hàng (COD)</strong>
+                                <small>Thanh toán bằng tiền mặt khi nhận hàng</small>
+                            </div>
                         </label>
 
-                        <label class="custom-radio">Ví MoMo
+                        <label class="custom-radio">
                             <input type="radio" id="momo" name="payment_method" value="momo">
                             <span class="checkmark"></span>
+                            <div class="payment-info">
+                                <strong>Ví MoMo</strong>
+                                <small>Thanh toán qua ví điện tử MoMo</small>
+                            </div>
                         </label>
 
-                        <label class="custom-radio">Thẻ tín dụng/Ghi nợ
+                        <label class="custom-radio">
                             <input type="radio" id="card" name="payment_method" value="card">
                             <span class="checkmark"></span>
+                            <div class="payment-info">
+                                <strong>Thẻ tín dụng/Ghi nợ</strong>
+                                <small>Visa, Mastercard, JCB</small>
+                            </div>
                         </label>
                     </div>
 
+                    <!-- Form nhập thông tin thẻ (ẩn mặc định) -->
+                    <div class="card-payment-form" style="display: none;">
+                        <h4 style="margin-top: 20px; margin-bottom: 15px;">Thông tin thẻ</h4>
+                        
+                        <div class="form-group">
+                            <label for="card-number">Số thẻ: <span class="required">*</span></label>
+                            <input type="text" id="card-number" name="card-number" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="card-name">Tên chủ thẻ: <span class="required">*</span></label>
+                            <input type="text" id="card-name" name="card-name" placeholder="NGUYEN VAN A">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group" style="flex: 1;">
+                                <label for="card-expiry">Ngày hết hạn: <span class="required">*</span></label>
+                                <input type="text" id="card-expiry" name="card-expiry" placeholder="MM/YY" maxlength="5">
+                            </div>
+
+                            <div class="form-group" style="flex: 1; margin-left: 15px;">
+                                <label for="card-cvv">CVV: <span class="required">*</span></label>
+                                <input type="text" id="card-cvv" name="card-cvv" placeholder="123" maxlength="4">
+                            </div>
+                        </div>
+
+                        <div class="card-logos" style="margin-top: 10px; display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                            <small style="color: #888;">Chấp nhận:</small>
+                            <span style="padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;">💳 VISA</span>
+                            <span style="padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;">💳 MASTERCARD</span>
+                            <span style="padding: 5px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;">💳 JCB</span>
+                        </div>
+                    </div>
+
                     <div class="form-group">
-                        <button type="submit" class="submit-checkout btn">Hoàn tất đơn hàng</button>
+                        <button type="submit" class="submit-checkout btn" id="submit-checkout">Hoàn tất đơn hàng</button>
                     </div>
 
                 </form>
             </div>
         </div>
+
+    </div>
+
+    <!-- Modal hiển thị thông tin đơn hàng sau khi đặt thành công -->
+    <div class="order-success-modal" id="order-success-modal" style="display: none;">
+        <div class="order-success-overlay"></div>
+        <div class="order-success-content">
+            <!-- Icon thành công -->
+            <div class="success-icon">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            
+            <!-- Tiêu đề -->
+            <h2 class="success-title">Đặt hàng thành công!</h2>
+            <p class="success-subtitle">Cảm ơn bạn đã mua hàng tại PhoneStore</p>
+            
+            <!-- Thông tin đơn hàng -->
+            <div class="order-info-box">
+                <div class="order-info-header">
+                    <h3>Thông tin đơn hàng</h3>
+                    <span class="order-number">Mã đơn: <span id="order-id">--</span></span>
+                </div>
+                
+                <div class="order-details">
+                    <!-- Thông tin người nhận -->
+                    <div class="info-section">
+                        <h4><i class="fa-solid fa-user"></i> Người nhận</h4>
+                        <p id="customer-name">--</p>
+                        <p id="customer-phone">--</p>
+                        <p id="customer-email">--</p>
+                    </div>
+                    
+                    <!-- Địa chỉ giao hàng -->
+                    <div class="info-section">
+                        <h4><i class="fa-solid fa-location-dot"></i> Địa chỉ giao hàng</h4>
+                        <p id="delivery-address">--</p>
+                    </div>
+                    
+                    <!-- Phương thức thanh toán -->
+                    <div class="info-section">
+                        <h4><i class="fa-solid fa-credit-card"></i> Thanh toán</h4>
+                        <p id="payment-method">--</p>
+                    </div>
+                    
+                    <!-- Ngày đặt hàng -->
+                    <div class="info-section">
+                        <h4><i class="fa-solid fa-calendar"></i> Ngày đặt hàng</h4>
+                        <p id="order-date">--</p>
+                    </div>
+                </div>
+                
+                <!-- Danh sách sản phẩm -->
+                <div class="order-products">
+                    <h4><i class="fa-solid fa-box"></i> Sản phẩm đã đặt</h4>
+                    <div class="products-list" id="products-list">
+                        <!-- Sẽ được render bằng JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Tổng tiền -->
+                <div class="order-total">
+                    <div class="total-row">
+                        <span>Tạm tính:</span>
+                        <span id="subtotal-amount">--</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Phí vận chuyển:</span>
+                        <span class="free-shipping">Miễn phí</span>
+                    </div>
+                    <div class="total-row grand-total">
+                        <span>Tổng cộng:</span>
+                        <span id="total-amount">--</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Nút hành động -->
+            <div class="order-actions">
+                <button class="btn-print" onclick="printOrder()">
+                    <i class="fa-solid fa-print"></i> In đơn hàng
+                </button>
+                <button class="btn-primary" onclick="location.href='index.html'">
+                    <i class="fa-solid fa-cart-shopping"></i> Tiếp tục mua hàng
+                </button>
+                <button class="btn-secondary" onclick="closeOrderModal()">
+                    <i class="fa-solid fa-xmark"></i> Đóng
+                </button>
+            </div>
+            
+            <!-- Link lịch sử đơn hàng -->
+            <div class="order-history-link">
+                <a href="auth.html#order-history" onclick="closeOrderModal()">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Xem lịch sử đơn hàng
+                </a>
+            </div>
+        </div>
+    </div>
 
 </body>
 
