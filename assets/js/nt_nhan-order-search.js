@@ -1,9 +1,15 @@
 function parseDateTime(dateStr) {
-  const [datePart, timePart] = dateStr.split(" "); // ["15/10/2025", "13:30"]
-  const [day, month, year] = datePart.split("/").map(Number);
-  const [hour, minute] = timePart.split(":").map(Number);
+    const [datePart, timePart] = dateStr.split(" "); // ["15/10/2025", "13:30"]
+    const [day, month, year] = datePart.split("/").map(Number);
+    const [hour, minute] = timePart.split(":").map(Number);
 
-  return new Date(year, month - 1, day, hour, minute);
+    return new Date(year, month - 1, day, hour, minute);
+}
+
+function parseInputDate(dateStr) {
+    if (!dateStr) return null;
+    const date = new Date(dateStr);
+    return date;
 }
 
 document.getElementById('search-orders-form').addEventListener("submit", function(e) {
@@ -19,18 +25,50 @@ document.getElementById('search-orders-form').addEventListener("submit", functio
         const matchStatus = status === "all" || order.status === status;
         const matchDistrict = district === "all" || order.address == district;
         const orderDate = parseDateTime(order.date);
-        const matchFrom = fromDate === "" || orderDate >= new Date(fromDate);
-        const matchTo = toDate === "" || orderDate <= new Date(toDate);
+        
+        const fromDateObj = parseInputDate(fromDate);
+        const toDateObj = parseInputDate(toDate);
+        
+        // Nếu có ngày bắt đầu, set giờ thành 00:00:00
+        if (fromDateObj) {
+            fromDateObj.setHours(0, 0, 0, 0);
+        }
+        
+        // Nếu có ngày kết thúc, set giờ thành 23:59:59
+        if (toDateObj) {
+            toDateObj.setHours(23, 59, 59, 999);
+        }
+        
+        const matchFrom = !fromDateObj || orderDate >= fromDateObj;
+        const matchTo = !toDateObj || orderDate <= toDateObj;
+        
         return matchFrom && matchTo && matchKeyword && matchStatus && matchDistrict;
     });  
 
+    // Reset về trang 1 khi tìm kiếm
+    currentPageOrder = 1;
+    
+    // Tính số trang dựa trên kết quả tìm kiếm
+    const totalOrders = result.length;
+    const totalPages = calculateTotalPages(totalOrders, numberOrderPerPage);
+    
+    // Tính vị trí bắt đầu và kết thúc cho trang hiện tại
+    const startIndex = (currentPageOrder - 1) * numberOrderPerPage;
+    const endIndex = Math.min(startIndex + numberOrderPerPage, totalOrders);
+    
     let list = document.getElementsByClassName('order-list')[0];  
     list.innerHTML = ``;
     if (result.length === 0) {
         list.innerHTML = "<li>Không tìm thấy kết quả</li>";
+        // Ẩn phân trang khi không có kết quả
+        document.getElementsByClassName('pagination')[0].style.display = 'none';
+        return;
     } else {
-        result.forEach(order => {
-        let customer = customerData.filter(cus => {return order.customer_id === cus.id})[0];
+        document.getElementsByClassName('pagination')[0].style.display = 'flex';
+        // Chỉ hiển thị các đơn hàng trong trang hiện tại
+        const ordersToShow = result.slice(startIndex, endIndex);
+        ordersToShow.forEach(order => {
+            let customer = customerData.find(cus => order.customer_id === cus.id);
         list.innerHTML += `
             <div class = "order-item">
                 <div class = "order-header">

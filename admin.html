@@ -792,25 +792,86 @@
                         </div>
                     </div>
                 </div>
-                <!-- THANH NHÀN - Quản lý tồn kho -->
-                <div id="inventory-content" class="section-content" style="display: none;">
+            </div>
+            <!-- THANH NHÀN - Quản lý tồn kho -->
+            <div id="inventory-content" class="section-content" style="display: none;">
+                <div class="page-title">
                     <h2>Quản lý tồn kho</h2>
-
-                    <div class="inventory-search">
-                        <input type="text" id="inventory-name" placeholder="Nhập tên sản phẩm...">
-                        <select id="inventory-type">
-                            <option value="">-- Chọn loại --</option>
-                            <option value="Iphone">Iphone</option>
-                            <option value="Xiaomi">Xiaomi</option>
-                            <option value="Samsung">Samsung</option>
-                        </select>
-                        <button id="btn-search-inventory">Tra cứu</button>
-                    </div>
-
-                    <div id="inventory-list" class="inventory-list"></div>
+                    <p>Tra cứu và theo dõi tình trạng nhập xuất tồn kho</p>
                 </div>
-                <!-- HUYỀN TRANG - Quản lý nhập hàng -->
-                <div id="import-content" class="section-content" style="display: none;">
+
+                <div class="inventory-search-panel">
+                    <div class="search-row">
+                        <div class="search-group">
+                            <label>Sản phẩm:</label>
+                            <select id="inventory-product" class="search-element-inventory">
+                                <option value="">-- Chọn sản phẩm --</option>
+                            </select>
+                        </div>
+                        <div class="search-group">
+                            <label>Loại sản phẩm:</label>
+                            <select id="inventory-type" class="search-element-inventory">
+                                <option value="">-- Tất cả loại --</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="search-row">
+                        <div class="search-group">
+                            <label>Từ ngày:</label>
+                            <input type="date" id="inventory-start-date" class="search-element-inventory">
+                        </div>
+                        <div class="search-group">
+                            <label>Đến ngày:</label>
+                            <input type="date" id="inventory-end-date" class="search-element-inventory">
+                        </div>
+                        <button id="btn-search-inventory" class="search-button">
+                            Tra cứu
+                        </button>
+                    </div>
+                </div>
+
+                <div class="inventory-summary">
+                    <div class="summary-card">
+                        <h3>Tổng tồn kho</h3>
+                        <p class="summary-value" id="total-inventory">0</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Tổng giá trị tồn</h3>
+                        <p class="summary-value" id="total-value">0 ₫</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Sản phẩm gần hết</h3>
+                        <p class="summary-value" id="low-stock">0</p>
+                    </div>
+                </div>
+
+                <div class="inventory-result">
+                    <h3>Bảng nhập xuất tồn</h3>
+                    <div class="inventory-table-wrapper">
+                        <table class="inventory-table">
+                            <thead>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th>Loại</th>
+                                    <th>Tồn đầu kỳ</th>
+                                    <th>Nhập trong kỳ</th>
+                                    <th>Xuất trong kỳ</th>
+                                    <th>Tồn cuối kỳ</th>
+                                    <th>Đơn giá</th>
+                                    <th>Giá trị tồn</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventory-list">
+                                <!-- Dữ liệu sẽ được thêm bằng JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- HUYỀN TRANG - Quản lý nhập hàng -->
+            <div id="import-content" class="section-content" style="display: none;">
 
                 </div>
                 <!-- OTHER SECTIONS (Placeholder) -->
@@ -891,12 +952,6 @@
     <script src="./assets/js/vietnam-address.js"></script>
     <script src="./assets/js/productlayout.js"></script>
     <script src=".\assets\js\customer.js"></script>
-    <script src=".\assets\js\order-modify-orderstatus.js"></script>
-    <script src=".\assets\js\order-local-storage.js"></script>
-    <script src=".\assets\js\order-search.js"></script>
-    <script src=".\assets\js\order-detail.js"></script>
-    <script src=".\assets\js\order-page-control.js"></script>
-    <script src=".\assets\js\inventory.js"></script>
     <script src="./assets/js/Trang-importGoods.js"></script>
     <script src=".\assets\js\nt_nhan-order-modify-orderstatus.js"></script>
     <script src=".\assets\js\nt_nhan-order-local-storage.js"></script>
