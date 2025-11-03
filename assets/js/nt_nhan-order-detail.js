@@ -1,4 +1,4 @@
-let allProductsDetail = JSON.parse(localStorage.getItem('phonestore_products'));
+let allProducts = JSON.parse(localStorage.getItem('product'));
 
 function renderOrderDetail(order) {
     let detailOrderId = document.getElementById('detail-order-id');
@@ -18,20 +18,20 @@ function renderOrderDetail(order) {
 
     detailProductList.innerHTML = ``;
     for (let [idProduct, quantity] of order.product_list) {
-        let idx = allProductsDetail.findIndex(product => product.id == idProduct);
+        let idx = allProducts.findIndex(product => product.id == idProduct);
         console.log(idx);
         detailProductList.innerHTML += `
             <li class = "detail-product-item">
                 <div class = "detail-product-img-wrapper"> 
-                    <img src="${allProductsDetail[idx].hinhanh}" alt="${allProductsDetail[idx].tensanpham}" align = "center">
+                    <img src="${allProducts[idx].hinhanh}" alt="${allProducts[idx].tensanpham}" align = "center">
                 </div>
                 <div class = "detail-product-info">
-                    <p class = "detail-type-product">${allProductsDetail[idx].danhmuc}</p>
-                    <p class = "detail-product-name">${allProductsDetail[idx].tensanpham}</p> 
+                    <p class = "detail-type-product">${allProducts[idx].danhmuc}</p>
+                    <p class = "detail-product-name">${allProducts[idx].tensanpham}</p> 
                     <p class = "detail-product-quantity">x${quantity}</p> 
                 </div>
                 <div class = "detail-product-price">
-                    ${allProductsDetail[idx].gia}đ
+                    ${allProducts[idx].gia}đ
                 </div>
             </li>
         `;
@@ -39,33 +39,12 @@ function renderOrderDetail(order) {
 }
 
 function showOrderDetail(order) {
-    renderOrderDetail(order);
-    const detailWrapper = document.getElementsByClassName("detail-order-wrapper")[0];
-    detailWrapper.classList.remove("hidden");
-    // Thêm style để modal phủ toàn màn hình
-    detailWrapper.style.position = 'fixed';
-    detailWrapper.style.top = '0';
-    detailWrapper.style.left = '0';
-    detailWrapper.style.width = '100%';
-    detailWrapper.style.height = '100vh';
-    detailWrapper.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    detailWrapper.style.zIndex = '9999';
-    detailWrapper.style.display = 'flex';
-    detailWrapper.style.justifyContent = 'center';
-    detailWrapper.style.alignItems = 'flex-start';
-    detailWrapper.style.overflowY = 'auto';
-    detailWrapper.style.padding = '20px 0';
-    
-    // Khóa scroll của body
-    document.body.style.overflow = 'hidden';
+    renderOrderDetail(order)
+    document.getElementsByClassName("detail-order-wrapper")[0].classList.remove("hidden");
 }
 
 function closeOrderDetail() {
-    const detailWrapper = document.getElementsByClassName("detail-order-wrapper")[0];
-    detailWrapper.classList.add("hidden");
-    console.log(detailWrapper);
-    // Khôi phục scroll của body
-    document.body.style.overflow = '';
+    document.getElementsByClassName("detail-order-wrapper")[0].classList.add("hidden");
 }
 
 function initDetail() {

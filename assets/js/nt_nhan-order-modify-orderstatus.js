@@ -45,9 +45,8 @@ function initDropdown() {
             let index = allOrder.findIndex(o => o.order_id == orderId);
             if (index != -1) {
                 allOrder[index].status = preProcessStatus(select.textContent);
-                localStorage.setItem('phonestore_orders', JSON.stringify(allOrder));
+                localStorage.setItem('allOrders', JSON.stringify(allOrder));
                 console.log(`Đơn ${orderId} đổi trạng thái thành ${select.textContent}`);
-                preProcessing(5, allOrder, customerData, allOrder.length);
             }
         });
     })

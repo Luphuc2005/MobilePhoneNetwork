@@ -59,10 +59,10 @@ const userData = [
 //Khởi tạo local storage
 //Check xem local storage có danh sách khách hàng chưa
 function initStorage() {
-  let localUsers = localStorage.getItem(STORAGE_KEYS.USERS);
+  let localUsers = localStorage.getItem("users");
   // Nếu chưa có hoặc dữ liệu rỗng, khởi tạo dữ liệu mẫu
   if (localUsers == null || localUsers === "[]" || localUsers === "") {
-    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(userData));
+    localStorage.setItem("users", JSON.stringify(userData));
     console.log("✅ Đã khởi tạo dữ liệu mẫu cho khách hàng");
   } else {
     console.log("✅ Đã có dữ liệu khách hàng trong localStorage");
