@@ -87,19 +87,19 @@ function initImportPage() {
   const btnCloseDetail = document.getElementById("btnCloseDetail");
   const searchInput = document.getElementById("searchImport");
 
-  let importList = [
-    {
-      id: 1,
-      date: "2025-10-23",
-      status: "Hoàn thành",
-      details: [
-        { product: "iPhone 16", price: 25000000, qty: 2 },
-        { product: "iPad Pro", price: 18000000, qty: 1 },
-      ],
-    },
-  ];
+  // 🔹 Lấy dữ liệu ban đầu từ localStorage
+  let importList =
+    JSON.parse(localStorage.getItem("phonestore_import_orders")) || [];
 
   let editingId = null;
+
+  // =================== HÀM TIỆN ÍCH ===================
+  function saveToLocal() {
+    localStorage.setItem(
+      "phonestore_import_orders",
+      JSON.stringify(importList)
+    );
+  }
 
   function formatMoney(n) {
     return Number(n).toLocaleString("vi-VN") + "₫";
@@ -130,10 +130,14 @@ function initImportPage() {
           </td>
         </tr>`;
     });
+    // 🔹 Mỗi lần render là lưu lại luôn (an toàn)
+    saveToLocal();
   }
 
+  // Render ban đầu
   renderTable();
 
+  // =================== MODAL ===================
   const openModal = (m) => {
     m.style.display = "flex";
     document.body.style.overflow = "hidden";
@@ -154,6 +158,7 @@ function initImportPage() {
   btnCancel.onclick = () => closeModal(modal);
   btnCloseDetail.onclick = () => closeModal(detailModal);
 
+  // =================== THÊM DÒNG SẢN PHẨM ===================
   btnAddDetail.onclick = () => {
     const row = document.createElement("tr");
     row.innerHTML = `
@@ -166,6 +171,7 @@ function initImportPage() {
     productDetailBody.appendChild(row);
   };
 
+  // =================== TÍNH TỔNG TỰ ĐỘNG ===================
   productDetailBody.addEventListener("input", (e) => {
     const row = e.target.closest("tr");
     if (!row) return;
@@ -174,10 +180,12 @@ function initImportPage() {
     row.querySelector(".prod-total").textContent = formatMoney(price * qty);
   });
 
+  // =================== XOÁ DÒNG SẢN PHẨM ===================
   productDetailBody.addEventListener("click", (e) => {
     if (e.target.classList.contains("btn-del")) e.target.closest("tr").remove();
   });
 
+  // =================== LƯU / CẬP NHẬT PHIẾU NHẬP ===================
   form.onsubmit = (e) => {
     e.preventDefault();
     const date = document.getElementById("importDate").value;
@@ -195,12 +203,14 @@ function initImportPage() {
     }
 
     if (editingId) {
+      // 🔹 Sửa phiếu
       const idx = importList.findIndex((x) => x.id === editingId);
       if (idx > -1) {
         importList[idx].date = date;
         importList[idx].details = details;
       }
     } else {
+      // 🔹 Thêm phiếu mới
       const newId = importList.length
         ? Math.max(...importList.map((x) => x.id)) + 1
         : 1;
@@ -208,14 +218,17 @@ function initImportPage() {
     }
 
     renderTable();
+    saveToLocal(); // ✅ Lưu ngay sau khi thêm/sửa
     closeModal(modal);
   };
 
+  // =================== BẮT SỰ KIỆN NÚT TRONG BẢNG ===================
   tableBody.addEventListener("click", (e) => {
     const id = +e.target.dataset.id;
     const item = importList.find((x) => x.id === id);
     if (!item) return;
 
+    // 🔹 Xem chi tiết
     if (e.target.classList.contains("btn-detail")) {
       detailBody.innerHTML = `
         <p><b>Mã phiếu:</b> #${item.id}</p>
@@ -240,6 +253,7 @@ function initImportPage() {
       openModal(detailModal);
     }
 
+    // 🔹 Sửa phiếu
     if (e.target.classList.contains("btn-edit")) {
       if (item.status === "Hoàn thành")
         return alert("Không thể sửa phiếu đã hoàn thành!");
@@ -260,12 +274,15 @@ function initImportPage() {
       openModal(modal);
     }
 
+    // 🔹 Hoàn thành phiếu
     if (e.target.classList.contains("btn-done")) {
       item.status = "Hoàn thành";
       renderTable();
+      saveToLocal(); // ✅ Lưu sau khi đổi trạng thái
     }
   });
 
+  // =================== TÌM KIẾM ===================
   searchInput.addEventListener("input", (e) => {
     const q = e.target.value.toLowerCase().trim();
     if (!q) return renderTable();
@@ -278,4 +295,3 @@ function initImportPage() {
     renderTable(filtered);
   });
 }
-

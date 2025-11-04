@@ -189,7 +189,7 @@ function openEditForm(p, onSaved) {
   form.querySelector(".form-title").textContent = "✏️ Sửa sản phẩm";
   form.querySelector(".editName").value = p.tensanpham;
   form.querySelector(".editCategory").value = p.danhmuc;
-  form.querySelector(".editPrice").value = p.gia;
+  form.querySelector(".editPrice").value = p.giavon;
   form.querySelector(".editQuantity").value = p.soluong;
   form.querySelector(".editDescription").value = p.description || "";
 
@@ -218,13 +218,13 @@ function openEditForm(p, onSaved) {
         ...products[idx],
         tensanpham: form.querySelector(".editName").value.trim(),
         danhmuc: form.querySelector(".editCategory").value,
-        gia: +form.querySelector(".editPrice").value,
+        giavon: +form.querySelector(".editPrice").value,
         soluong: +form.querySelector(".editQuantity").value,
         description: form.querySelector(".editDescription").value.trim(),
         hinhanh: document.querySelector("#editImagePreview")?.src || p.hinhanh, // ✅ giữ ảnh cũ nếu chưa chọn mới
       };
 
-      localStorage.setItem("product", JSON.stringify(products));
+      localStorage.setItem("phonestore_products", JSON.stringify(products));
 
       alert("✅ Cập nhật thành công!");
       form.style.display = "none";
@@ -253,7 +253,7 @@ function openAddForm(onSaved) {
       id: products.length ? Math.max(...products.map((x) => x.id)) + 1 : 1,
       tensanpham: form.querySelector(".editName").value.trim(),
       danhmuc: form.querySelector(".editCategory").value,
-      gia: +form.querySelector(".editPrice").value,
+      giavon: +form.querySelector(".editPrice").value,
       soluong: +form.querySelector(".editQuantity").value,
       description: form.querySelector(".editDescription").value.trim(),
       hinhanh:
