@@ -1,19 +1,17 @@
-body{
-    display: flex;
+#loginPage{
+    display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: blue;
-    min-height: 100vh;
     margin: 0;
-    font-family: 'Times New Roman', Times, serif; 
     padding: 40px;
 }
 #login-card{
     width: 100%;
-    max-width:500px;
+    max-width:550px;
     background-color: white;
-    padding: 40px;
+    padding: 20px;
     border-radius : 24px;
     box-sizing: border-box;
 }
@@ -37,28 +35,28 @@ body{
     margin-bottom: 40px;
 }
 .logo-header{
-    width: 100px;
-    height: 100px;
+    width: 80px;
+    height: 80px;
     /* Dùng Object để hình ko bị méo  */
     object-fit: cover;
     border-radius: 50%;
-    border: 5px solid black;
+    border: 3px solid black;
     padding: 5px;
 }
-.form-group{
+.form-group-login{
     margin-bottom: 20px;
 }
 /* Sử dụng block thây inline vì xuống dòng */
-.form-group label{
+.form-group-login label{
     display: block;
     font-size: 18px;
-    font-weight:360;
+    font-weight:400;
     color: black;
     margin: 5px;
 }
 .input-field{
     width: 100%;
-    padding: 12px 16px 12px 40px;
+    padding: 16px 20px 16px 50px;
     border-radius: 12px;
     border:2px solid black;
     transition: border-color 0.3s ease-in-out , box-shadow 0,15s ease-in-out;
@@ -133,4 +131,25 @@ body{
     height: 30px;
     margin-right: 8px;
     flex-shrink: 0;
+}
+ #message {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    display: none;
+    animation: slideDown 0.3s ease-out;
+}
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+#adminPage{
+    display: none;
 }
