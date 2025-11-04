@@ -12,10 +12,11 @@ let allProducts = [
     description: "Trả góp 0% - 0đ phụ thu - 0đ trả trước - kỳ hạn đến 12 tháng",
     trangthai: true,
     soluong: "40",
-    hinhanh: "./assets/images/products/ip15prm",
+    hinhanh: "./assets/images/products/i15pr.png",
+
   },
   {
-    id: 2,
+    id: 2, 
     tensanpham: "Iphone 14 Pro",
     danhmuc: "Iphone",
     giavon: 22000000,
