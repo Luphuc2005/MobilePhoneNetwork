@@ -1,5 +1,5 @@
 //Điều hướng về index.html nếu chưa đăng nhập
-let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
+let currentUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER)) || null;
 if (currentUser == null)
 {
     location.href = "index.html";
@@ -34,6 +34,8 @@ const currentPassword = document.getElementById("current-password");
 const newPassword = document.getElementById("new-password");
 const confirmNewPassword = document.getElementById("confirm-new-password");
 const resetPasswordButton = document.getElementById("reset-password-button");
+const showPassword = document.querySelectorAll(".showPassword");
+
 
 insertUserInfo();
 changePassword.onclick = function (event) {
@@ -44,6 +46,33 @@ updateInfo.onclick = function (event) {
     formBackground[0].style.display="block";
 }
 
+showPassword[0].onclick = function (event) {
+    if (password.type == "password")
+        password.type = "text";
+    else
+        password.type = "password";
+}
+
+showPassword[1].onclick = function (event) {
+    if (currentPassword.type == "password")
+        currentPassword.type = "text";
+    else
+        currentPassword.type = "password";
+}
+
+showPassword[2].onclick = function (event) {
+    if (newPassword.type == "password")
+        newPassword.type = "text";
+    else
+        newPassword.type = "password";
+}
+
+showPassword[3].onclick = function (event) {
+    if (confirmNewPassword.type == "password")
+        confirmNewPassword.type = "text";
+    else
+        confirmNewPassword.type = "password";
+}
 
 closeButton.forEach((button) => 
 { 
@@ -94,7 +123,7 @@ newAddress.oninput = function (event) {
 }
 
 logout.onclick = function (event) {
-    localStorage.removeItem("currentUser");
+    localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
     location.href = "index.html";
 }
 
@@ -115,15 +144,27 @@ confirmNewPassword.onchange = function (event) {
 }
 
 currentPassword.oninput = function (event) {
-    currentPassword.setCustomValidity("");    
+    currentPassword.setCustomValidity("");
+    if (currentPassword.value != "")
+        showPassword[1].style.visibility="visible";
+    else
+        showPassword[1].style.visibility="hidden";
 }
 
 newPassword.oninput = function (event) {
     newPassword.setCustomValidity("");    
+    if (newPassword.value != "")
+        showPassword[2].style.visibility="visible";
+    else
+        showPassword[2].style.visibility="hidden";
 }
 
 confirmNewPassword.oninput = function (event) {
     confirmNewPassword.setCustomValidity("");    
+    if (confirmNewPassword.value != "")
+        showPassword[3].style.visibility="visible";
+    else
+        showPassword[3].style.visibility="hidden";
 }
 
 updateForm.onsubmit = function (e) {
@@ -189,16 +230,18 @@ passwordResetForm.onsubmit = function (e)
         passwordResetForm.reportValidity();
     else
     {
-        let userList = JSON.parse(localStorage.getItem("users"))
+        let userList = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS))
         let findUser = userList.find((user) => user.id == currentUser.id);
         let userIndex = userList.indexOf(findUser);
         currentUser.password=confirmNewPassword.value;
         userList[userIndex].password=confirmNewPassword.value;
-        localStorage.setItem("currentUser", JSON.stringify(currentUser));
-        localStorage.setItem("users", JSON.stringify(userList));
+        localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+        localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(userList));
         formBackground[1].style.display="none";
         alert("Thay đổi mật khẩu thành công");
         passwordResetForm.reset();
+        resetPasswordButton.disabled=true;
+        insertUserInfo();
     }
 }
 
@@ -208,6 +251,7 @@ function insertUserInfo()
     sidebarHeader.textContent = currentUser.name;
     hoTen.textContent = currentUser.name;
     email.textContent = currentUser.email;
+    password.value = currentUser.password;
     if (currentUser.phone != "") {
         sdt.textContent = currentUser.phone;
         sdt.style.color="black";
@@ -255,13 +299,13 @@ function updateUser(newName, newPhone, newEmail, newAddress)
     let currentUserString = JSON.stringify(currentUser);
     if (newUserString != currentUserString)
     {
-        let userList = JSON.parse(localStorage.getItem("users"));
+        let userList = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS));
         let findUser = userList.find((user) => user.id == currentUser.id)
         let userIndex = userList.indexOf(findUser);
         userList[userIndex] = newUser;
         currentUser = newUser;
-        localStorage.setItem("currentUser", JSON.stringify(newUser));
-        localStorage.setItem("users", JSON.stringify(userList));
+        localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(newUser));
+        localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(userList));
         insertUserInfo();
         insertFormInfo();
     }

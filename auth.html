@@ -6,6 +6,7 @@
         <title>Thông tin cá nhân</title>
         <link rel="stylesheet" href="./assets/css/duyddawng-components.css">
         <link rel="stylesheet" href="./assets/css/tuankhoi-user.css">
+        <link rel="stylesheet" href="./assets/css/nt_nhan-order-history.css">
     </head>
     <body>
       <header class="main-header" style="position: relative;">
@@ -98,9 +99,9 @@
                 <tr>
                   <th>Mật khẩu:</th>
                   <td colspan="2" id="passwordCell">
-                    <div style="display: flex; height: 100%;">
+                    <div style="display: flex; height: 100%; position: relative">
                       <input type="password" id="userPassword" value="placeholder" disabled>
-                      <input type="checkbox" class="showPassword">
+                      <input type="checkbox" class="showPassword" style="visibility: visible; height: 100%; transform: translateY(-50%);">
                     </div>
                   </td> 
                   <td id="changePasswordCell"> 
@@ -108,6 +109,37 @@
                     </td>
                 </tr>
               </table>
+            </div>
+            <div id="user-order">
+              <h2>Lịch sử đơn hàng</h2>
+              <table id="order-table">
+                <thead>
+                  <tr>
+                    <th>Mã đơn</th>
+                    <th>Ngày đặt</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Chi tiết</th>
+                  </tr>
+                </thead>
+                <tbody id="order-list">
+                  <!-- JS sẽ render dữ liệu ở đây -->
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-background" id="order-detail-modal" style="display:none;">
+              <div class="order-detail">
+                <button id="close-order-detail">x</button>
+                <h3>Chi tiết đơn hàng</h3>
+                <div class="order-detail-header">
+                  <h4>Mã đơn hàng: <span class="order_id"></span></h4>
+                  <h4>Trạng thái: <span class="order_detail_status"></span></h4>
+                </div>
+                <div id="order-detail-content"></div>
+                <div class="order-detail-footet">
+                  <h4>Thành tiền: <span class="order_total"></span></h4>
+                </div>
+              </div>
             </div>
           </div>
           <div class="modal-background">
@@ -270,7 +302,9 @@
         </div>
       </div>
     </div>
-    <script src="./assets/js/tuankhoi-auth.js"></script>
   </footer>
+      <script src="./assets/js/storage-config.js"></script>
+      <script src="./assets/js/tuankhoi-auth.js"></script>
+      <script src="./assets/js/nt_nhan-order-history.js"></script>
     </body>
 </html> 
