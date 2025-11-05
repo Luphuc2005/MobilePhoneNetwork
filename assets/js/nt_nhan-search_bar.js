@@ -275,7 +275,7 @@ window.addEventListener('storage', function(e) {
 
 function checkForUpdates() {
     const currentTypes = JSON.parse(localStorage.getItem('phonestore_categories') || '[]');
-    const currentInventory = JSON.parse(localStorage.getItem('product') || '[]');
+    const currentInventory = JSON.parse(localStorage.getItem('phonestore_products') || '[]');
 
     if (JSON.stringify(currentTypes) !== JSON.stringify(typeProduct)) {
         typeProduct = currentTypes;
