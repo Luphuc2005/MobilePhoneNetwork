@@ -44,7 +44,7 @@ function storeCustomerInLocalStorage() {
 }
 
 // Lấy customer trong local storage
-function getAllCustomer() {
+export function getAllCustomer() {
     return JSON.parse(localStorage.getItem('phonestore_users'));
 }
 

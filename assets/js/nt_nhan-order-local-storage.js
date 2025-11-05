@@ -1,3 +1,5 @@
+import { getAllCustomer } from './customer.js';
+
 let allOrders = [
     {
         order_id: "DH000001",
@@ -298,7 +300,11 @@ function addOrder(date, address, customer_id, amount, purchase, product_list) {
     }
     allOrder.push(newOrder);
     localStorage.setItem('phonestore_orders', JSON.stringify(allOrder));
-    preProcessing(5, allOrder, customerData, allOrder.length);
+    
+    // preProcessing chỉ có ở trang admin, kiểm tra trước khi gọi
+    if (typeof preProcessing === 'function') {
+        preProcessing(5, allOrder, customerData, allOrder.length);
+    }
 }
 
 // addOrder("20/10/2025 16:35", "Quận 6", 5, 17990000, "Ví điện tử", [[5, 1], [14, 1]]);
@@ -308,9 +314,16 @@ function cancelOrder(order_id) {
     if (index != -1) {
         allOrders[index].status = 'cancel';
         localStorage.setItem('phonestore_orders', JSON.stringify(allOrder));
-        preProcessing(5, allOrder, customerData, allOrder.length);
+        
+        // preProcessing chỉ có ở trang admin, kiểm tra trước khi gọi
+        if (typeof preProcessing === 'function') {
+            preProcessing(5, allOrder, customerData, allOrder.length);
+        }
     }
 }
+
+// Export các function cần thiết
+export { addOrder, cancelOrder, getAllOrders, storeOrderInLocalStorage };
 
 function initAddress() {
     const dictrictSearch = document.getElementById('dictrict-select');
