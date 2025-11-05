@@ -1,10 +1,12 @@
 let allProducts = JSON.parse(localStorage.getItem('phonestore_products')) || [];
 let filteredProducts = [...allProducts];
-
 let currentPageSearchProduct = 1;
-const itemsPerPage = 6;
+const paginationContainer = document.querySelector('.search-product-pagination');
+const itemsPerPage = 6; 
 
 function filterProducts(filters) {
+    console.log(allProducts);
+    console.log(filters);
     filteredProducts = allProducts.filter(product => {
         // Lọc theo hãng
         if (filters.manufacturers.length > 0 && 
@@ -41,7 +43,7 @@ function filterProducts(filters) {
 
         return true;
     });
-
+    console.log(filteredProducts);
     currentPageSearchProduct = 1;
     renderFilteredProducts();
 }
@@ -61,7 +63,7 @@ function renderFilteredProducts() {
                 Không tìm thấy sản phẩm nào phù hợp với bộ lọc
             </div>
         `;
-        renderPagination(totalPages);
+        paginationContainer.innerHTML = ``;
         return;
     }
 
@@ -98,8 +100,11 @@ function renderFilteredProducts() {
     productContainer.innerHTML = `
         ${productsHTML}
     `;
-
-        renderPagination(totalPages);
+    if (filteredProducts.length > itemsPerPage) {
+            renderPagination(totalPages);
+    } else {
+        paginationContainer.innerHTML = ``;
+    }
     
     // Sử dụng hàm setup từ listProductIndex.js (đã xử lý cả btn-detail và btn-cart)
     if (typeof setupProductCardEvents === 'function') {
@@ -108,7 +113,6 @@ function renderFilteredProducts() {
 }
 
 function renderPagination(totalPages) {
-    const paginationContainer = document.querySelector('.search-product-pagination');
     if (!paginationContainer) return;
 
     let paginationHTML = '';
