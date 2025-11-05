@@ -10,11 +10,13 @@ window.updateCartCount = function() {
             const cart = JSON.parse(localStorage.getItem('cart') || '[]');
             const totalQuantity = cart.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
             cartCount.textContent = totalQuantity;
+            console.log('✅ Cart count updated:', totalQuantity);
         }
     } catch (error) {
         console.error('Error updating cart count:', error);
     }
 };
+
 
 // --- Hàm Global để xử lý logout ---
 // Gọi từ các file khác khi user đăng xuất
@@ -37,7 +39,7 @@ window.handleCartLogout = function() {
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- Các hàm hỗ trợ ---
-    function checkLoginStatus() {
+    window.checkLoginStatus = function() {
         const userKey = window.STORAGE_KEYS ? window.STORAGE_KEYS.CURRENT_USER : 'phonestore_currentUser';
         const user = JSON.parse(localStorage.getItem(userKey)) || null;
         console.log('🔍 Kiểm tra login status:', user ? `User ID: ${user.id}` : 'Chưa đăng nhập');
