@@ -30,7 +30,7 @@ function checkAdmin(){
 function showAdmin(){
     loginPage.style.display = "none";
     adminPage.style.display = 'block';
-    console.log('Đăng nhập Admin ');
+
     message.style.display = 'none'
     const name = sessionStorage.getItem('nameAdmin') || localStorage.getItem('nameAdmin') ||'admin';
     //tên sau khi đăng nhập
@@ -41,7 +41,6 @@ function showAdmin(){
 function showLogin(){
     loginPage.style.display = "flex";
     adminPage.style.display = 'none';
-    console.log('Trang login');
 
 }
 function showMess(text,type){
@@ -76,12 +75,11 @@ loginForm.addEventListener('submit',e =>{
     const account = ADMIN_ACCOUT.find(e =>
         e.username === username && e.password === password  
     );
-    console.log('acc :',!!account);
+
     if(account){
         sessionStorage.setItem('isLogin','true');
         sessionStorage.setItem('nameAdmin',account.name);
         if(check){
-            console.log('Ghi nhớ đăng nhập')
             localStorage.setItem('remember-me','true');
             localStorage.setItem('nameAdmin',account.name);
         }
@@ -100,7 +98,6 @@ loginForm.addEventListener('submit',e =>{
 });
 logoutButton.addEventListener('click',()=>{
     if(confirm('Bạn chắc chắn muốn đăng xuất !!!')){
-        console.log('Logout thành công');
         //xóa tất cả 
         sessionStorage.clear();
         //xóa từ cái
