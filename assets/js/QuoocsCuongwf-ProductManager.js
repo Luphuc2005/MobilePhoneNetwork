@@ -240,25 +240,25 @@
                                     </div>
                                     <div class="quocscuong-pm-form-group">
                                         <label>Số lượng <span style="color:red">*</span></label>
-                                        <input type="number" id="quocscuong-soluong" min="0" required>
+                                        <input type="text" id="quocscuong-soluong" min="0" required>
                                     </div>
                                 </div>
 
                                 <div class="quocscuong-pm-form-row">
                                     <div class="quocscuong-pm-form-group">
                                         <label>Giá vốn (VNĐ) <span style="color:red">*</span></label>
-                                        <input type="number" id="quocscuong-giavon" min="0" required>
+                                        <input type="text" id="quocscuong-giavon" min="0" required>
                                     </div>
                                     <div class="quocscuong-pm-form-group">
                                         <label>Giá bán (VNĐ) <span style="color:red">*</span></label>
-                                        <input type="number" id="quocscuong-gia" min="0" required>
+                                        <input type="text" id="quocscuong-gia" min="0" required>
                                     </div>
                                 </div>
 
                                 <div class="quocscuong-pm-form-row">
                                     <div class="quocscuong-pm-form-group">
                                         <label>Giá cũ (VNĐ)</label>
-                                        <input type="number" id="quocscuong-oldprice" min="0">
+                                        <input type="text" id="quocscuong-oldprice" min="0">
                                     </div>
                                     <div class="quocscuong-pm-form-group">
                                         <label>Lượt đánh giá</label>
@@ -277,9 +277,9 @@
                                 </div>
 
                                 <div class="quocscuong-pm-form-group">
-                                    <label>Hình ảnh sản phẩm (đường dẫn) <span style="color:red">*</span></label>
-                                    <textarea id="quocscuong-hinhanh-paths" rows="4" placeholder="Nhập đường dẫn ảnh, mỗi dòng 1 đường dẫn&#10;Ví dụ:&#10;assets/images/products/iphone15/anh1.jpg&#10;assets/images/products/iphone15/anh2.jpg&#10;assets/images/products/iphone15/anh3.jpg" required style="font-family: monospace; font-size: 13px;"></textarea>
-                                    <small style="color: #666;">💡 Nhập mỗi dòng 1 đường dẫn ảnh. Ảnh đầu tiên sẽ là ảnh chính.</small>
+                                    <label>Hình ảnh sản phẩm <span style="color:red">*</span></label>
+                                    <input type="file" id="quocscuong-hinhanh-files" accept="image/*" multiple>
+                                    <small style="color: #666; display: block; margin-top: 6px;"> (ảnh đầu tiên sẽ là ảnh chính).</small>
                                     <div id="quocscuong-image-preview" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 10px;">
                                         <!-- Image previews will be here -->
                                     </div>
@@ -357,12 +357,8 @@
                 }
             });
 
-            // Textarea input for image paths
+            // Input events (search)
             document.addEventListener('input', (e) => {
-                if (e.target.id === 'quocscuong-hinhanh-paths') {
-                    this.handleImagePathsInput();
-                }
-                
                 // Search
                 if (e.target.id === 'quocscuong-search') {
                     this.searchText = e.target.value;
@@ -371,7 +367,7 @@
                 }
             });
 
-            // Filters
+            // Filters and file input
             document.addEventListener('change', (e) => {
                 if (e.target.id === 'quocscuong-filter-category') {
                     this.filterCategory = e.target.value;
@@ -383,7 +379,37 @@
                     this.currentPage = 1;
                     this.renderTableData();
                 }
+
+                // File input for images
+                if (e.target.id === 'quocscuong-hinhanh-files') {
+                    const files = e.target.files;
+                    if (files && files.length > 0) {
+                        this.handleFileInput(files);
+                    }
+                }
             });
+
+            // Numeric input validation (attach once)
+            try {
+                const numericIds = ['quocscuong-soluong','quocscuong-giavon','quocscuong-gia','quocscuong-oldprice'];
+                numericIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    console.log(el);
+                    if (!el) return;
+                   el.addEventListener('input', (e) => {
+                       const value = e.target.value;
+                       if (value < 0) {
+                           alert('Giá trị không được âm');
+                           e.target.value = '';
+                       } else if (isNaN(value)) {
+                           alert('Giá trị không được nhập chữ');
+                           e.target.value = '';
+                       }
+                   });
+               });
+            } catch (e) {
+                console.warn('Validation listeners could not be attached', e);
+            }
         }
 
         // Attach table events
@@ -409,7 +435,6 @@
         openModal(product = null) {
             const modal = document.getElementById('quocscuong-modal');
             const title = document.getElementById('quocscuong-modal-title');
-            
             if (product) {
                 title.textContent = 'Sửa Sản Phẩm';
                 this.fillForm(product);
@@ -420,7 +445,7 @@
                 this.editingId = null;
             }
             
-            modal.classList.add('show');
+          modal.classList.add('show');
         }
 
         // Close modal
@@ -431,20 +456,51 @@
             this.uploadedImages = [];
         }
 
-        // Handle image paths input
-        handleImagePathsInput() {
-            const textarea = document.getElementById('quocscuong-hinhanh-paths');
-            if (!textarea) return;
+        // Read a File object as DataURL (base64)
+        readFileAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = (err) => reject(err);
+                reader.readAsDataURL(file);
+            });
+        }
 
-            // Lấy từng dòng và loại bỏ dòng trống
-            const paths = textarea.value
-                .split('\n')
-                .map(path => path.trim())
-                .filter(path => path.length > 0);
+        // Handle file input (multiple files) and convert to Base64
+        async handleFileInput(fileList) {
+            const files = Array.from(fileList);
 
-            this.uploadedImages = paths;
-            this.renderImagePreviews();
-            this.updateHiddenInput();
+            // Safety: prevent very large total uploads that can overflow localStorage
+            const MAX_TOTAL_BYTES = 4 * 1024 * 1024; // 4 MB total (approx, base64 will be larger)
+
+            // Estimate existing images bytes (approx) from stored base64 strings
+            const existingBytes = this.uploadedImages.reduce((sum, dataUrl) => {
+                try {
+                    const base64 = (dataUrl || '').split(',')[1] || '';
+                    return sum + Math.ceil((base64.length * 3) / 4);
+                } catch (e) {
+                    return sum;
+                }
+            }, 0);
+
+            const newFilesBytes = files.reduce((s, f) => s + (f.size || 0), 0);
+            if (existingBytes + newFilesBytes > MAX_TOTAL_BYTES) {
+                alert('Tổng kích thước ảnh (bao gồm ảnh đã chọn trước đó) quá lớn. Vui lòng chọn ít ảnh hơn hoặc giảm dung lượng ảnh.');
+                return;
+            }
+
+            try {
+                const readPromises = files.map(f => this.readFileAsDataURL(f));
+                const results = await Promise.all(readPromises);
+
+                // Append results to existing uploadedImages so user can choose multiple times
+                this.uploadedImages = this.uploadedImages.concat(results);
+                this.renderImagePreviews();
+                this.updateHiddenInput();
+            } catch (err) {
+                console.error('Error reading files', err);
+                alert('Không thể đọc file ảnh. Vui lòng thử lại.');
+            }
         }
 
         // Render image previews
@@ -475,13 +531,11 @@
         // Remove image
         removeImage(index) {
             this.uploadedImages.splice(index, 1);
-            
-            // Cập nhật textarea
-            const textarea = document.getElementById('quocscuong-hinhanh-paths');
-            if (textarea) {
-                textarea.value = this.uploadedImages.join('\n');
-            }
-            
+            // Không thể chỉnh file input programmatically để xóa 1 file cụ thể,
+            // nên chỉ cập nhật mảng base64 và hidden input
+            const fileInput = document.getElementById('quocscuong-hinhanh-files');
+            if (fileInput) fileInput.value = ''; // reset selection
+
             this.renderImagePreviews();
             this.updateHiddenInput();
         }
@@ -509,18 +563,17 @@
             document.getElementById('quocscuong-description').value = product.description || '';
             document.getElementById('quocscuong-trangthai').checked = product.trangthai;
             
-            // Load hình ảnh
+            // Load hình ảnh (product.images có thể là mảng đường dẫn hoặc base64)
             this.uploadedImages = Array.isArray(product.images) ? product.images : (product.images ? [product.images] : []);
-            
-            // Hiển thị đường dẫn trong textarea
-            const textarea = document.getElementById('quocscuong-hinhanh-paths');
-            if (textarea) {
-                textarea.value = this.uploadedImages.join('\n');
-            }
-            
+
+            // Lưu vào hidden input và hiển thị preview (không thể set value cho file input khi edit)
             if (this.uploadedImages.length > 0) {
                 this.renderImagePreviews();
                 this.updateHiddenInput();
+            } else {
+                // Clear file input if exists
+                const fileInput = document.getElementById('quocscuong-hinhanh-files');
+                if (fileInput) fileInput.value = '';
             }
         }
 
@@ -529,13 +582,14 @@
             document.getElementById('quocscuong-product-form').reset();
             this.editingId = null;
             this.uploadedImages = [];
-            
-            // Xóa textarea đường dẫn ảnh
-            const textarea = document.getElementById('quocscuong-hinhanh-paths');
-            if (textarea) {
-                textarea.value = '';
-            }
-            
+            // Xóa file input nếu có
+            const fileInput = document.getElementById('quocscuong-hinhanh-files');
+            if (fileInput) fileInput.value = '';
+
+            // Xóa hidden input
+            const hidden = document.getElementById('quocscuong-hinhanh');
+            if (hidden) hidden.value = '';
+
             this.renderImagePreviews();
         }
 
@@ -632,6 +686,8 @@
         formatPrice(price) {
             return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
         }
+
+
     }
 
     // Biến global để lưu instance
