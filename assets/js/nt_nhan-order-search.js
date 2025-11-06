@@ -54,10 +54,3 @@ document.getElementById('search-orders-form').addEventListener("submit", functio
     
     renderPageOrder();
 });
-
-window.changePageOrder = function(page) {
-    if (page < 1 || page > Math.ceil(filteredOrder.length / numberOrderPerPage)) return;
-    currentPageOrder = page;
-    renderPageOrder();
-    document.querySelector('.order-search-bar')?.scrollIntoView({ behavior: 'smooth' });
-};
