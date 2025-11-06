@@ -149,7 +149,7 @@ function renderPagination(totalPages) {
     }
 
     paginationHTML += `
-        <button class="page-item" 
+        <button class="search-product-nav-btn" 
                 onclick="changePage(${currentPageSearchProduct + 1})"
                 ${currentPageSearchProduct >= totalPages ? 'disabled' : ''}>
             Sau ›
