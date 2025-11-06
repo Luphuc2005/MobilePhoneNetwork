@@ -1,5 +1,3 @@
-import { getAllCustomer } from './customer.js';
-
 let allOrders = [
     {
         order_id: "DH000001",
@@ -269,7 +267,7 @@ function getAllOrders() {
 }
 
 let allOrder = getAllOrders();
-let customerData = getAllCustomer();
+let customerData = JSON.parse(localStorage.getItem('phonestore_users'));
 let lastId = 25;
 
 //---------------Main---------------------//
@@ -323,7 +321,7 @@ function cancelOrder(order_id) {
 }
 
 // Export các function cần thiết
-export { addOrder, cancelOrder, getAllOrders, storeOrderInLocalStorage };
+// export { addOrder, cancelOrder, getAllOrders, storeOrderInLocalStorage };
 
 function initAddress() {
     const dictrictSearch = document.getElementById('dictrict-select');

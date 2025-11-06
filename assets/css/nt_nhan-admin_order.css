@@ -224,14 +224,14 @@ body {
 
 .content-footer .page-number {
     box-sizing: border-box;
-    width: 50%;
+    width: 40%;
     display: flex;
     align-items: center;
     padding: 20px;
 }
 
 .content-footer .page-controler {
-    width: 50%;
+    width: 60%;
     display: flex;
     justify-content: flex-end;
 }

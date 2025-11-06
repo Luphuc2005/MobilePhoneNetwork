@@ -149,7 +149,7 @@ function renderPagination(totalPages) {
     }
 
     paginationHTML += `
-        <button class="search-product-nav-btn" 
+        <button class="page-item" 
                 onclick="changePage(${currentPageSearchProduct + 1})"
                 ${currentPageSearchProduct >= totalPages ? 'disabled' : ''}>
             Sau ›
@@ -160,10 +160,10 @@ function renderPagination(totalPages) {
 }
 
 window.changePage = function(page) {
-    if (page < 1 || page > Math.ceil(filteredProducts.length / itemsPerPage)) return;
-    currentPageSearchProduct = page;
+    if (page < 1 || page > Math.ceil(filteredProducts.length / numberOrderPerPage)) return;
+    currentPageOrder = page;
     renderFilteredProducts();
-    document.querySelector('.search-product-content')?.scrollIntoView({ behavior: 'smooth' });
+    document.querySelector('.order-list')?.scrollIntoView({ behavior: 'smooth' });
 };
 
 function formatPrice(price) {
