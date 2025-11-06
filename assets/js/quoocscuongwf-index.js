@@ -278,6 +278,8 @@ function setupProductCardEvents() {
                 categoryCard.style.display="none";
                 let searchProductWrapper = document.getElementsByClassName("search-product-wrapper")[0];
                 searchProductWrapper.style.display="none";
+                let sliderContainer = document.getElementsByClassName("hero-section")[0];
+                sliderContainer.style.display="none";
                 let productContainer = document.getElementsByClassName('product-container')[0];
                 productContainer.style.display="block";
                 renderProductDetailPage(productDetail);
