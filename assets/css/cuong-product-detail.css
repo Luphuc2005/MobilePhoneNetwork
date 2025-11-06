@@ -5,7 +5,7 @@
 /* --- CONTAINER CHÍNH (THẺ TRẮNG) --- */
 .product-container {
     display: none;
-    max-width: 1200px;
+    max-width: 100%;
     margin: 0 auto;
     padding: 24px;
     background-color: #ffffff;
@@ -296,6 +296,14 @@
 }
 .tab-link.active {
     border-bottom-color: #0071e3;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
 }
 
 .tab-content h2 {

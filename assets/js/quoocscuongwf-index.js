@@ -2,8 +2,8 @@
 let products = JSON.parse(localStorage.getItem('phonestore_products')) || [];
 
 // ====== CHỌN PHẦN TỬ DOM ======
-const layoutProduct = document.querySelector(".products-flex");
-const pagination = document.querySelector(".pagination");
+const layoutProduct = document.querySelector(".products-section .products-flex");
+const pagination = document.querySelector(".products-section .pagination"); // Chỉ lấy pagination trong products-section
 
 // ====== CẤU HÌNH ======
 const productsPerPage = 8;
@@ -26,7 +26,7 @@ window.reloadProductsFromStorage = function() {
 
 // ====== HÀM RENDER SẢN PHẨM ======
 function renderProducts(page = 1) {
-  if (!layoutProduct) return; // Không làm gì nếu không có DOM element
+  if (!layoutProduct) return;
   
   layoutProduct.innerHTML = "";
 
@@ -77,7 +77,7 @@ function renderProducts(page = 1) {
 
 // ====== HÀM RENDER PHÂN TRANG ======
 function renderPagination() {
-  if (!pagination) return; // Không làm gì nếu không có DOM element
+  if (!pagination) return;
   
   const totalPages = Math.ceil(products.length / productsPerPage);
   pagination.innerHTML = "";
@@ -86,7 +86,7 @@ function renderPagination() {
   const prevButton = document.createElement("button");
   prevButton.textContent = "Trước";
   prevButton.disabled = currentPage === 1;
-  prevButton.onclick = () => changePage(currentPage - 1);
+  prevButton.onclick = () => changeProductPage(currentPage - 1);
   pagination.appendChild(prevButton);
 
   // Các nút số trang
@@ -94,7 +94,7 @@ function renderPagination() {
     const pageButton = document.createElement("button");
     pageButton.textContent = i;
     if (i === currentPage) pageButton.classList.add("active");
-    pageButton.onclick = () => changePage(i);
+    pageButton.onclick = () => changeProductPage(i);
     pagination.appendChild(pageButton);
   }
 
@@ -102,12 +102,12 @@ function renderPagination() {
   const nextButton = document.createElement("button");
   nextButton.textContent = "Sau";
   nextButton.disabled = currentPage === totalPages;
-  nextButton.onclick = () => changePage(currentPage + 1);
+  nextButton.onclick = () => changeProductPage(currentPage + 1);
   pagination.appendChild(nextButton);
 }
 
 // ====== HÀM ĐỔI TRANG ======
-function changePage(page) {
+function changeProductPage(page) {
   currentPage = page;
   renderProducts(currentPage);
   renderPagination();
@@ -116,6 +116,19 @@ function changePage(page) {
 
 // ====== ĐỒNG BỘ DỮ LIỆU TỰ ĐỘNG ======
 // Lắng nghe sự thay đổi localStorage từ các tab khác (admin)
+window.addEventListener("storage", (e) => {
+    if (e.key === "cart" && e.newValue) {
+        updateCartCount();
+    }
+});
+
+window.addEventListener("storage", (e) => {
+    if (e.key === "phonestore_currentUser" && e.newValue) {
+        checkLoginStatus();
+    }
+});
+
+
 window.addEventListener("storage", (e) => {
   // Lắng nghe thay đổi dữ liệu sản phẩm
   if (e.key === "phonestore_products" && e.newValue) {
@@ -127,6 +140,7 @@ window.addEventListener("storage", (e) => {
 
     // Render lại sản phẩm với trang hiện tại
     renderProducts(currentPage);
+
     renderPagination();
 
     // Hiển thị thông báo nhỏ cho user
@@ -134,7 +148,7 @@ window.addEventListener("storage", (e) => {
   }
 
   // Lắng nghe trigger cập nhật giá cụ thể
-  if (e.key === "priceUpdateTrigger" && e.newValue) {
+  if (e.key === "priceUpdateTrigger" && e.newValue ) {
     const updateInfo = JSON.parse(e.newValue);
     console.log("📢 Nhận được thông báo cập nhật giá:", updateInfo.productName);
 
@@ -242,14 +256,16 @@ function setupProductCardEvents() {
                 
                 // 2. Thu thập dữ liệu từ card
                 let productDetail = {
-                    img: productDetailString.hinhanh,
+                    img: productDetailString.images,
+                    hinhanh: productDetailString.hinhanh,
                     name: productDetailString.tensanpham,
                     price: productDetailString.gia.toLocaleString("vi-VN", { style: "currency", currency: "VND" }),
                     rating: productDetailString.rating || "4.5",
                     reviews: productDetailString.reviews || "72",
                     priceOld: (productDetailString.oldPrice || productDetailString.gia * 1.1).toLocaleString("vi-VN", { style: "currency", currency: "VND" }),
                     color: productDetailString.color || ["Titan Đen"],  // Giữ nguyên array
-                    memory: productDetailString.memory || ["256GB"]     // Giữ nguyên array
+                    memory: productDetailString.memory || ["256GB"], // Giữ nguyên array
+                    description: productDetailString.description || "",
                 };
                 
                 console.log('📦 Product Detail được tạo:', productDetail);
@@ -262,10 +278,13 @@ function setupProductCardEvents() {
                 categoryCard.style.display="none";
                 let searchProductWrapper = document.getElementsByClassName("search-product-wrapper")[0];
                 searchProductWrapper.style.display="none";
+                let sliderContainer = document.getElementsByClassName("hero-section")[0];
+                sliderContainer.style.display="none";
                 let productContainer = document.getElementsByClassName('product-container')[0];
                 productContainer.style.display="block";
                 renderProductDetailPage(productDetail);
                 setupThumbnailGallery();
+                setupTabSwitching();
                 setupAddToCartButton();
                 setupColorMemoryTracking(); // Thêm tracking cho màu và bộ nhớ
                 setupContinueShoppingButton();
@@ -372,9 +391,12 @@ function setupProductCardEvents() {
 }
 
 // ====== CHẠY LẦN ĐẦU ======
-renderProducts();
-renderPagination();
-setupProductCardEvents(); // Gắn event cho trang 1
+// Chỉ render nếu đang ở trang index (có các phần tử DOM cần thiết)
+if (layoutProduct && pagination) {
+    renderProducts(currentPage);
+    renderPagination();
+    setupProductCardEvents(); // Gắn event cho trang 1
+}
 
 function renderProductDetailPage(detail) {
     let productContainer = document.querySelector('.product-container');
@@ -391,7 +413,14 @@ function renderProductDetailPage(detail) {
                 `;
             });
         }
-        
+        let listImg=`<div class="thumbnail-list">
+                    ${detail.img.map((img, index) => `
+                        <div class="thumbnail ${index === 0 ? 'active' : ''}">
+                            <img src="${img}" alt="thumbnail ${index + 1}">
+                        </div>
+                    `).join('')}
+                </div>`;
+
         // Render các option màu sắc
         let colorOptions = '';
         if (detail.color && Array.isArray(detail.color)) {
@@ -409,15 +438,9 @@ function renderProductDetailPage(detail) {
             
             <div class="product-gallery">
                 <div class="main-image">
-                    <img src="${detail.img}" alt="${detail.name}">
+                    <img src="${detail.hinhanh}" alt="${detail.name}">
                 </div>
-                <div class="thumbnail-list">
-                    <div class="thumbnail active"><img src="${detail.img}" alt="thumbnail 1"></div>
-                    <div class="thumbnail"><img src="${detail.img}" alt="thumbnail 2"></div>
-                    <div class="thumbnail"><img src="${detail.img}" alt="thumbnail 3"></div>
-                    <div class="thumbnail"><img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-17-pro-max-1_1.jpg" alt="thumbnail 4"></div>
-                    <div class="thumbnail"><img src="https://cdn2.cellphones.com.vn/insecure/rs:fill:358:358/q:90/plain/https://cellphones.com.vn/media/catalog/product/i/p/iphone-17-pro-max-1_1.jpg" alt="thumbnail 5"></div>
-                </div>
+                ${listImg}
             </div>
             
             <div class="product-details">
@@ -480,12 +503,12 @@ function renderProductDetailPage(detail) {
 
         <div class="product-info-section">
             <div class="tabs">
-                <div class="tab-link active">Mô tả chi tiết</div>
-                <div class="tab-link">Thông số kỹ thuật</div>
-                <div class="tab-link">Đánh giá (234)</div>
+                <div class="tab-link" data-tab="specs">Thông số kỹ thuật</div>
+                <div class="tab-link active" data-tab="description">Mô tả chi tiết</div>
+                <div class="tab-link" data-tab="reviews">Đánh giá (234)</div>
             </div>
             
-            <div class="tab-content">
+            <div class="tab-content" id="tab-specs">
                 <h2>Thông số kỹ thuật</h2>
                 <div class="specs-grid">
                     <div class="spec-item">
@@ -512,7 +535,7 @@ function renderProductDetailPage(detail) {
                         <span class="spec-label">Bộ nhớ</span>
                         <span class="spec-value">256GB</span>
                     </div>
-                     <div class="spec-item">
+                    <div class="spec-item">
                         <span class="spec-label">Pin</span>
                         <span class="spec-value">4422 mAh</span>
                     </div>
@@ -521,11 +544,19 @@ function renderProductDetailPage(detail) {
                         <span class="spec-value">iOS 17</span>
                     </div>
                 </div>
-
+            </div>
+            
+            <div class="tab-content active" id="tab-description">
                 <h2>Mô tả sản phẩm</h2>
                 <div class="description">
-                    <p>iPhone 15 Pro Max là chiếc smartphone cao cấp nhất trong dòng iPhone 15 series, mang đến hiệu năng đột phá với chip A17 Pro, camera 48MP chuyên nghiệp và thiết kế titan sang trọng.</p>
-                    <p>Với màn hình Super Retina XDR 6.7 inch, viên pin lớn 4422 mAh và hệ điều hành iOS 17, iPhone 15 Pro Max là lựa chọn hoàn hảo cho những ai đang tìm kiếm một chiếc điện thoại flagship đỉnh cao.</p>
+                    <p>${detail.description}</p>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="tab-reviews">
+                <h2>Đánh giá sản phẩm</h2>
+                <div class="reviews-section">
+                    <p>Tính năng đánh giá sẽ được cập nhật sớm...</p>
                 </div>
             </div>
         </div>
@@ -576,6 +607,42 @@ function setupThumbnailGallery() {
 
             // 3e. Cập nhật đường dẫn cho ảnh chính
             mainImage.src = newImageSrc;
+        });
+    });
+}
+
+/**
+ * Hàm khởi tạo logic chuyển tab
+ * Phải được gọi SAU KHI renderProductDetailPage()
+ */
+function setupTabSwitching() {
+    const tabLinks = document.querySelectorAll('.tab-link');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    if (tabLinks.length === 0 || tabContents.length === 0) {
+        console.warn("Không tìm thấy tab links hoặc tab contents để thiết lập chuyển tab.");
+        return;
+    }
+    
+    tabLinks.forEach(tabLink => {
+        tabLink.addEventListener('click', function() {
+            // Lấy giá trị data-tab từ tab được click
+            const targetTab = this.getAttribute('data-tab');
+            
+            // Xóa class 'active' khỏi tất cả tab links
+            tabLinks.forEach(link => link.classList.remove('active'));
+            
+            // Thêm class 'active' cho tab link được click
+            this.classList.add('active');
+            
+            // Xóa class 'active' khỏi tất cả tab contents
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Thêm class 'active' cho tab content tương ứng
+            const activeContent = document.getElementById(`tab-${targetTab}`);
+            if (activeContent) {
+                activeContent.classList.add('active');
+            }
         });
     });
 }
@@ -762,10 +829,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // 4. SAU KHI HTML ĐÃ CÓ, gọi hàm thiết lập gallery
         setupThumbnailGallery();
         
-        // 5. Gọi hàm thiết lập nút "Thêm vào giỏ"
+        // 5. Gọi hàm thiết lập chuyển tab
+        setupTabSwitching();
+        
+        // 6. Gọi hàm thiết lập nút "Thêm vào giỏ"
         setupAddToCartButton();
         
-        // 6. Theo dõi thay đổi màu sắc và bộ nhớ
+        // 7. Theo dõi thay đổi màu sắc và bộ nhớ
         setupColorMemoryTracking();
         
         // (Tùy chọn) Xóa dữ liệu sau khi dùng xong để tránh lỗi

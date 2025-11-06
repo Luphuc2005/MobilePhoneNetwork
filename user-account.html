@@ -8,6 +8,7 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="assets/css/cuong-user-account.css">
     <link rel="stylesheet" href="assets/css/tuankhoi-user.css">
+    <link rel="stylesheet" href="assets/css/duyddawng-components.css">
     <link rel="stylesheet" href="assets/css/QuoocsCuongwf-order-success.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
@@ -23,11 +24,50 @@
 </head>
 
 <body class="user-account-page">
-    <h1>Shopping Cart</h1>
+    <header class="main-header">
+    <!-- Phần top của Header -->
+    <div class="header-top">
+      <!-- Logo -->
+      <div class="logo">
+        <a href="index.html">📱PhoneStore</a>
+      </div>
+      <!-- Thanh tìm kiếm (Thanh Nhàn) -->
+      <div class="search-bar">
+        <input type="text" placeholder="Tìm kiếm sản phẩm...">
+        <button class="search-bar-btn">Tìm kiếm</button>
+      </div>
+      <!-- Menu điều hướng chính -->
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html#home">Trang chủ</a></li>
+          <li><a href="index.html#products">Danh mục </a></li>
+          <li><a href="index.html#promotions">Khuyến mãi</a></li>
+          <li><a href="index.html#">Tin Tức</a></li>
+        </ul>
+      </nav>
+      <!-- Hành động người dùng -->
+      <div class="user-actions">
+        <!-- Giỏ Hàng (Quốc Cường)-->
+        <!-- Trỏ đến user-account.html và dùng hash #cart để sử dụng router -->
+        <a href="user-account.html#cart" class="cart-icon">
+          <div class="cart-icon-wrapper">
+            <img src="./assets/images/icons/icon-cart.png" alt="icon cart" class="logo">
+            <span class="cart-count">0</span>
+          </div>
+        </a>
+      </div>
+      <!-- Tài khoản (Tuấn Khôi) -->
+      <div class="user-acount-area">
+        <a class="acount-icon">
+          <img src="./assets/images/icons/logo-account.png" alt="logo account" class="logo">
+          <span>Tài khoản</span>
+        </a>
+      </div>
+    </div>
+  </header>
     <hr style="border: none; width: 100%; height: 3px; background-color: #06B6D4;">
-    <div class="header">
+    <div class="header" style="padding-left: 10%;">
         <h2>Giỏ hàng của bạn</h2>
-        <p>Bạn có 1 sản phẩm trong giỏ hàng</p>
     </div>
     <div class="content">
         <div class="cart-container">
@@ -348,7 +388,7 @@
                 <button class="btn-print" onclick="printOrder()">
                     <i class="fa-solid fa-print"></i> In đơn hàng
                 </button>
-                <button class="btn-primary" onclick="location.href='index.html'">
+                <button class="btn-primary" onclick="continueShopping()">
                     <i class="fa-solid fa-cart-shopping"></i> Tiếp tục mua hàng
                 </button>
                 <button class="btn-secondary" onclick="closeOrderModal()">
@@ -364,7 +404,90 @@
             </div>
         </div>
     </div>
+<footer>
+    <div class="footer-content">
 
+      <div class="footer-section">
+        <h3>🏪Về PhoneStore</h3>
+        <p>PhoneStore là cửa hàng bán điện thoại uy tín hàng đầu, cung cấp các sản phẩm chính hãng với giá cạnh tranh
+          nhất trên thị trường.</p>
+        <p style="margin-top: 15px; color: #888; font-size: 13px;">Chúng tôi cam kết mang lại những trải nghiệm mua sắm
+          tuyệt vời cho khách hàng.</p>
+        <div class="social-links">
+          <a href="#" title="Facebook">f</a>
+          <a href="#" title="Twitter">𝕏</a>
+          <a href="#" title="Instagram">📷</a>
+          <a href="#" title="YouTube">▶</a>
+        </div>
+      </div>
+      <!-- link truy cập nhanh  -->
+      <div class="footer-section">
+        <h3>🔗 Liên Kết Nhanh</h3>
+        <ul>
+          <li><a href="index.html">Trang chủ</a></li>
+          <li><a href="index.html#products">Sản phẩm</a></li>
+          <li><a href="#search">Tìm kiếm</a></li>
+          <li><a href="user-account.html#cart">Giỏ hàng</a></li>
+          <li><a href="auth.html">Tài khoản</a></li>
+          <li><a href="#news">Tin tức</a></li>
+        </ul>
+      </div>
+      <!-- dịch vụ khách hàng  -->
+      <div class="footer-section">
+        <h3>Hổ Trợ Khách Hàng</h3>
+        <ul>
+          <li><a href="#">Chính sách bảo hành</a></li>
+          <li><a href="#">Hướng dẫn mua hàng</a></li>
+          <li><a href="#">Chính sách đổi trả</a></li>
+          <li><a href="#">Chính sách vận chuyển</a></li>
+          <li><a href="#">Chính sách bảo mật</a></li>
+          <li><a href="#">Điều khoản sử dụng</a></li>
+        </ul>
+      </div>
+      <!-- thông tin liên lạc  -->
+      <div class="footer-section">
+        <h3>📞 Liên Hệ</h3>
+        <div class="contact-info">
+          <span class="contact-info-icon">📍</span>
+          <span>273 An Dương Vương, Phường Chợ Quán, TP. HCM</span>
+        </div>
+        <div class="contact-info">
+          <span class="contact-info-icon">☎️</span>
+          <span><a href="tel:0123456789">0123 456 789</a></span>
+        </div>
+        <div class="contact-info">
+          <span class="contact-info-icon">✉️</span>
+          <span><a href="mailto:support@phonestore.com">support@phonestore.com</a></span>
+        </div>
+        <div class="contact-info">
+          <span class="contact-info-icon">🕐</span>
+          <span>Thứ 2 - Chủ Nhật: 09:00 - 21:00</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Buttom  -->
+    <div class="footer-bottom">
+      <div class="footer-bottom-content">
+        <div class="footer-bottom-left">
+          <p>&copy;2025 <strong>PhoneStore</strong>Bản quyền được bảo vệ</p>
+        </div>
+        <div class="footer-bottom-center">
+          <p>Phương thức thanh toán được chấp nhận</p>
+          <div class="payment-methods">
+            <span class="payment-icon" title="Visa">💳</span>
+            <span class="payment-icon" title="Mastercard">💳</span>
+            <span class="payment-icon" title="Tiền mặt (COD)">💵</span>
+            <span class="payment-icon" title="PayPal">🏦</span>
+            <span class="payment-icon" title="Chuyển khoản">🏧</span>
+          </div>
+        </div>
+        <div class="footer-bottom-right">
+          <p>Thiết kế & Phát triển bởi <strong>PhoneStore</strong> Team</p>
+        </div>
+      </div>
+    </div>
+  </footer>
 </body>
 
 </html>

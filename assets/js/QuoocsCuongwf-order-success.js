@@ -174,6 +174,12 @@ function closeOrderModal() {
     }
 }
 
+function continueShopping() {
+    console.log('🛒 Tiếp tục mua hàng được nhấn');
+    closeOrderModal();
+    window.location.href = 'index.html'; // Chuyển hướng về trang chủ hoặc trang sản phẩm
+}
+
 // Hàm in đơn hàng
 function printOrder() {
     // Lưu trạng thái scroll hiện tại
