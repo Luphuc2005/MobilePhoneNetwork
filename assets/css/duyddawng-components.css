@@ -66,7 +66,9 @@
 .fa-check:before {
     content: "✔️";
 }
-
+.fa-save::before{
+    content: "💾";
+}
 html, body {
     height: 100%;
 }
@@ -1164,102 +1166,35 @@ body {
 
 /* Header */
 .table-header-cate {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr 2fr 2fr 3fr;
+    grid-auto-flow: column;
     background: #f8f9fa;
     color: #555;
     padding: 16px 20px;
     font-weight: 600;
     font-size: 14px;
     border-bottom: 1px solid #eee;
-    align-items: center;
 }
 
 /* Rows */
-.table-row-cate {
-   display: flex;
-    flex-direction: row;
-    align-self: center;
+.table-row-cate
+ {
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr 2fr 2fr 3fr;
+    grid-template-rows: 40px;
+    align-items: center;
     padding: 16px 20px;
     border-bottom: 1px solid #f0f0f0;
-    align-items: center;
     transition: all 0.3s ease;
     font-size: 14px;
     color: #333;
-    gap: 0;
 }
 
 .table-row-cate:hover {
     background-color: #f8f9fa;
 }
 
-/* Base style cho tất cả các cột */
-.table-header-cate > div, 
-.table-row-cate > div {
-    flex-shrink: 0;
-    flex-grow: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    gap: 0;
-}
-/* Id */
-.table-header-cate > div:nth-child(1),
-.table-row-cate > div:nth-child(1) {
-    flex-basis: 60px;
-    min-width: 60px;
-    max-width: 60px;
-    text-align: center;
-}
-
-/* Icon */
-.table-header-cate > div:nth-child(2),
-.table-row-cate > div:nth-child(2) {
-    flex-basis: 80px;
-    min-width: 120px;
-    max-width: 120px;
-    text-align: center;
-    object-fit: contain;
-}
-
-/* Tên loại  */
-.table-header-cate > div:nth-child(3),
-.table-row-cate > div:nth-child(3) {
-    flex: 1 1 auto;
-    min-width: 100px;
-    text-align: left;
-    padding-left: 10px;
-    font-weight: 600;
-}
-
-/* Số sản phẩm  */
-.table-header-cate > div:nth-child(4),
-.table-row-cate > div:nth-child(4) {
-    flex-basis: 150px;
-    min-width: 150px;
-    max-width: 200px;
-    text-align: center;
-}
-
-/* Trạng thái */
-.table-header-cate > div:nth-child(5),
-.table-row-cate > div:nth-child(5) {
-    flex-basis: 140px;
-    min-width: 140px;
-    max-width: 140px;
-    text-align: center;
-}
-
-/* Hành động  */
-.table-header-cate > div:nth-child(6),
-.table-row-cate > div:nth-child(6) {
-    flex: 1 1 120px;
-    justify-content: space-around;
-    text-align: center;
-    min-width: 240px;
-    max-width: 240px;
-    text-align: right;
-}
 /* Pagination */
 .pagination-controls {
     display: flex;
@@ -1278,9 +1213,6 @@ body {
 /* Icon */
 .category-icon {
     font-size: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .category-icon img {
@@ -1305,7 +1237,7 @@ body {
     font-weight: 600;
     white-space: nowrap;
     min-width: 90px;
-    text-align: center;
+
 }
 
 .status-active {
@@ -1320,10 +1252,9 @@ body {
 
 /* Action Buttons */
 .action-buttons {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(3,60px);
+    gap: 36px;
 }
 
 .btn-action {
@@ -1400,26 +1331,7 @@ body {
 
 /* Responsive */
 @media (max-width: 1200px) {
-    .table-header-cate > div:nth-child(1),
-    .table-row-cate > div:nth-child(1) {
-        flex-basis: 50px;
-        min-width: 50px;
-        max-width: 50px;
-    }
     
-    .table-header-cate > div:nth-child(4),
-    .table-row-cate > div:nth-child(4) {
-        flex-basis: 130px;
-        min-width: 130px;
-        max-width: 130px;
-    }
-    
-    .table-header-cate > div:nth-child(5),
-    .table-row-cate > div:nth-child(5) {
-        flex-basis: 120px;
-        min-width: 120px;
-        max-width: 120px;
-    }
     
 }
 
@@ -1829,29 +1741,6 @@ body {
     }
     .table-header-cate {
         display: none;
-    }
-    
-    .table-row-cate {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-        padding: 15px;
-    }
-    
-    .table-row-cate > div {
-        flex-basis: auto !important;
-        min-width: 100% !important;
-        max-width: 100% !important;
-        text-align: left !important;
-    }
-    
-    .table-row-cate > div::before {
-        content: attr(data-label) ": ";
-        font-weight: 600;
-        color: #666;
-        margin-right: 8px;
-        display: inline-block;
-        min-width: 100px;
     }
     
     .action-buttons {
