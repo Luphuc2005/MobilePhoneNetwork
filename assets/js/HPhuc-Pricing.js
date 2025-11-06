@@ -9,27 +9,10 @@ let productProfits =
 
 // ====== HELPER: LƯU PRODUCTS ======
 function saveProductsToStorage() {
+  // 1. Lưu vào localStorage
   localStorage.setItem("phonestore_products", JSON.stringify(products));
 
-  // Trigger storage event để đồng bộ với các tab khác (index page)
-  // Lưu ý: storage event chỉ trigger trong tab khác, không trigger trong tab hiện tại
-  // Nên cần trigger custom event cho cùng tab
-  window.dispatchEvent(
-    new CustomEvent("phonestore-sync", {
-      detail: {
-        key: "phonestore_products",
-        action: "products_updated",
-        timestamp: Date.now(),
-      },
-    })
-  );
-
-  // Tạo một dummy set để trigger storage event trong cùng tab (workaround)
-  const dummyKey = "phonestore_products_update_trigger";
-  localStorage.setItem(dummyKey, Date.now().toString());
-  setTimeout(() => {
-    localStorage.removeItem(dummyKey);
-  }, 100);
+  localStorage.setItem("phonestore_last_update", Date.now().toString());
 }
 
 // ====== CALCULATE PROFIT (LỢI NHUẬN) ======
@@ -347,13 +330,8 @@ function createProductCard(product) {
   const card = document.createElement("div");
   card.className = "product-card-pricing";
 
-  // Tính % giảm giá
-  let discount = product.discount || 0;
-  if (product.oldPrice > 0 && product.gia > 0) {
-    discount = Math.round(
-      ((product.oldPrice - product.gia) / product.oldPrice) * 100
-    );
-  }
+  // Tính % giảm giá (lấy từ property discount đã được set trước đó)
+  let discount = Math.abs(product.discount || 0); // Đảm bảo luôn là số dương để hiển thị
 
   // Tính lợi nhuận
   const profitInfo = calculateProfit(product);
@@ -2513,41 +2491,38 @@ function setupReportEventListeners() {
   }
 }
 
-// ====== ĐỒNG BỘ ĐA TAB ======
+// ====== ĐỒNG BỘ ĐA TAB (ĐƠN GIẢN) ======
 function setupPricingSync() {
   console.log("[Pricing] Khởi động Pricing Sync...");
 
   // Lắng nghe thay đổi từ tab khác (storage event)
   window.addEventListener("storage", (e) => {
-    // Reload profit data khi có thay đổi từ tab khác
-    if (
-      e.key === "phonestore_category_profit" ||
-      e.key === "phonestore_products_profit"
-    ) {
-      console.log("[Pricing] Phát hiện thay đổi từ tab khác!");
+    // Chỉ xử lý khi có cập nhật từ tab khác
+    if (e.key === "phonestore_last_update") {
+      console.log("🔄 Tab khác vừa cập nhật giá");
 
-      // Reload data từ storage
+      // Reload dữ liệu từ localStorage
+      products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
       categoryProfits =
         JSON.parse(localStorage.getItem("phonestore_category_profit")) || {};
       productProfits =
         JSON.parse(localStorage.getItem("phonestore_products_profit")) || {};
 
-      // Reload table để hiển thị
-      loadProfitTable();
+      // Reload UI nếu đang ở tab đó
+      const activeTabId = document.querySelector(".tab-content.active")?.id;
+      if (activeTabId === "adjusted-tab") {
+        loadAdjustedProducts();
+      } else if (activeTabId === "report-tab") {
+        loadProfitReport();
+      } else if (activeTabId === "profit-tab") {
+        loadProfitTable();
+      }
 
       showNotification(
-        "🔄 Đã cập nhật",
-        "Dữ liệu lợi nhuận đã được cập nhật từ tab khác",
+        "🔄 Đã đồng bộ",
+        "Dữ liệu đã được cập nhật từ tab khác",
         "info"
       );
-    }
-
-    // Reload products khi có thay đổi
-    if (e.key === "phonestore_products") {
-      console.log("[Pricing] Phát hiện thay đổi sản phẩm từ tab khác!");
-      products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
-      loadAdjustedProducts();
-      loadProfitReport();
     }
   });
 
