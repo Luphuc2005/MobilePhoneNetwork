@@ -277,14 +277,9 @@
                                 </div>
 
                                 <div class="quocscuong-pm-form-group">
-                                    <label>Hình ảnh sản phẩm <span style="color:red">*</span></label>
-                                    <div style="margin-bottom: 10px;">
-                                        <button type="button" class="btn btn-secondary" id="quocscuong-btn-upload" style="width: 100%;">
-                                            <i class="fa-solid fa-upload"></i> Chọn hình ảnh từ máy tính
-                                        </button>
-                                        <input type="file" id="quocscuong-file-input" accept="image/*" multiple style="display: none;">
-                                        <small style="color: #666;">Có thể chọn nhiều hình ảnh (Ctrl + Click)</small>
-                                    </div>
+                                    <label>Hình ảnh sản phẩm (đường dẫn) <span style="color:red">*</span></label>
+                                    <textarea id="quocscuong-hinhanh-paths" rows="4" placeholder="Nhập đường dẫn ảnh, mỗi dòng 1 đường dẫn&#10;Ví dụ:&#10;assets/images/products/iphone15/anh1.jpg&#10;assets/images/products/iphone15/anh2.jpg&#10;assets/images/products/iphone15/anh3.jpg" required style="font-family: monospace; font-size: 13px;"></textarea>
+                                    <small style="color: #666;">💡 Nhập mỗi dòng 1 đường dẫn ảnh. Ảnh đầu tiên sẽ là ảnh chính.</small>
                                     <div id="quocscuong-image-preview" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-top: 10px;">
                                         <!-- Image previews will be here -->
                                     </div>
@@ -334,11 +329,6 @@
                     this.openModal();
                 }
                 
-                // Upload button
-                if (e.target.closest('#quocscuong-btn-upload')) {
-                    document.getElementById('quocscuong-file-input').click();
-                }
-                
                 // Remove image
                 if (e.target.closest('.quocscuong-remove-img')) {
                     const index = parseInt(e.target.closest('.quocscuong-remove-img').dataset.index);
@@ -367,15 +357,13 @@
                 }
             });
 
-            // File input change
-            document.addEventListener('change', (e) => {
-                if (e.target.id === 'quocscuong-file-input') {
-                    this.handleFileUpload(e.target.files);
-                }
-            });
-
-            // Search
+            // Textarea input for image paths
             document.addEventListener('input', (e) => {
+                if (e.target.id === 'quocscuong-hinhanh-paths') {
+                    this.handleImagePathsInput();
+                }
+                
+                // Search
                 if (e.target.id === 'quocscuong-search') {
                     this.searchText = e.target.value;
                     this.currentPage = 1;
@@ -443,24 +431,20 @@
             this.uploadedImages = [];
         }
 
-        // Handle file upload
-        handleFileUpload(files) {
-            if (!files || files.length === 0) return;
+        // Handle image paths input
+        handleImagePathsInput() {
+            const textarea = document.getElementById('quocscuong-hinhanh-paths');
+            if (!textarea) return;
 
-            Array.from(files).forEach(file => {
-                if (!file.type.startsWith('image/')) {
-                    alert('Vui lòng chỉ chọn file hình ảnh!');
-                    return;
-                }
+            // Lấy từng dòng và loại bỏ dòng trống
+            const paths = textarea.value
+                .split('\n')
+                .map(path => path.trim())
+                .filter(path => path.length > 0);
 
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    this.uploadedImages.push(e.target.result);
-                    this.renderImagePreviews();
-                    this.updateHiddenInput();
-                };
-                reader.readAsDataURL(file);
-            });
+            this.uploadedImages = paths;
+            this.renderImagePreviews();
+            this.updateHiddenInput();
         }
 
         // Render image previews
@@ -468,9 +452,14 @@
             const container = document.getElementById('quocscuong-image-preview');
             if (!container) return;
 
+            if (this.uploadedImages.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
             container.innerHTML = this.uploadedImages.map((src, index) => `
                 <div style="position: relative; border: 2px solid #ddd; border-radius: 8px; overflow: hidden; aspect-ratio: 1;">
-                    <img src="${src}" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="${src}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2212%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%23999%22%3E❌ Lỗi%3C/text%3E%3C/svg%3E'">
                     <button type="button" class="quocscuong-remove-img" data-index="${index}" 
                             style="position: absolute; top: 5px; right: 5px; width: 25px; height: 25px; 
                                    background: #dc3545; color: white; border: none; border-radius: 50%; 
@@ -486,6 +475,13 @@
         // Remove image
         removeImage(index) {
             this.uploadedImages.splice(index, 1);
+            
+            // Cập nhật textarea
+            const textarea = document.getElementById('quocscuong-hinhanh-paths');
+            if (textarea) {
+                textarea.value = this.uploadedImages.join('\n');
+            }
+            
             this.renderImagePreviews();
             this.updateHiddenInput();
         }
@@ -514,25 +510,12 @@
             document.getElementById('quocscuong-trangthai').checked = product.trangthai;
             
             // Load hình ảnh
-            if (product.images && Array.isArray(product.images) && product.images.length > 0) {
-                // Nếu có mảng images (format mới)
-                this.uploadedImages = [...product.images];
-            } else if (product.hinhanh) {
-                // Backward compatible: nếu chỉ có hinhanh
-                try {
-                    // Nếu hinhanh là JSON array
-                    if (product.hinhanh.startsWith('[')) {
-                        this.uploadedImages = JSON.parse(product.hinhanh);
-                    } else {
-                        // Nếu là string đơn
-                        this.uploadedImages = [product.hinhanh];
-                    }
-                } catch (e) {
-                    // Nếu không parse được, coi như string đơn
-                    this.uploadedImages = [product.hinhanh];
-                }
-            } else {
-                this.uploadedImages = [];
+            this.uploadedImages = Array.isArray(product.images) ? product.images : (product.images ? [product.images] : []);
+            
+            // Hiển thị đường dẫn trong textarea
+            const textarea = document.getElementById('quocscuong-hinhanh-paths');
+            if (textarea) {
+                textarea.value = this.uploadedImages.join('\n');
             }
             
             if (this.uploadedImages.length > 0) {
@@ -546,6 +529,13 @@
             document.getElementById('quocscuong-product-form').reset();
             this.editingId = null;
             this.uploadedImages = [];
+            
+            // Xóa textarea đường dẫn ảnh
+            const textarea = document.getElementById('quocscuong-hinhanh-paths');
+            if (textarea) {
+                textarea.value = '';
+            }
+            
             this.renderImagePreviews();
         }
 
