@@ -14,7 +14,6 @@ const messageBox = document.getElementById('message');
 const rememberAdmin = document.getElementById('remember-me');
 const nameAdminElement = document.getElementById('admin-name');
 const logoutAdmin = document.getElementById('logoutButton');
-
 //Check hiển thị 
 function checkAdmin(){
     const isLogin = sessionStorage.getItem('login');
@@ -77,7 +76,7 @@ loginForm.addEventListener('submit',e =>{
     );
 
     if(account){
-        sessionStorage.setItem('isLogin','true');
+        sessionStorage.setItem('login','true');
         sessionStorage.setItem('nameAdmin',account.name);
         if(check){
             localStorage.setItem('remember-me','true');
