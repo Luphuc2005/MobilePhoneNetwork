@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //========TOAST========
     //container
     const toast = getElementByIdOrWarn('toast');
-    //nội dung 
+    //nội dung
     const toastMessage = getElementByIdOrWarn('toastMessage');
 
     // --- Hàm Toast ---
