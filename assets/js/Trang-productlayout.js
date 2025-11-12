@@ -28,16 +28,25 @@ if (document.readyState === "loading") {
   </table>
   <div id="pagination" style="margin-top:15px; display:flex; gap:5px; justify-content:center;"></div>
 `;
-    const productsContent = document.getElementById("products-content");
-    productsContent.innerHTML = page;
-    initProductPage();
+
+    let a = document.getElementsByClassName("sidebar-menu-item")[2];
+    a.addEventListener("click", () => {
+      // 1. Lấy dữ liệu từ localStorage
+      let productAll = JSON.parse(localStorage.getItem("phonestore_products")) || [];
+
+      console.log(productAll);
+      const productsContent = document.getElementById("products-content");
+      productsContent.innerHTML = page;
+
+      // 3. Khởi tạo trang sản phẩm với dữ liệu hiện có
+      initProductPage(productAll);
+    });
   });
-  initProductPage();
 } else {
 }
-
 // ====================== PRODUCT PAGE ======================
-function initProductPage() {
+function initProductPage(x) {
+  let products = x;
   // Inject HTML vào container nếu chưa có
   const container = document.getElementById("product-management");
   if (container && !document.getElementById("productTable")) {
@@ -51,7 +60,6 @@ function initProductPage() {
   const filterCategory = document.getElementById("filterCategory");
   const ITEMS_PER_PAGE = 5;
   let currentPage = 1;
-  let products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
 
   // Chuẩn hóa số lượng thành số nếu là chuỗi
   products = products.map((p) => ({
