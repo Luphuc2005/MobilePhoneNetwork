@@ -204,7 +204,20 @@ document.querySelector('.apply-filter')?.addEventListener('click', function() {
     document.querySelector('.search-product-content')?.scrollIntoView({ behavior: 'smooth' });
     filterProducts(filters);
 });
+//========Duy Đăng (Quick Acces )==========
 
+document.getElementsByClassName('category-card').addEventListener('click',()=>{
+    const filters = {
+        manufacturers: [],
+        priceRanges: [],
+        storage: [],
+        rating: []
+    };
+
+    const spanText = document.querySelector('category-card span').textContent;
+    filters.manufacturers.push(spanText);
+    console.log(spanText);
+});
 document.querySelector('.search-bar-btn').addEventListener('click', function() {
     const filters = {
         manufacturers: [],
