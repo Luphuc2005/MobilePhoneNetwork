@@ -47,7 +47,7 @@ function resetAutoSlide() {
 }
 
 // THÊM DẤU CHẤM VÀ KIỂM TRA NULL
-const sliderContainer = document.querySelector('.slider-container');
+const sliderContainer = document.getElementById('slider-container');
 
 
 if (sliderContainer) {
