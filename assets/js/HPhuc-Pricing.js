@@ -4,8 +4,18 @@
 let products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
 let categoryProfits =
   JSON.parse(localStorage.getItem("phonestore_category_profit")) || {};
-let productProfits =
-  JSON.parse(localStorage.getItem("phonestore_products_profit")) || {};
+// Load product profits với xử lý lỗi an toàn
+let productProfits = {};
+try {
+  const stored = localStorage.getItem("phonestore_products_profit");
+  if (stored) {
+    productProfits = JSON.parse(stored) || {};
+  }
+} catch (e) {
+  console.warn("⚠️ Lỗi khi load phonestore_products_profit:", e);
+  productProfits = {};
+  localStorage.setItem("phonestore_products_profit", JSON.stringify({}));
+}
 
 // ====== HELPER: LƯU PRODUCTS ======
 function saveProductsToStorage() {
@@ -2441,6 +2451,13 @@ function initializePricing() {
       JSON.stringify(categoryProfits)
     );
     loadProfitTable();
+  }
+
+  // Đảm bảo key phonestore_products_profit luôn tồn tại trong localStorage
+  if (!localStorage.getItem("phonestore_products_profit")) {
+    localStorage.setItem("phonestore_products_profit", JSON.stringify({}));
+    productProfits = {};
+    console.log("📱 Đã khởi tạo phonestore_products_profit trong localStorage");
   }
 
   // Thêm dữ liệu mẫu cho lợi nhuận theo sản phẩm nếu chưa có
