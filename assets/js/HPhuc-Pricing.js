@@ -1458,7 +1458,7 @@ function showConfirmModal(title, message, onConfirm, onCancel) {
       <div style="font-weight: 600; font-size: 18px; margin-bottom: 12px; color: #1f2937;">${title}</div>
       <div style="font-size: 14px; line-height: 1.5; color: #6b7280; margin-bottom: 20px;">${message}</div>
       <div style="display: flex; gap: 12px; justify-content: flex-end;">
-        <button id="cancelBtn" style="
+        <button type="button" id="cancelBtn" style="
           background: #f3f4f6;
           color: #6b7280;
           border: none;
@@ -1466,9 +1466,12 @@ function showConfirmModal(title, message, onConfirm, onCancel) {
           border-radius: 6px;
           cursor: pointer;
           font-size: 14px;
+          font-weight: 600;
           transition: all 0.2s ease;
+          pointer-events: auto;
+          user-select: none;
         ">Hủy</button>
-        <button id="confirmBtn" style="
+        <button type="button" id="confirmBtn" style="
           background: #10b981;
           color: white;
           border: none;
@@ -1476,7 +1479,10 @@ function showConfirmModal(title, message, onConfirm, onCancel) {
           border-radius: 6px;
           cursor: pointer;
           font-size: 14px;
+          font-weight: 600;
           transition: all 0.2s ease;
+          pointer-events: auto;
+          user-select: none;
         ">Xác nhận</button>
       </div>
     </div>
@@ -1484,40 +1490,104 @@ function showConfirmModal(title, message, onConfirm, onCancel) {
 
   document.body.appendChild(modal);
 
-  // Event listeners
-  const cancelBtn = document.getElementById("cancelBtn");
-  const confirmBtn = document.getElementById("confirmBtn");
-
-  cancelBtn.addEventListener("click", () => {
+  // Hàm đóng modal
+  let escapeHandler;
+  const closeModal = () => {
     modal.remove();
-    if (onCancel) onCancel();
-  });
-
-  confirmBtn.addEventListener("click", () => {
-    modal.remove();
-    if (onConfirm) onConfirm();
-  });
-
-  // Hover effects
-  [cancelBtn, confirmBtn].forEach((btn) => {
-    btn.addEventListener(
-      "mouseenter",
-      () => (btn.style.transform = "scale(1.02)")
-    );
-    btn.addEventListener(
-      "mouseleave",
-      () => (btn.style.transform = "scale(1)")
-    );
-  });
-
-  // Escape key to cancel
-  const escapeHandler = (e) => {
-    if (e.key === "Escape") {
-      modal.remove();
+    if (escapeHandler) {
       document.removeEventListener("keydown", escapeHandler);
+    }
+  };
+
+  // Escape key handler
+  escapeHandler = (e) => {
+    if (e.key === "Escape") {
+      closeModal();
       if (onCancel) onCancel();
     }
   };
+
+  // Tìm các button SAU KHI đã append vào DOM
+  const modalContent = modal.querySelector("div");
+  const cancelBtn = modal.querySelector("#cancelBtn");
+  const confirmBtn = modal.querySelector("#confirmBtn");
+
+  // Nút hủy - sử dụng onclick trực tiếp để đảm bảo hoạt động
+  if (cancelBtn) {
+    // Xóa event listener cũ nếu có
+    cancelBtn.onclick = null;
+    
+    // Thêm event listener mới
+    cancelBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeModal();
+      if (onCancel) onCancel();
+    };
+    
+    // Hover effect cho nút hủy
+    cancelBtn.onmouseenter = () => {
+      cancelBtn.style.background = "#e5e7eb";
+      cancelBtn.style.transform = "scale(1.02)";
+      cancelBtn.style.cursor = "pointer";
+    };
+    cancelBtn.onmouseleave = () => {
+      cancelBtn.style.background = "#f3f4f6";
+      cancelBtn.style.transform = "scale(1)";
+    };
+    
+    // Đảm bảo button có cursor pointer
+    cancelBtn.style.cursor = "pointer";
+  } else {
+    console.error("❌ Không tìm thấy nút hủy!");
+  }
+
+  // Nút xác nhận
+  if (confirmBtn) {
+    // Xóa event listener cũ nếu có
+    confirmBtn.onclick = null;
+    
+    // Thêm event listener mới
+    confirmBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      closeModal();
+      if (onConfirm) onConfirm();
+    };
+    
+    // Hover effect cho nút xác nhận
+    confirmBtn.onmouseenter = () => {
+      confirmBtn.style.background = "#059669";
+      confirmBtn.style.transform = "scale(1.02)";
+      confirmBtn.style.cursor = "pointer";
+    };
+    confirmBtn.onmouseleave = () => {
+      confirmBtn.style.background = "#10b981";
+      confirmBtn.style.transform = "scale(1)";
+    };
+    
+    // Đảm bảo button có cursor pointer
+    confirmBtn.style.cursor = "pointer";
+  } else {
+    console.error("❌ Không tìm thấy nút xác nhận!");
+  }
+
+  // Click vào overlay (background) để đóng modal
+  modal.onclick = (e) => {
+    if (e.target === modal) {
+      closeModal();
+      if (onCancel) onCancel();
+    }
+  };
+
+  // Ngăn click vào modal content đóng modal
+  if (modalContent) {
+    modalContent.onclick = (e) => {
+      e.stopPropagation();
+    };
+  }
+
+  // Thêm event listener cho Escape key
   document.addEventListener("keydown", escapeHandler);
 }
 
@@ -2180,14 +2250,14 @@ function searchProductForLookup(searchTerm) {
               <table style="width: 100%; font-size: 13px;">
                 ${product.giavon && product.giavon > 0 ? `
                 <tr>
-                  <td style="padding: 8px 0; color: #64748b; font-weight: 500; width: 40%;">💰 Giá vốn:</td>
+                  <td style="padding: 8px 0; color: #64748b; font-weight: 500; width: 40%;">   Giá vốn:</td>
                   <td style="padding: 8px 0; text-align: right;">
                     <strong style="color: #475569; font-size: 15px;">${formatPrice(product.giavon)}</strong>
                   </td>
                 </tr>
                 ` : `
                 <tr>
-                  <td style="padding: 8px 0; color: #ef4444; font-weight: 500; width: 40%;">💰 Giá vốn:</td>
+                  <td style="padding: 8px 0; color: #ef4444; font-weight: 500; width: 40%;"> Giá vốn:</td>
                   <td style="padding: 8px 0; text-align: right;">
                     <span style="color: #ef4444; font-size: 13px;">Chưa có</span>
                   </td>
@@ -2196,7 +2266,7 @@ function searchProductForLookup(searchTerm) {
                 
                 ${listPrice > sellPrice ? `
                 <tr>
-                  <td style="padding: 8px 0; color: #64748b; font-weight: 500;">🏷️ Giá niêm yết:</td>
+                  <td style="padding: 8px 0; color: #64748b; font-weight: 500;"> Giá niêm yết:</td>
                   <td style="padding: 8px 0; text-align: right;">
                     <span style="text-decoration: line-through; color: #94a3b8; font-size: 14px;">${formatPrice(listPrice)}</span>
                     ${product.giavon && product.giavon > 0 ? `
@@ -2208,7 +2278,7 @@ function searchProductForLookup(searchTerm) {
                 
                 ${discount > 0 ? `
                 <tr>
-                  <td style="padding: 8px 0; color: #64748b; font-weight: 500;">🎁 Khuyến mãi:</td>
+                  <td style="padding: 8px 0; color: #64748b; font-weight: 500;"> Khuyến mãi:</td>
                   <td style="padding: 8px 0; text-align: right;">
                     <strong style="color: #ef4444; font-size: 14px;">-${discount}%</strong>
                   </td>
@@ -2216,7 +2286,7 @@ function searchProductForLookup(searchTerm) {
                 ` : ''}
                 
                 <tr style="border-top: 2px solid #e5e7eb; margin-top: 8px;">
-                  <td style="padding: 10px 0; color: #1e293b; font-weight: 600; font-size: 14px;">💳 Giá bán cuối:</td>
+                  <td style="padding: 10px 0; color: #1e293b; font-weight: 600; font-size: 14px;"> Giá bán cuối:</td>
                   <td style="padding: 10px 0; text-align: right;">
                     <strong style="font-size: 20px; color: #059669; font-weight: 700;">${formatPrice(sellPrice)}</strong>
                   </td>
@@ -2224,7 +2294,7 @@ function searchProductForLookup(searchTerm) {
                 
                 ${profitInfo.hasProfit ? `
                 <tr style="background: ${profitInfo.profitPercent >= 15 ? '#dcfce7' : profitInfo.profitPercent >= 10 ? '#fef3c7' : '#fee2e2'}; margin-top: 8px; border-radius: 6px;">
-                  <td style="padding: 10px; border-radius: 6px; color: #374151; font-weight: 600;">💵 Lợi nhuận thực tế:</td>
+                  <td style="padding: 10px; border-radius: 6px; color: #374151; font-weight: 600;"> Lợi nhuận thực tế:</td>
                   <td style="padding: 10px; text-align: right; border-radius: 6px;">
                     <strong style="color: ${profitInfo.color}; font-size: 16px; font-weight: 700;">
                       ${formatPrice(profitInfo.profit)} (${profitInfo.profitPercentText}%)
@@ -2246,7 +2316,7 @@ function searchProductForLookup(searchTerm) {
             <div style="margin-top: 12px;">
               <button onclick="editProductDiscount(${product.id})" 
                       style="width: 100%; padding: 10px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s;">
-                📊 Xem chi tiết giá
+                Xem chi tiết giá
               </button>
             </div>
           </div>
