@@ -1,13 +1,13 @@
-let allProducts = JSON.parse(localStorage.getItem('phonestore_products')) || [];
-let filteredProducts = [...allProducts];
+let productsSearchBar = JSON.parse(localStorage.getItem('phonestore_products')) || [];
+let filteredProducts = [...productsSearchBar];
 let currentPageSearchProduct = 1;
 const paginationContainer = document.querySelector('.search-product-pagination');
 const itemsPerPage = 6; 
 
 function filterProducts(filters) {
-    console.log(allProducts);
+    console.log(productsSearchBar);
     console.log(filters);
-    filteredProducts = allProducts.filter(product => {
+    filteredProducts = productsSearchBar.filter(product => {
         // Lọc theo hãng
         if (filters.manufacturers.length > 0 && 
             !filters.manufacturers.includes(product.danhmuc)) {
@@ -206,17 +206,23 @@ document.querySelector('.apply-filter')?.addEventListener('click', function() {
 });
 //========Duy Đăng (Quick Acces )==========
 
-document.getElementsByClassName('category-card').addEventListener('click',()=>{
-    const filters = {
-        manufacturers: [],
-        priceRanges: [],
-        storage: [],
-        rating: []
-    };
+document.querySelectorAll('.category-card').forEach(card => {
+    card.addEventListener('click', function() {
+        const filters = {
+            manufacturers: [],
+            priceRanges: [],
+            storage: [],
+            rating: []
+        };
 
-    const spanText = document.querySelector('category-card span').textContent;
-    filters.manufacturers.push(spanText);
-    console.log(spanText);
+        const spanText = this.querySelector('span')?.textContent;
+        if (spanText) {
+            filters.manufacturers.push(spanText);
+            console.log(spanText);
+            document.querySelector('.search-product-content')?.scrollIntoView({ behavior: 'smooth' });
+            filterProducts(filters);
+        }
+    });
 });
 document.querySelector('.search-bar-btn').addEventListener('click', function() {
     const filters = {
@@ -284,7 +290,7 @@ window.addEventListener('storage', function(e) {
         renderTypeProduct();
     }
     if (e.key === 'product') {
-        allProducts = JSON.parse(e.newValue || '[]');
+        productsSearchBar = JSON.parse(e.newValue || '[]');
         searchInventory();
     }
 });
@@ -299,8 +305,8 @@ function checkForUpdates() {
         renderTypeProduct();
     }
 
-    if (JSON.stringify(currentInventory) !== JSON.stringify(allProducts)) {
-        allProducts = currentInventory;
+    if (JSON.stringify(currentInventory) !== JSON.stringify(productsSearchBar)) {
+        productsSearchBar = currentInventory;
         renderFilteredProducts();
     }
 }
