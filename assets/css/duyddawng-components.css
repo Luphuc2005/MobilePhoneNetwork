@@ -812,7 +812,7 @@ body {
     overflow: hidden;
     margin-bottom: 40px;
 }
-.slider-container{
+#slider-container{
     position: relative;
     width: 100%;
     height: 100%;

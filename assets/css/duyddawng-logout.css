@@ -5,7 +5,8 @@
     align-items: center;
     background-color: blue;
     margin: 0;
-    padding: 40px;
+    min-height: 700px;
+    height: 100%;
 }
 #login-card{
     width: 100%;
@@ -20,7 +21,6 @@
     flex-direction: column;
     text-align: center;
     width: 100%;
-    margin-bottom: 10px;
 }
 .title{
     font-size: 36px;
@@ -37,11 +37,8 @@
 .logo-header{
     width: 80px;
     height: 80px;
-    /* Dùng Object để hình ko bị méo  */
     object-fit: cover;
-    border-radius: 50%;
-    border: 3px solid black;
-    padding: 5px;
+    margin-top: 10px;
 }
 .form-group-login{
     margin-bottom: 20px;
@@ -118,9 +115,9 @@
     box-shadow: 0 6px 15px rgba(93, 37, 160, 0.5); 
 }
 .warning-box {
-    margin-top: 35px;
-    padding: 35px 32px;
-    font-size: 18px;
+    margin-top: 25px;
+    padding: 20px 18px;
+    font-size: 14px;
     border-radius: 14px;
     background-color: rgb(245, 205, 205);
     display: flex;

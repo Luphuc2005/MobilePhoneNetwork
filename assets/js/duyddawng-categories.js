@@ -3,9 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!categoryTableBody) {
         return;
     }
-
-    console.log("Khởi tạo module Quản lý Loại Sản Phẩm...");
-
     const STORAGE_KEY = STORAGE_KEYS.CATEGORIES;
         const SOURCE = STORAGE_KEY+'-page';
         // --- Hàm quản lý localStorage ---
@@ -34,13 +31,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const loadedData = loadCategoriesFromStorage();
     // dữ liệu đã tồn tại lấy dữ liệu đó 
     if (loadedData && loadedData.length > 0) {
-        categories = loadedData;
-        console.log('Sử dụng dữ liệu từ localStorage');
+        categories = loadedData;   
     } else {
         //gán dữ liệu mặc định 
         categories = [...defaultCategories];
         saveCategoriestoStorage();
-        console.log('Khởi tạo dữ liệu mặc định');
     }
 
     // các biến quản lý 
@@ -99,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //========TOAST========
     //container
     const toast = getElementByIdOrWarn('toast');
-    //nội dung 
+    //nội dung
     const toastMessage = getElementByIdOrWarn('toastMessage');
 
     // --- Hàm Toast ---
@@ -462,14 +457,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setTimeout(() => {
         renderTable();
-        console.log('Module Categories đã sẵn sàng!');
     }, 100);
 
     // --- Đồng bộ đa tab ---
     window.addEventListener('phonestore-sync', (e) => {
         //nếu trang web vừa mới lưu thì bỏ qua 
         if (e.detail.key === STORAGE_KEY && e.detail.source !== SOURCE) {
-            console.log('Categories cập nhật từ nguồn khác');
             categories = loadCategoriesFromStorage() || categories;
             filteredCategories = [...categories];
             renderTable();
@@ -488,9 +481,7 @@ document.addEventListener("DOMContentLoaded", () => {
             filteredCategories = [...categories];
             saveCategoriestoStorage();
             renderTable();
-            console.log(' Đã reset về dữ liệu mặc định');
         }
     };
 
-    console.log('Debug: Gõ categoriesDebug.getAll() để xem dữ liệu');
 });

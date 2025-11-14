@@ -87,29 +87,23 @@ function initImportPage() {
   const btnCloseDetail = document.getElementById("btnCloseDetail");
   const searchInput = document.getElementById("searchImport");
 
-  // 🔹 Lấy dữ liệu ban đầu từ localStorage
   let importList =
     JSON.parse(localStorage.getItem("phonestore_import_orders")) || [];
-
   let editingId = null;
 
   // =================== HÀM TIỆN ÍCH ===================
-  function saveToLocal() {
+  const saveToLocal = () =>
     localStorage.setItem(
       "phonestore_import_orders",
       JSON.stringify(importList)
     );
-  }
 
-  function formatMoney(n) {
-    return Number(n).toLocaleString("vi-VN") + "₫";
-  }
+  const formatMoney = (n) => Number(n).toLocaleString("vi-VN") + "₫";
 
-  function totalOf(details) {
-    return details.reduce((sum, d) => sum + d.price * d.qty, 0);
-  }
+  const totalOf = (details) =>
+    details.reduce((sum, d) => sum + d.price * d.qty, 0);
 
-  function renderTable(list = importList) {
+  const renderTable = (list = importList) => {
     tableBody.innerHTML = "";
     list.forEach((p) => {
       tableBody.innerHTML += `
@@ -130,11 +124,9 @@ function initImportPage() {
           </td>
         </tr>`;
     });
-    // 🔹 Mỗi lần render là lưu lại luôn (an toàn)
     saveToLocal();
-  }
+  };
 
-  // Render ban đầu
   renderTable();
 
   // =================== MODAL ===================
@@ -160,16 +152,60 @@ function initImportPage() {
 
   // =================== THÊM DÒNG SẢN PHẨM ===================
   btnAddDetail.onclick = () => {
+    const products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
+
+    const options = products
+      .map((p) => `<option value="${p.id}">${p.tensanpham}</option>`)
+      .join("");
+
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td><input type="text" placeholder="Tên sản phẩm" class="prod-name" required></td>
-      <td><input type="number" placeholder="Giá" class="prod-price" required></td>
-      <td><input type="number" placeholder="SL" class="prod-qty" required></td>
+      <td>
+        <select class="prod-select">
+          <option value="">-- Chọn sản phẩm --</option>
+          ${options}
+          <option value="new">➕ Thêm sản phẩm mới</option>
+        </select>
+        <input type="text" class="prod-name" placeholder="Tên sản phẩm mới" style="display:none;">
+      </td>
+      <td><input type="number" class="prod-price" placeholder="Giá nhập" readonly></td>
+      <td><input type="number" class="prod-qty" placeholder="Số lượng"></td>
       <td class="prod-total">0₫</td>
-      <td><button type="button" class="btn-del">🗑️</button></td>
-    `;
+      <td><button type="button" class="btn-del">🗑️</button></td>`;
     productDetailBody.appendChild(row);
   };
+
+  // =================== CHỌN SP CÓ SẴN HOẶC THÊM MỚI ===================
+  productDetailBody.addEventListener("change", (e) => {
+    if (!e.target.classList.contains("prod-select")) return;
+
+    const select = e.target;
+    const row = select.closest("tr");
+    const nameInput = row.querySelector(".prod-name");
+    const priceInput = row.querySelector(".prod-price");
+    const selectedId = select.value;
+
+    const products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
+
+    if (selectedId === "new") {
+      // thêm sản phẩm mới
+      nameInput.style.display = "inline-block";
+      nameInput.value = "";
+      priceInput.value = "";
+      priceInput.removeAttribute("readonly");
+    } else if (selectedId) {
+      const prod = products.find((p) => p.id == selectedId);
+      if (prod) {
+        nameInput.style.display = "none";
+        priceInput.value = prod.giavon || prod.giavon || 0; // lấy giá từ local
+        priceInput.setAttribute("readonly", true);
+      }
+    } else {
+      nameInput.style.display = "none";
+      priceInput.value = "";
+      priceInput.setAttribute("readonly", true);
+    }
+  });
 
   // =================== TÍNH TỔNG TỰ ĐỘNG ===================
   productDetailBody.addEventListener("input", (e) => {
@@ -185,16 +221,27 @@ function initImportPage() {
     if (e.target.classList.contains("btn-del")) e.target.closest("tr").remove();
   });
 
-  // =================== LƯU / CẬP NHẬT PHIẾU NHẬP ===================
+  // =================== LƯU PHIẾU NHẬP ===================
+  // =================== LƯU PHIẾU NHẬP ===================
   form.onsubmit = (e) => {
     e.preventDefault();
+
     const date = document.getElementById("importDate").value;
-    const details = Array.from(productDetailBody.querySelectorAll("tr"))
-      .map((r) => ({
-        product: r.querySelector(".prod-name").value.trim(),
-        price: +r.querySelector(".prod-price").value,
-        qty: +r.querySelector(".prod-qty").value,
-      }))
+    const rows = Array.from(productDetailBody.querySelectorAll("tr"));
+
+    const details = rows
+      .map((r) => {
+        const select = r.querySelector(".prod-select");
+        const name = r.querySelector(".prod-name");
+        const productName =
+          name.style.display === "none"
+            ? select.options[select.selectedIndex].text
+            : name.value.trim();
+        const price = +r.querySelector(".prod-price").value;
+        const qty = +r.querySelector(".prod-qty").value;
+
+        return { product: productName, price, qty };
+      })
       .filter((d) => d.product && d.qty > 0 && d.price > 0);
 
     if (!date || details.length === 0) {
@@ -202,15 +249,15 @@ function initImportPage() {
       return;
     }
 
+    // 🔹 Chỉ lưu phiếu vào danh sách
     if (editingId) {
-      // 🔹 Sửa phiếu
       const idx = importList.findIndex((x) => x.id === editingId);
       if (idx > -1) {
         importList[idx].date = date;
         importList[idx].details = details;
+        importList[idx].status = "Chưa hoàn thành";
       }
     } else {
-      // 🔹 Thêm phiếu mới
       const newId = importList.length
         ? Math.max(...importList.map((x) => x.id)) + 1
         : 1;
@@ -218,17 +265,16 @@ function initImportPage() {
     }
 
     renderTable();
-    saveToLocal(); // ✅ Lưu ngay sau khi thêm/sửa
+    saveToLocal();
     closeModal(modal);
   };
 
-  // =================== BẮT SỰ KIỆN NÚT TRONG BẢNG ===================
+  // =================== CHI TIẾT, SỬA, HOÀN THÀNH ===================
   tableBody.addEventListener("click", (e) => {
     const id = +e.target.dataset.id;
     const item = importList.find((x) => x.id === id);
     if (!item) return;
 
-    // 🔹 Xem chi tiết
     if (e.target.classList.contains("btn-detail")) {
       detailBody.innerHTML = `
         <p><b>Mã phiếu:</b> #${item.id}</p>
@@ -253,7 +299,6 @@ function initImportPage() {
       openModal(detailModal);
     }
 
-    // 🔹 Sửa phiếu
     if (e.target.classList.contains("btn-edit")) {
       if (item.status === "Hoàn thành")
         return alert("Không thể sửa phiếu đã hoàn thành!");
@@ -274,11 +319,39 @@ function initImportPage() {
       openModal(modal);
     }
 
-    // 🔹 Hoàn thành phiếu
     if (e.target.classList.contains("btn-done")) {
-      item.status = "Hoàn thành";
-      renderTable();
-      saveToLocal(); // ✅ Lưu sau khi đổi trạng thái
+      if (confirm("Xác nhận hoàn thành phiếu này?")) {
+        item.status = "Hoàn thành";
+
+        // 🔸 Cập nhật vào localStorage sản phẩm tại đây
+        const products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
+        item.details.forEach((d) => {
+          const exist = products.find(
+            (p) => p.tensanpham?.toLowerCase() === d.product.toLowerCase()
+          );
+
+          if (exist) {
+            exist.soluong = String(
+              (Number(exist.soluong) || 0) + Number(d.qty)
+            );
+            exist.gianhap = Number(d.price);
+          } else {
+            const newId = products.length
+              ? Math.max(...products.map((p) => p.id)) + 1
+              : 1;
+            products.push({
+              id: newId,
+              tensanpham: d.product,
+              gianhap: Number(d.price),
+              soluong: String(d.qty),
+            });
+          }
+        });
+
+        localStorage.setItem("phonestore_products", JSON.stringify(products));
+        renderTable();
+        saveToLocal();
+      }
     }
   });
 

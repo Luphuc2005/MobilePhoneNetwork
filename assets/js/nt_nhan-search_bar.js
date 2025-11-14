@@ -160,10 +160,10 @@ function renderPagination(totalPages) {
 }
 
 window.changePage = function(page) {
-    if (page < 1 || page > Math.ceil(filteredProducts.length / itemsPerPage)) return;
-    currentPageSearchProduct = page;
+    if (page < 1 || page > Math.ceil(filteredProducts.length / numberOrderPerPage)) return;
+    currentPageOrder = page;
     renderFilteredProducts();
-    document.querySelector('.search-product-content')?.scrollIntoView({ behavior: 'smooth' });
+    document.querySelector('.order-list')?.scrollIntoView({ behavior: 'smooth' });
 };
 
 function formatPrice(price) {
@@ -204,7 +204,20 @@ document.querySelector('.apply-filter')?.addEventListener('click', function() {
     document.querySelector('.search-product-content')?.scrollIntoView({ behavior: 'smooth' });
     filterProducts(filters);
 });
+//========Duy Đăng (Quick Acces )==========
 
+document.getElementsByClassName('category-card').addEventListener('click',()=>{
+    const filters = {
+        manufacturers: [],
+        priceRanges: [],
+        storage: [],
+        rating: []
+    };
+
+    const spanText = document.querySelector('category-card span').textContent;
+    filters.manufacturers.push(spanText);
+    console.log(spanText);
+});
 document.querySelector('.search-bar-btn').addEventListener('click', function() {
     const filters = {
         manufacturers: [],
