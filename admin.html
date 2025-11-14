@@ -230,132 +230,373 @@
                     </div>
                 </div>
                 <!-- HỒNG PHÚC - QUẢN LÝ KHÁCH HÀNG -->
-                <div id="customers-content" class="section-content " style="display: none;">
-                    <div class="user-management">
-                        <!-- Tiêu đề trang -->
-                        <div class="page-title">
-                            <h2>👥 Quản lý khách hàng</h2>
-                            <p>Quản lý thông tin và trạng thái tài khoản người dùng</p>
-                        </div>
+                 <div
+            id="customers-content"
+            class="section-content"
+            style="display: none"
+          >
+            <div class="user-management">
+              <!-- Tiêu đề trang -->
+              <div class="page-title">
+                <h2>Quản lý khách hàng</h2>
+                <p>Quản lý thông tin và trạng thái tài khoản người dùng</p>
+              </div>
 
-                        <!-- Statistics Cards -->
-                        <div class="stats-grid"
-                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px;">
-                            <div class="stat-card"
-                                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 24px; border-radius: 16px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: transform 0.3s;">
-                                <div style="display: flex; align-items: center; justify-content: space-between;">
-                                    <div>
-                                        <div
-                                            style="font-size: 14px; opacity: 0.9; margin-bottom: 8px; font-weight: 500;">
-                                            👥
-                                            Tổng khách hàng</div>
-                                        <div id="totalUsersCount" style="font-size: 36px; font-weight: bold;">0</div>
-                                    </div>
-                                    <div style="font-size: 48px; opacity: 0.3;">👤</div>
-                                </div>
-                            </div>
-                            <div class="stat-card"
-                                style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 24px; border-radius: 16px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); transition: transform 0.3s;">
-                                <div style="display: flex; align-items: center; justify-content: space-between;">
-                                    <div>
-                                        <div
-                                            style="font-size: 14px; opacity: 0.9; margin-bottom: 8px; font-weight: 500;">
-                                            ✅
-                                            Đang hoạt động</div>
-                                        <div id="activeUsersCount" style="font-size: 36px; font-weight: bold;">0</div>
-                                    </div>
-                                    <div style="font-size: 48px; opacity: 0.3;">✓</div>
-                                </div>
-                            </div>
-                            <div class="stat-card"
-                                style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 24px; border-radius: 16px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); transition: transform 0.3s;">
-                                <div style="display: flex; align-items: center; justify-content: space-between;">
-                                    <div>
-                                        <div
-                                            style="font-size: 14px; opacity: 0.9; margin-bottom: 8px; font-weight: 500;">
-                                            🔒
-                                            Đã khóa</div>
-                                        <div id="lockedUsersCount" style="font-size: 36px; font-weight: bold;">0</div>
-                                    </div>
-                                    <div style="font-size: 48px; opacity: 0.3;">🔐</div>
-                                </div>
-                            </div>
-                            <div class="stat-card"
-                                style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 24px; border-radius: 16px; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); transition: transform 0.3s;">
-                                <div style="display: flex; align-items: center; justify-content: space-between;">
-                                    <div>
-                                        <div
-                                            style="font-size: 14px; opacity: 0.9; margin-bottom: 8px; font-weight: 500;">
-                                            🛒
-                                            Tổng đơn hàng</div>
-                                        <div id="totalOrdersCount" style="font-size: 36px; font-weight: bold;">0</div>
-                                    </div>
-                                    <div style="font-size: 48px; opacity: 0.3;">📦</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Thanh tìm kiếm và bộ lọc -->
-                        <div class="top-bar"
-                            style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
-                            <input id="userSearchInput" type="text"
-                                placeholder="🔍 Tìm kiếm theo tên, email, SĐT, địa chỉ..." autocomplete="off"
-                                style="flex: 1; min-width: 280px; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; transition: all 0.3s;" />
-
-
-
-                            <button id="btnAddUser" onclick="showAddUserModal()"
-                                style="white-space: nowrap; padding: 12px 24px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);">
-                                ➕ Thêm khách hàng
-                            </button>
-                        </div>
-
-                        <!-- Bảng khách hàng -->
-                        <div class="user-table"
-                            style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
-                            <!-- Header -->
-                            <div class="table-header"
-                                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 20px; display: grid; grid-template-columns: 70px 1.5fr 2fr 130px 2.5fr 130px 90px 130px 200px; gap: 12px; font-weight: 600; font-size: 13px; align-items: center;">
-                                <div style="text-align: center;">ID</div>
-                                <div>Họ tên</div>
-                                <div>Email</div>
-                                <div>SĐT</div>
-                                <div>Địa chỉ</div>
-                                <div style="text-align: center;">Trạng thái</div>
-                                <div style="text-align: center;">Đơn hàng</div>
-                                <div style="text-align: center;">Tham gia</div>
-                                <div style="text-align: center;">Hành động</div>
-                            </div>
-                            <!-- Dòng dữ liệu -->
-                            <div id="userTableBody" style="min-height: 400px;">
-                                <!-- Dữ liệu sẽ được load bằng JavaScript -->
-                            </div>
-                        </div>
-                        <!-- Thông tin số lượng người dùng -->
-                        <div style="margin: 16px 0 0 20px; font-size: 14px; color: #64748b; font-weight: 500;">
-                            <span id="userInfoText">Hiển thị 1-5 trong tổng số 50 khách hàng</span>
-                        </div>
-                        <!-- Phân trang -->
-                        <div class="pagination"
-                            style="display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 20px;">
-                            <button id="prevPage"
-                                style="padding: 10px 20px; border: 2px solid #e2e8f0; background: white; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; color: #475569;">«
-                                Trước</button>
-                            <span id="pageNumbers" style="display: flex; gap: 6px;"></span>
-                            <button id="nextPage"
-                                style="padding: 10px 20px; border: 2px solid #e2e8f0; background: white; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; color: #475569;">Sau
-                                »</button>
-                        </div>
+              <!-- Statistics Cards -->
+              <div
+                class="stats-grid"
+                style="
+                  display: grid;
+                  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                  gap: 20px;
+                  margin-bottom: 30px;
+                "
+              >
+                <div
+                  class="stat-card"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      #667eea 0%,
+                      #764ba2 100%
+                    );
+                    color: white;
+                    padding: 24px;
+                    border-radius: 16px;
+                    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+                    transition: transform 0.3s;
+                  "
+                >
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                    "
+                  >
+                    <div>
+                      <div
+                        style="
+                          font-size: 14px;
+                          opacity: 0.9;
+                          margin-bottom: 8px;
+                          font-weight: 500;
+                        "
+                      >
+                        Tổng khách hàng
+                      </div>
+                      <div
+                        id="totalUsersCount"
+                        style="font-size: 36px; font-weight: bold"
+                      >
+                        0
+                      </div>
                     </div>
-
-                    <!-- Modal placeholder (không dùng nữa - JS sẽ tạo modal động) -->
-                    <div id="modal" class="modal" style="display: none;"></div>
-                    <div id="editModal" class="modal" style="display: none;"></div>
+                    <div style="font-size: 48px; opacity: 0.3"></div>
+                  </div>
                 </div>
-
-                <div id="products-content" class="section-content" style="display:none;">
-                    <div class="product-manager-container" id="product-manager-container"></div>
+                <div
+                  class="stat-card"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      #10b981 0%,
+                      #059669 100%
+                    );
+                    color: white;
+                    padding: 24px;
+                    border-radius: 16px;
+                    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+                    transition: transform 0.3s;
+                  "
+                >
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                    "
+                  >
+                    <div>
+                      <div
+                        style="
+                          font-size: 14px;
+                          opacity: 0.9;
+                          margin-bottom: 8px;
+                          font-weight: 500;
+                        "
+                      >
+                        Đang hoạt động
+                      </div>
+                      <div
+                        id="activeUsersCount"
+                        style="font-size: 36px; font-weight: bold"
+                      >
+                        0
+                      </div>
+                    </div>
+                    <div style="font-size: 48px; opacity: 0.3"></div>
+                  </div>
                 </div>
+                <div
+                  class="stat-card"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      #ef4444 0%,
+                      #dc2626 100%
+                    );
+                    color: white;
+                    padding: 24px;
+                    border-radius: 16px;
+                    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+                    transition: transform 0.3s;
+                  "
+                >
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                    "
+                  >
+                    <div>
+                      <div
+                        style="
+                          font-size: 14px;
+                          opacity: 0.9;
+                          margin-bottom: 8px;
+                          font-weight: 500;
+                        "
+                      >
+                        Đã khóa
+                      </div>
+                      <div
+                        id="lockedUsersCount"
+                        style="font-size: 36px; font-weight: bold"
+                      >
+                        0
+                      </div>
+                    </div>
+                    <div style="font-size: 48px; opacity: 0.3"></div>
+                  </div>
+                </div>
+                <div
+                  class="stat-card"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      #f59e0b 0%,
+                      #d97706 100%
+                    );
+                    color: white;
+                    padding: 24px;
+                    border-radius: 16px;
+                    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+                    transition: transform 0.3s;
+                  "
+                >
+                  <div
+                    style="
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                    "
+                  >
+                    <div>
+                      <div
+                        style="
+                          font-size: 14px;
+                          opacity: 0.9;
+                          margin-bottom: 8px;
+                          font-weight: 500;
+                        "
+                      >
+                        Tổng đơn hàng
+                      </div>
+                      <div
+                        id="totalOrdersCount"
+                        style="font-size: 36px; font-weight: bold"
+                      >
+                        0
+                      </div>
+                    </div>
+                    <div style="font-size: 48px; opacity: 0.3"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Thanh tìm kiếm và bộ lọc -->
+              <div
+                class="top-bar"
+                style="
+                  display: flex;
+                  gap: 12px;
+                  align-items: center;
+                  flex-wrap: wrap;
+                  margin-bottom: 20px;
+                "
+              >
+                <input
+                  id="userSearchInput"
+                  type="text"
+                  placeholder="Tìm kiếm theo tên, email, SĐT, địa chỉ..."
+                  autocomplete="off"
+                  style="
+                    flex: 1;
+                    min-width: 280px;
+                    padding: 12px 16px;
+                    border: 2px solid #e2e8f0;
+                    border-radius: 10px;
+                    font-size: 14px;
+                    transition: all 0.3s;
+                  "
+                />
+
+                <button
+                  id="btnAddUser"
+                  onclick="showAddUserModal()"
+                  style="
+                    white-space: nowrap;
+                    padding: 12px 24px;
+                    background: linear-gradient(
+                      135deg,
+                      #667eea 0%,
+                      #764ba2 100%
+                    );
+                    color: white;
+                    border: none;
+                    border-radius: 10px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+                  "
+                >
+                  Thêm khách hàng
+                </button>
+              </div>
+
+              <!-- Bảng khách hàng -->
+              <div
+                class="user-table"
+                style="
+                  background: white;
+                  border-radius: 16px;
+                  overflow: hidden;
+                  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+                "
+              >
+                <!-- Header -->
+                <!-- Tìm header bảng và sửa style -->
+                <div
+                  class="table-header"
+                  style="
+                    display: grid;
+                    grid-template-columns: 60px 1.8fr 2fr 120px 2.2fr 110px 80px 100px 180px;
+                    gap: 10px;
+                    padding: 14px 16px;
+                    background: linear-gradient(
+                      135deg,
+                      #667eea 0%,
+                      #764ba2 100%
+                    );
+                    color: white;
+                    font-weight: 600;
+                    font-size: 13px;
+                    border-radius: 12px 12px 0 0;
+                    align-items: center;
+                  "
+                >
+                  <div style="text-align: center">ID</div>
+                  <div>Họ tên</div>
+                  <div>Email</div>
+                  <div style="text-align: center">SĐT</div>
+                  <div>Địa chỉ</div>
+                  <div style="text-align: center">Trạng thái</div>
+                  <div style="text-align: center">Đơn hàng</div>
+                  <div style="text-align: center">Tham gia</div>
+                  <div style="text-align: center">Hành động</div>
+                </div>
+                <!-- Dòng dữ liệu -->
+                <div id="userTableBody">
+                  <!-- Dữ liệu sẽ được load bằng JavaScript -->
+                </div>
+              </div>
+              <!-- Thông tin số lượng người dùng -->
+              <div
+                style="
+                  margin: 16px 0 0 20px;
+                  font-size: 14px;
+                  color: #64748b;
+                  font-weight: 500;
+                "
+              >
+                <span id="userInfoText"
+                  >Hiển thị 1-5 trong tổng số 50 khách hàng</span
+                >
+              </div>
+              <!-- Phân trang -->
+              <div
+                class="pagination"
+                style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  gap: 8px;
+                  margin-top: 20px;
+                "
+              >
+                <button
+                  id="prevPage"
+                  style="
+                    padding: 10px 20px;
+                    border: 2px solid #e2e8f0;
+                    background: white;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: 600;
+                    transition: all 0.3s;
+                    color: #475569;
+                  "
+                >
+                  Trước
+                </button>
+
+                <span id="pageNumbers" style="display: flex; gap: 6px"></span>
+                <button
+                  id="nextPage"
+                  style="
+                    padding: 10px 20px;
+                    border: 2px solid #e2e8f0;
+                    background: white;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: 600;
+                    transition: all 0.3s;
+                    color: #475569;
+                  "
+                >
+                  Sau »
+                </button>
+              </div>
+            </div>
+
+            <!-- Modal placeholder (không dùng nữa - JS sẽ tạo modal động) -->
+            <div id="modal" class="modal" style="display: none"></div>
+            <div id="editModal" class="modal" style="display: none"></div>
+          </div>
+
+          <div
+            id="products-content"
+            class="section-content"
+            style="display: none"
+          >
+            <div
+              class="product-manager-container"
+              id="product-manager-container"
+            ></div>
+          </div>
 
                 <!-- QUẢN LÝ GIÁ BÁN -->
                 <div id="pricing-content" class="section-content" style="display: none;">
@@ -367,7 +608,6 @@
                     <!-- Tabs -->
                     <div class="pricing-tabs">
                         <button class="tab-btn active" data-tab="adjusted"> SP đã điều chỉnh</button>
-                        <button class="tab-btn" data-tab="report"> Báo cáo lợi nhuận</button>
                         <button class="tab-btn" data-tab="profit"> Áp dụng % Lợi nhuận</button>
                         <button class="tab-btn" data-tab="lookup"> Tra cứu giá</button>
                     </div>
@@ -390,7 +630,8 @@
                             </div>
                             <div class="top-bar" style="margin-bottom: 20px;">
                                 <input type="text" id="searchAdjustedProduct"
-                                    placeholder="🔍 Tìm kiếm theo tên hoặc loại sản phẩm...">
+                                    placeholder="Tìm kiếm theo tên hoặc loại sản phẩm..."
+                                    style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; transition: all 0.3s;">
                             </div>
                             <div class="adjusted-products-grid" id="adjustedProductsGrid">
                                 <!-- Sản phẩm sẽ được load bằng JavaScript -->
@@ -398,69 +639,6 @@
                         </div>
                     </div>
 
-                    <!-- Tab Báo cáo lợi nhuận -->
-                    <div id="report-tab" class="tab-content">
-
-
-                        <div style="display: flex; gap: 15px; justify-content: space-between; margin-bottom: 20px;">
-                            <input type="text" id="searchReportProduct" placeholder="🔍 Tìm kiếm sản phẩm..."
-                                style="flex: 1; padding: 10px 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px;">
-
-                            <select id="filterCategory"
-                                style="padding: 10px 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; background: white; cursor: pointer;">
-                                <option value="">📱 Tất cả loại</option>
-                            </select>
-
-                            <select id="filterProfit"
-                                style="padding: 10px 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; background: white; cursor: pointer;">
-                                <option value="all">Tất cả</option>
-                                <option value="high">Lời cao (≥20%)</option>
-                                <option value="medium">Lời TB (10-20%)</option>
-                                <option value="low">Lời thấp (<10%)< /option>
-                                <option value="loss">Lỗ/Hòa vốn (≤0%)</option>
-                            </select>
-                        </div>
-
-                        <!-- Thống kê tổng quan -->
-                        <div id="profitSummary"
-                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
-                            <!-- Sẽ được load bằng JavaScript -->
-                        </div>
-
-                        <!-- Bảng chi tiết -->
-                        <div
-                            style="overflow-x: auto; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                            <table id="profitReportTable" style="width: 100%; border-collapse: collapse;">
-                                <thead
-                                    style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white;">
-                                    <tr>
-                                        <th style="padding: 12px; text-align: left;">Sản phẩm</th>
-                                        <th style="padding: 12px; text-align: left;">Loại</th>
-                                        <th style="padding: 12px; text-align: right;">Giá vốn</th>
-                                        <th style="padding: 12px; text-align: right;">Giá bán</th>
-                                        <th style="padding: 12px; text-align: right;">Lợi nhuận</th>
-                                        <th style="padding: 12px; text-align: center;">% LN</th>
-                                        <th style="padding: 12px; text-align: center;">Tình trạng</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="profitReportBody">
-                                    <!-- Sẽ được load bằng JavaScript -->
-                                </tbody>
-                                <tfoot style="background: #f8fafc; font-weight: bold;">
-                                    <tr>
-                                        <td colspan="4" style="padding: 12px; text-align: right;">TỔNG CỘNG:</td>
-                                        <td id="totalProfitAmount"
-                                            style="padding: 12px; text-align: right; color: #10b981; font-size: 16px;">
-                                            0₫
-                                        </td>
-                                        <td id="avgProfitPercent"
-                                            style="padding: 12px; text-align: center; color: #3b82f6;">0%</td>
-                                        <td></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
 
                     <!-- Tab % Lợi nhuận -->
                     <div id="profit-tab" class="tab-content">
@@ -550,8 +728,33 @@
 
                     <!-- Tab Tra cứu giá -->
                     <div id="lookup-tab" class="tab-content">
-                        <div class="lookup-section">
-                            <h3> Tra cứu giá sản phẩm</h3>
+                        <!-- Phần tra cứu sản phẩm thực tế -->
+                        <div class="lookup-section" style="margin-bottom: 30px;">
+                            <h3 style="margin-bottom: 20px; color: #1f2937; font-size: 20px;">🔍 Tra cứu giá sản phẩm trong hệ thống</h3>
+                            
+                            <!-- Tìm kiếm sản phẩm -->
+                            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); margin-bottom: 20px;">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label style="font-weight: 600; color: #374151; font-size: 14px; margin-bottom: 8px; display: block;">Tìm kiếm sản phẩm:</label>
+                                    <input type="text" id="productLookupSearch" placeholder="Nhập tên sản phẩm để tra cứu..." 
+                                        style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; transition: all 0.3s;">
+                                </div>
+                            </div>
+
+                            <!-- Kết quả tra cứu -->
+                            <div id="productLookupResult" style="display: none;">
+                                <!-- Sẽ được điền bằng JavaScript -->
+                            </div>
+
+                            <!-- Thông báo khi chưa có kết quả -->
+                            <div id="productLookupEmpty" style="text-align: center; padding: 40px; color: #6b7280; font-style: italic; background: white; border-radius: 12px;">
+                                Nhập tên sản phẩm để tra cứu giá vốn, % lợi nhuận và giá bán
+                            </div>
+                        </div>
+
+                        <!-- Phần tính giá từ giá vốn và % lợi nhuận -->
+                        <div class="lookup-section" style="border-top: 2px solid #e5e7eb; padding-top: 30px;">
+                            <h3 style="margin-bottom: 20px; color: #1f2937; font-size: 20px;">🧮 Tính giá từ giá vốn và % lợi nhuận</h3>
                             <div class="lookup-form">
                                 <div class="form-group">
                                     <label>Giá vốn:</label>
@@ -937,7 +1140,7 @@
     <script src="./assets/js/duyddawng-navgateTo.js"></script>
     <script src="./assets/js/duyddawng-categories.js"></script>
     <!-- <script src="./assets/js/Trang-dataProduct.js"></script> -->
-    <script src="./assets/js/quanlynguoidung.js"></script>
+    <!-- <script src="./assets/js/quanlynguoidung.js"></script> -->
     <!-- <script src="./assets/js/Trang-productlayout.js"></script> -->
     <script src="./assets/js/QuoocsCuongwf-ProductManager.js"></script>
     <script src="./assets/js/HPhuc-UserManagement.js"></script>
