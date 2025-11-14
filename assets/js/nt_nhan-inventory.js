@@ -11,6 +11,14 @@ window.addEventListener('storage', function(e) {
         inventoryProducts = JSON.parse(e.newValue || '[]');
         initializeInventoryForm();
     }
+    if (e.key === 'phonestore_import_orders') {
+        // Cập nhật lại khi có thay đổi import orders (không cần reload data vì chỉ dùng để tính toán)
+        // Có thể trigger lại search nếu đang có kết quả hiển thị
+    }
+    if (e.key === 'phonestore_orders') {
+        orders = JSON.parse(e.newValue || '[]');
+        initializeInventoryForm();
+    }
 });
 
 function checkForUpdates() {
@@ -59,48 +67,150 @@ function initializeInventoryForm() {
     
     document.getElementById('inventory-start-date').valueAsDate = firstDayOfMonth;
     document.getElementById('inventory-end-date').valueAsDate = today;
+
+    const productId = document.getElementById('inventory-product').value;
+    const productType = document.getElementById('inventory-type').value;
+    const startDate = document.getElementById('inventory-start-date').value;
+    const endDate = document.getElementById('inventory-end-date').value;
+
+    let productsToSearch = inventoryProducts;
+    
+    // Lọc theo loại sản phẩm nếu có
+    if (productType != "") {
+        productsToSearch = productsToSearch.filter(p => p.danhmuc === productType);
+    }
+    
+    // Lọc theo sản phẩm cụ thể nếu có
+    if (productId != "") {
+        productsToSearch = productsToSearch.filter(p => p.id === parseInt(productId, 10));
+    }
+
+    // Tính toán inventory cho từng sản phẩm
+    // Nếu không có ngày, truyền null để lấy tất cả
+    const results = productsToSearch.map(product => ({
+        productId: product.id,
+        inventory: calculateInventory(product.id, startDate || null, endDate || null)
+    }));
+
+    renderInventoryResults(results);
+}
+
+// Hàm parse date từ định dạng dd/mm/yyyy hoặc dd/mm/yyyy HH:mm
+function parseDateTime(dateStr) {
+    if (!dateStr) return null;
+    
+    // Nếu là string có chứa "/" thì parse theo định dạng dd/mm/yyyy
+    if (typeof dateStr === 'string' && dateStr.includes('/')) {
+        const parts = dateStr.split(' ');
+        const datePart = parts[0]; // "dd/mm/yyyy"
+        const timePart = parts[1] || "00:00"; // "HH:mm" hoặc mặc định "00:00"
+        
+        const [day, month, year] = datePart.split('/').map(Number);
+        const [hour, minute] = timePart.split(':').map(Number);
+        
+        return new Date(year, month - 1, day, hour || 0, minute || 0);
+    }
+    
+    // Nếu không phải định dạng dd/mm/yyyy thì dùng Date constructor bình thường
+    return new Date(dateStr);
 }
 
 // Tính toán dữ liệu nhập xuất tồn
 function calculateInventory(productId, startDate, endDate) {
     const orders = JSON.parse(localStorage.getItem('phonestore_orders')) || [];
-    const imports = JSON.parse(localStorage.getItem('phonestore_imports')) || [];
+    const importOrders = JSON.parse(localStorage.getItem('phonestore_import_orders')) || [];
     
-    // Chuyển đổi ngày
-    startDate = new Date(startDate);
-    endDate = new Date(endDate);
-    startDate.setHours(0, 0, 0, 0);
-    endDate.setHours(23, 59, 59, 999);
+    // Chuyển đổi productId sang number để so sánh đúng với ID trong product_list
+    const productIdNum = typeof productId === 'string' ? parseInt(productId, 10) : productId;
+    
+    // Lấy thông tin sản phẩm để so sánh tên
+    const product = inventoryProducts.find(p => p.id === productIdNum);
+    if (!product) {
+        return {
+            openingStock: 0,
+            imported: 0,
+            exported: 0,
+            closingStock: 0
+        };
+    }
+    
+    // Kiểm tra nếu không có ngày thì lấy tất cả
+    const hasDateFilter = startDate && endDate;
+    
+    let startDateObj = null;
+    let endDateObj = null;
+    
+    if (hasDateFilter) {
+        // Chuyển đổi ngày
+        startDateObj = new Date(startDate);
+        endDateObj = new Date(endDate);
+        startDateObj.setHours(0, 0, 0, 0);
+        endDateObj.setHours(23, 59, 59, 999);
+    }
 
     // Tính số lượng xuất (từ đơn hàng)
     const exported = orders.reduce((total, order) => {
-        const orderDate = new Date(order.date);
-        if (orderDate >= startDate && orderDate <= endDate) {
-            const productInOrder = order.product_list.find(([id]) => id === productId);
+        // Nếu không có filter ngày, lấy tất cả
+        if (!hasDateFilter) {
+            const productInOrder = order.product_list.find(([id]) => id == productIdNum);
+            if (productInOrder) {
+                return total + productInOrder[1]; // [1] là số lượng
+            }
+            return total;
+        }
+        
+        // Có filter ngày thì kiểm tra ngày
+        const orderDate = parseDateTime(order.date);
+        if (orderDate && orderDate >= startDateObj && orderDate <= endDateObj) {
+            const productInOrder = order.product_list.find(([id]) => id == productIdNum);
             if (productInOrder) {
                 return total + productInOrder[1]; // [1] là số lượng
             }
         }
         return total;
     }, 0);
+    console.log(exported);
 
-    // Tính số lượng nhập
-    const imported = imports.reduce((total, imp) => {
-        const importDate = new Date(imp.date);
-        if (importDate >= startDate && importDate <= endDate) {
-            const productInImport = imp.products.find(p => p.id === productId);
+    // Tính số lượng nhập từ import orders (chỉ tính các phiếu đã hoàn thành)
+    const imported = importOrders.reduce((total, impOrder) => {
+        // Chỉ tính các phiếu nhập đã hoàn thành
+        if (impOrder.status !== 'Hoàn thành') return total;
+        
+        // Nếu không có filter ngày, lấy tất cả
+        if (!hasDateFilter) {
+            // Tìm sản phẩm trong details bằng cách so sánh tên
+            const productInImport = impOrder.details?.find(d => 
+                d.product && d.product.trim() === product.tensanpham.trim()
+            );
             if (productInImport) {
-                return total + productInImport.quantity;
+                return total + (productInImport.qty || 0);
+            }
+            return total;
+        }
+        
+        // Có filter ngày thì kiểm tra ngày
+        const importDate = parseDateTime(impOrder.date);
+        if (importDate && importDate >= startDateObj && importDate <= endDateObj) {
+            // Tìm sản phẩm trong details bằng cách so sánh tên
+            const productInImport = impOrder.details?.find(d => 
+                d.product && d.product.trim() === product.tensanpham.trim()
+            );
+            if (productInImport) {
+                return total + (productInImport.qty || 0);
             }
         }
         return total;
     }, 0);
 
-    // Tìm tồn đầu kỳ
-    const openingStock = calculateOpeningStock(productId, startDate);
+    // Tìm tồn đầu kỳ (chỉ tính nếu có filter ngày)
+    const openingStock = hasDateFilter ? calculateOpeningStock(productId, startDateObj) : 0;
     
     // Tính tồn cuối kỳ
-    const closingStock = openingStock + imported - exported;
+    // Nếu không có filter ngày, tồn cuối kỳ = tổng nhập - tổng xuất
+    // Nếu có filter ngày, tồn cuối kỳ = tồn đầu kỳ + nhập - xuất
+    const closingStock = hasDateFilter 
+        ? openingStock + imported - exported
+        : imported - exported;
 
     return {
         openingStock,
@@ -113,15 +223,28 @@ function calculateInventory(productId, startDate, endDate) {
 // Tính tồn đầu kỳ
 function calculateOpeningStock(productId, startDate) {
     const orders = JSON.parse(localStorage.getItem('phonestore_orders')) || [];
-    const imports = JSON.parse(localStorage.getItem('phonestore_imports')) || [];
+    const importOrders = JSON.parse(localStorage.getItem('phonestore_import_orders')) || [];
     
-    // Tính tổng nhập trước ngày bắt đầu
-    const totalImported = imports.reduce((total, imp) => {
-        const importDate = new Date(imp.date);
-        if (importDate < startDate) {
-            const productInImport = imp.products.find(p => p.id === productId);
+    // Chuyển đổi productId sang number để so sánh đúng với ID trong product_list
+    const productIdNum = typeof productId === 'string' ? parseInt(productId, 10) : productId;
+    
+    // Lấy thông tin sản phẩm để so sánh tên
+    const product = inventoryProducts.find(p => p.id === productIdNum);
+    if (!product) return 0;
+    
+    // Tính tổng nhập trước ngày bắt đầu (chỉ tính các phiếu đã hoàn thành)
+    const totalImported = importOrders.reduce((total, impOrder) => {
+        // Chỉ tính các phiếu nhập đã hoàn thành
+        if (impOrder.status !== 'Hoàn thành') return total;
+        
+        const importDate = parseDateTime(impOrder.date);
+        if (importDate && importDate < startDate) {
+            // Tìm sản phẩm trong details bằng cách so sánh tên
+            const productInImport = impOrder.details?.find(d => 
+                d.product && d.product.trim() === product.tensanpham.trim()
+            );
             if (productInImport) {
-                return total + productInImport.quantity;
+                return total + (productInImport.qty || 0);
             }
         }
         return total;
@@ -129,9 +252,9 @@ function calculateOpeningStock(productId, startDate) {
 
     // Tính tổng xuất trước ngày bắt đầu
     const totalExported = orders.reduce((total, order) => {
-        const orderDate = new Date(order.date);
-        if (orderDate < startDate) {
-            const productInOrder = order.product_list.find(([id]) => id === productId);
+        const orderDate = parseDateTime(order.date);
+        if (orderDate && orderDate < startDate) {
+            const productInOrder = order.product_list.find(([id]) => id == productIdNum);
             if (productInOrder) {
                 return total + productInOrder[1];
             }
@@ -161,7 +284,7 @@ function getStockStatus(closingStock) {
 // Hiển thị kết quả tìm kiếm
 function renderInventoryResults(results) {
     const tbody = document.getElementById('inventory-list');
-    tbody.innerHTML = '';
+    tbody.innerHTML = ``;
     
     let totalStock = 0;
     let totalValue = 0;
@@ -212,19 +335,19 @@ document.getElementById('btn-search-inventory').addEventListener('click', functi
     let productsToSearch = inventoryProducts;
     
     // Lọc theo loại sản phẩm nếu có
-    if (productType) {
+    if (productType != "") {
         productsToSearch = productsToSearch.filter(p => p.danhmuc === productType);
     }
     
     // Lọc theo sản phẩm cụ thể nếu có
-    if (productId) {
-        productsToSearch = productsToSearch.filter(p => p.id === productId);
+    if (productId != "") {
+        productsToSearch = productsToSearch.filter(p => p.id === parseInt(productId, 10));
     }
-
     // Tính toán inventory cho từng sản phẩm
+    // Nếu không có ngày, truyền null để lấy tất cả
     const results = productsToSearch.map(product => ({
         productId: product.id,
-        inventory: calculateInventory(product.id, startDate, endDate)
+        inventory: calculateInventory(product.id, startDate || null, endDate || null)
     }));
 
     renderInventoryResults(results);
@@ -232,12 +355,3 @@ document.getElementById('btn-search-inventory').addEventListener('click', functi
 
 // Khởi tạo form khi trang được load
 document.addEventListener('DOMContentLoaded', initializeInventoryForm);
-
-// Cập nhật khi có thay đổi trong localStorage
-window.addEventListener('storage', function(e) {
-    if (e.key === 'phonestore_products' || e.key === 'phonestore_categories') {
-        inventoryProducts = JSON.parse(localStorage.getItem('phonestore_products')) || [];
-        productCategories = JSON.parse(localStorage.getItem('phonestore_categories')) || [];
-        initializeInventoryForm();
-    }
-});

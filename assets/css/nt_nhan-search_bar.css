@@ -85,7 +85,7 @@
 }
 
 .search-product-content .product-card {
-  flex: 0 0 calc(100%/3);
+  flex: 0 0 calc(100%/4);
   display: inline-block;
 }
 
