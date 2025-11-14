@@ -278,7 +278,7 @@ function renderTypeProduct() {
     typeProduct.forEach(type => {
         if (type.status === "Hoạt động") {
             typeProductContainer.innerHTML += `
-                <label><input type="checkbox" value="${type.name}">${type.name}</label>
+                <label><input type="checkbox" style="transform: scale(1.3); cursor: pointer;" value="${type.name}">${type.name}</label>
             `
         }
     });
