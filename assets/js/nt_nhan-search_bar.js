@@ -2,7 +2,7 @@ let productsSearchBar = JSON.parse(localStorage.getItem('phonestore_products')) 
 let filteredProducts = [...productsSearchBar];
 let currentPageSearchProduct = 1;
 const paginationContainer = document.querySelector('.search-product-pagination');
-const itemsPerPage = 6; 
+const itemsPerPage = 8; 
 
 function filterProducts(filters) {
     console.log(productsSearchBar);
@@ -18,8 +18,14 @@ function filterProducts(filters) {
         if (filters.priceRanges.length > 0) {
             const price = parseInt(product.gia);
             const matchesPrice = filters.priceRanges.some(range => {
+                // Xử lý trường hợp "30+" (trên 30 triệu)
+                if (range.includes('+')) {
+                    const min = parseInt(range.replace('+', ''));
+                    return price >= min * 1000000;
+                }
+                // Xử lý trường hợp "5-10" (khoảng giá)
                 const [min, max] = range.split('-').map(Number);
-                if (max) {
+                if (max && !isNaN(max)) {
                     return price >= min * 1000000 && price < max * 1000000;
                 } else {
                     return price >= min * 1000000;
@@ -28,9 +34,17 @@ function filterProducts(filters) {
             if (!matchesPrice) return false;
         }
 
-        if (filters.storage.length > 0 && 
-            !filters.storage.includes(product.storage)) {
-            return false;
+        // Lọc theo bộ nhớ trong
+        if (filters.storage.length > 0) {
+            // Sản phẩm có field memory là mảng (ví dụ: ["128GB", "256GB", "512GB"])
+            // Kiểm tra xem mảng memory có chứa bất kỳ giá trị storage nào được chọn không
+            const productMemory = product.memory || [];
+            const hasMatchingStorage = filters.storage.some(storageValue => 
+                productMemory.includes(storageValue)
+            );
+            if (!hasMatchingStorage) {
+                return false;
+            }
         }
 
         // Lọc theo đánh giá
@@ -160,10 +174,10 @@ function renderPagination(totalPages) {
 }
 
 window.changePage = function(page) {
-    if (page < 1 || page > Math.ceil(filteredProducts.length / numberOrderPerPage)) return;
-    currentPageOrder = page;
+    if (page < 1 || page > Math.ceil(filteredProducts.length / itemsPerPage)) return;
+    currentPageSearchProduct = page;
     renderFilteredProducts();
-    document.querySelector('.order-list')?.scrollIntoView({ behavior: 'smooth' });
+    document.querySelector('.search-product-content')?.scrollIntoView({ behavior: 'smooth' });
 };
 
 function formatPrice(price) {
@@ -231,7 +245,7 @@ document.querySelector('.search-bar-btn').addEventListener('click', function() {
         storage: [],
         rating: []
     };
-    const keyword = document.querySelector('.search-bar-inp').value;
+    const keyword = document.querySelector('.search-bar input').value;
 
     document.querySelectorAll('.filter-options input:checked').forEach(input => {
         const group = input.closest('.filter-group');

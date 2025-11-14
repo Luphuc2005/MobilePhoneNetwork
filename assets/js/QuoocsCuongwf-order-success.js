@@ -110,8 +110,13 @@ function showOrderSuccessModal() {
         // Lấy thông tin user
         const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
         
-        // Tạo Order ID
-        const orderId = generateOrderId();
+        // Lấy Order ID từ localStorage (đã được tạo trước khi gọi addOrder)
+        let orderId = localStorage.getItem('lastCreatedOrderId');
+        
+        // Nếu không có orderId, tạo ID tạm để hiển thị (không lưu vào hệ thống)
+        if (!orderId) {
+            orderId = generateOrderId();
+        }
         
         // Cập nhật thông tin vào modal
         document.getElementById('order-id').textContent = orderId;
