@@ -709,7 +709,7 @@ body {
 
 .category-icon {
     font-size: 36px;
-    margin-bottom: 12px;
+    /* margin-bottom: 12px; */
 }
 
 .category-card span {
@@ -1216,6 +1216,8 @@ body {
 }
 
 .category-icon img {
+    align-items: center;
+    justify-content: center;
     width: 36px;
     height: 36px;
     /* giữ nguyên kích thước */
