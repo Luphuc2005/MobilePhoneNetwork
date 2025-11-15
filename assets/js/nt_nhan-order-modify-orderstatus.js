@@ -23,7 +23,24 @@ function initDropdown() {
         let select_item = dropdown.querySelectorAll('.select-item');
         let update_status_btn = dropdown.querySelector('.update-status-order-btn');
 
+        const orderId = dropdown.dataset.idOrder;
+        let index = typeof allOrder !== 'undefined' ? allOrder.findIndex(o => o.order_id == orderId) : -1;
+        if (index === -1) {
+            const cached = JSON.parse(localStorage.getItem('phonestore_orders') || '[]');
+            index = cached.findIndex(o => o.order_id == orderId);
+        }
+        const currentStatus = index !== -1 && typeof allOrder !== 'undefined' ? allOrder[index].status : (index !== -1 ? JSON.parse(localStorage.getItem('phonestore_orders') || '[]')[index].status : 'unknown');
+        const isLocked = currentStatus === 'done' || currentStatus === 'cancel';
+        if (isLocked) {
+            update_status_btn.disabled = true;
+            select.style.pointerEvents = 'none';
+        }
+
         select.addEventListener('click', (event) => {
+            if (isLocked) {
+                event.stopPropagation();
+                return;
+            }
             selectDropdown.forEach(d => {
             if (d !== dropdown) {
                 d.querySelector('.select-list').classList.add('hidden');
@@ -35,6 +52,7 @@ function initDropdown() {
 
         select_item.forEach(item => {
             item.addEventListener('click', function () {
+                if (isLocked) return;
                 select.textContent = item.textContent;
                 select_list.classList.toggle('hidden');
             })
@@ -44,6 +62,11 @@ function initDropdown() {
             let orderId = dropdown.dataset.idOrder;
             let index = allOrder.findIndex(o => o.order_id == orderId);
             if (index != -1) {
+                const currentStatus = allOrder[index].status;
+                if (currentStatus === 'done' || currentStatus === 'cancel') {
+                    alert('Đơn hàng đã hoàn thành hoặc đã hủy, không thể thay đổi trạng thái');
+                    return;
+                }
                 allOrder[index].status = preProcessStatus(select.textContent);
                 localStorage.setItem('phonestore_orders', JSON.stringify(allOrder));
                 console.log(`Đơn ${orderId} đổi trạng thái thành ${select.textContent}`);
