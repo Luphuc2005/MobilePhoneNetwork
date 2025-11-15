@@ -29,7 +29,7 @@ if (document.readyState === "loading") {
   <div id="pagination" style="margin-top:15px; display:flex; gap:5px; justify-content:center;"></div>
 `;
 
-    let a = document.getElementsByClassName("sidebar-menu-item")[2];
+    let a = document.getElementsByClassName("sidebar-menu-item-cate")[2];
     a.addEventListener("click", () => {
       // 1. Lấy dữ liệu từ localStorage
       let productAll =
