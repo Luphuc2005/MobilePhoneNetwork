@@ -21,6 +21,7 @@ const closeButton = document.querySelectorAll(".close-form");
 const updateForm = document.getElementById("update-form");
 const passwordResetForm = document.getElementById("reset-password-form");
 const logout = document.getElementById("logout");
+const userInfoButton = document.getElementById("user-info-button");
 
 const newName = document.getElementById("new-name");
 const newPhone = document.getElementById("new-phone");
@@ -38,6 +39,11 @@ const showPassword = document.querySelectorAll(".showPassword");
 
 insertUserInfo();
 
+userInfoButton.onclick = function (event) {
+  document.getElementById("user-info").style.display = "";
+  document.getElementById("user-order").style.display = "none";
+}
+
 window.addEventListener("storage", (event) => {
   const userList = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS));
   console.log(userList);
@@ -50,11 +56,11 @@ window.addEventListener("storage", (event) => {
 });
 
 changePassword.onclick = function (event) {
-  formBackground[1].style.display = "block";
+  formBackground[2].style.display = "block";
 };
 
 updateInfo.onclick = function (event) {
-  formBackground[0].style.display = "block";
+  formBackground[1].style.display = "block";
 };
 
 showPassword[0].onclick = function (event) {
@@ -79,8 +85,8 @@ showPassword[3].onclick = function (event) {
 
 closeButton.forEach((button) => {
   button.onclick = function (e) {
-    formBackground[0].style.display = "none";
     formBackground[1].style.display = "none";
+    formBackground[2].style.display = "none";
     insertFormInfo();
   };
 });

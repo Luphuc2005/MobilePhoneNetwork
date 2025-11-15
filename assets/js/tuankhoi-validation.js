@@ -58,7 +58,6 @@ formDangKy.innerHTML = `
             </div>
         </div>
         `;
-formDangKy.style.display="none";
 
 const formDangNhap = document.createElement("div");
 formDangNhap.setAttribute("id", "formDangNhap");
@@ -100,8 +99,7 @@ formDangNhap.innerHTML = `
                 </div>
             </div>
         </div>
-`
-formDangNhap.style.display="none";
+`;
 
 //Lấy các element trong form để gắn EventListener
 const regname = document.getElementById("hoVaTenDangKy");
@@ -145,15 +143,21 @@ showPassword.keys().forEach((key) => {
 });
 
 signUpRedirect.onclick = function (event) { 
-    formDangNhap.style.display="none";
-    formDangKy.style.display="";
-    console.log("Test");
+    formBackground[1].classList.toggle("open");
+    setTimeout(() => {
+        formDangNhap.style.visibility="hidden";
+        formDangKy.style.visibility="visible";
+        formBackground[0].classList.toggle("open");
+    }, 250);
 }
 
 signInRedirect.onclick = function (event) {
-    formDangKy.style.display="none";
-    formDangNhap.style.display="";
-    console.log("Test");
+    formBackground[0].classList.toggle("open");
+    setTimeout(() => {
+            formDangKy.style.visibility="hidden";
+            formDangNhap.style.visibility="visible";
+            formBackground[1].classList.toggle("open");
+        }, 250);
 }
 //Tắt thông báo kiểm tra hợp lệ khi người dùng input
 regname.oninput = function e() {
@@ -280,18 +284,21 @@ form[1].addEventListener("submit", (e) => {
             if (agree)
                 sessionStorage.setItem(STORAGE_KEYS.REMEMBER_ME, agree)
             drawDropdownMenu();
+            window.location.reload();
         }
     }
 });
 
 function drawFormDangKy() {
     console.log("Draw form dang ky");
-    formDangKy.style.display="";
+    formDangKy.style.visibility="visible";
+    formBackground[0].classList.add("open");
 }
 
 function drawFormDangNhap() {
     console.log("Draw form dang nhap")
-    formDangNhap.style.display="";
+    formDangNhap.style.visibility="visible";
+    formBackground[1].classList.add("open");
 }
 
 //Thoát form khi ấn ra ngoài
@@ -300,15 +307,23 @@ const closeButton = document.getElementsByClassName("close-form");
 window.onclick = function (event) {
     if (event.target == formBackground[0] || event.target == closeButton[0])
     {
-        formDangKy.style.display="none";
         form[0].reset();
         showPassword.forEach((button) => button.style.visibility="hidden");
+        passreq[0].style.color="black";
+        passreq[1].style.color="black";
+        formBackground[0].classList.remove("open");
+        this.setTimeout(() => {
+            formDangKy.style.visibility="hidden";
+        }, 250);
     }
     else if (event.target == formBackground[1] || event.target == closeButton[1])
     {
-        formDangNhap.style.display="none";
         form[1].reset();
         showPassword.forEach((button) => button.style.visibility="hidden");
+        formBackground[1].classList.remove("open");
+        this.setTimeout(() => {
+            formDangNhap.style.visibility="hidden";
+        }, 250);
     }
 }
 
@@ -356,7 +371,7 @@ function registerUser(regName, regMail, regPass)
     Array.from(passreq).forEach(req => {
         req.style.color="initial";
     });
-    formDangKy.style.display="none";
+    formDangKy.style.visibility="hidden";
     return true;
 }
 
@@ -372,7 +387,7 @@ function loginUser(logEmail, logPass)
             if (userList[i].trangthai != "locked") {
                 formDangNhap.getElementsByClassName("form")[0].reset();
                 localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(userList[i]));
-                formDangNhap.style.display="none";
+                formDangNhap.style.visibility="hidden";
                 return 0;
             }
             else{
@@ -385,13 +400,16 @@ function loginUser(logEmail, logPass)
     return 2;
 }
 
-window.onbeforeunload = function (event)
-{ 
-    const remember = this.sessionStorage.getItem(STORAGE_KEYS.REMEMBER_ME) || false;
-    const navigating = this.localStorage.getItem("navigating") || false;
-    if (remember == false && navigating == false)
-    { 
-        this.localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+function showNotif(message, type) {
+    const notif = document.createElement("div");
+    notif.setAttribute("class", "toast");
+    document.body.appendChild(notif);
+    notif.classList.add("show");
+    if (type == "success")
+    {
+        
     }
-    this.localStorage.removeItem("navigating");
+    notif.innerHTML = `Test`
+    console.log("Test");
 }
+
