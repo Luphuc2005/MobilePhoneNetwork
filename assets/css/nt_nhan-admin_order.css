@@ -455,3 +455,100 @@ body {
     margin: 10px;
     width: calc(20% - 20px);
 }
+
+@media (max-width: 992px) {
+    .order-content {
+        flex-direction: column;
+    }
+    .order-content .customer-info,
+    .order-content .order-info {
+        width: 100%;
+    }
+    .order-item .order-content {
+        padding: 16px;
+    }
+    .order-header .order-status {
+        position: static;
+        transform: none;
+        display: inline-block;
+        margin-top: 8px;
+        right: auto;
+        top: auto;
+    }
+    .content-footer {
+        flex-direction: column;
+    }
+    .content-footer .page-number,
+    .content-footer .page-controler {
+        width: 100%;
+        justify-content: center;
+        padding: 12px;
+    }
+    .page-controler .page-item {
+        margin: 6px;
+    }
+    .order-list .order-item {
+        margin: 20px 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .order-search-bar form {
+        gap: 8px;
+    }
+    .search-element {
+        width: 100%;
+        margin: 8px 0;
+    }
+    .status-update-form {
+        width: 100%;
+        margin: 8px 0;
+    }
+    .content-footer {
+        flex-direction: column;
+    }
+    .content-footer .page-number,
+    .content-footer .page-controler {
+        width: 100%;
+        justify-content: center;
+        padding: 12px;
+    }
+    .page-controler .page-item {
+        margin: 6px;
+    }
+    .order-list .order-item {
+        margin: 20px 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .order-search-bar {
+        padding: 12px;
+    }
+    .order-header .order-header-item {
+        display: block;
+        padding: 0 10px;
+    }
+    .detail-order-wrapper {
+        padding: 12px;
+    }
+    .detail-order-wrapper .detail-content {
+        padding: 16px;
+        max-width: 100%;
+    }
+    .detail-product-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .detail-product-item .detail-product-img-wrapper {
+        margin: 8px 10px;
+    }
+    .detail-product-item .detail-product-info {
+        width: 100%;
+    }
+    .detail-product-item .detail-product-price {
+        width: 100%;
+        margin: 8px 10px;
+        text-align: right;
+    }
+}
