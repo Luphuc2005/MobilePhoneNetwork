@@ -66,7 +66,7 @@ function renderProducts(page = 1) {
         </div>
         <div class="product-actions">
           <button class="btn-detail">Chi tiết</button>
-          <button class="btn-cart">Mua ngay</button>
+          <button class="btn-cart">Thêm vào giỏ hàng</button>
         </div>
       </div>
     `;
@@ -272,8 +272,6 @@ function setupProductCardEvents() {
                 
                 // 3. Lưu dữ liệu mới vào localStorage
                 localStorage.setItem('productDetail', JSON.stringify(productDetail));
-                let products = document.getElementById("products");
-                products.style.display="none";
                 let categoryCard = document.getElementById("category-card");
                 categoryCard.style.display="none";
                 let searchProductWrapper = document.getElementsByClassName("search-product-wrapper")[0];
@@ -315,76 +313,279 @@ function setupProductCardEvents() {
                     return;
                 }
                 
-                // Lấy màu và bộ nhớ mặc định (phần tử đầu tiên)
-                const defaultColor = Array.isArray(foundProduct.color) && foundProduct.color.length > 0 
-                    ? foundProduct.color[0] 
-                    : "";
-                const defaultMemory = Array.isArray(foundProduct.memory) && foundProduct.memory.length > 0 
-                    ? foundProduct.memory[0] 
-                    : "";
+                // cho nguoi dung Chọn màu và bộ nhớ
+                const defaultColor = Array.isArray(foundProduct.color) && foundProduct.color.length > 0 ? foundProduct.color[0] : "";
+                const defaultMemory = Array.isArray(foundProduct.memory) && foundProduct.memory.length > 0 ? foundProduct.memory[0] : "";
                 
+                // Tạo modal overlay
+                const modalOverlay = document.createElement('div');
+                modalOverlay.id = 'product-options-modal';
+                modalOverlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.6);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 9999;
+                    animation: fadeIn 0.3s ease;
+                `;
                 
-                // Lấy giỏ hàng hiện tại và chuẩn hóa dữ liệu
-                let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                modalOverlay.innerHTML = `
+                    <style>
+                        @keyframes fadeIn {
+                            from { opacity: 0; }
+                            to { opacity: 1; }
+                        }
+                        @keyframes slideUp {
+                            from {
+                                opacity: 0;
+                                transform: translateY(20px);
+                            }
+                            to {
+                                opacity: 1;
+                                transform: translateY(0);
+                            }
+                        }
+                        #product-options-modal .modal-content {
+                            background: #ffffff;
+                            border-radius: 16px;
+                            padding: 32px;
+                            max-width: 450px;
+                            width: 90%;
+                            position: relative;
+                            animation: slideUp 0.3s ease;
+                            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                        }
+                        #product-options-modal .close-btn {
+                            position: absolute;
+                            top: 16px;
+                            right: 16px;
+                            width: 32px;
+                            height: 32px;
+                            border: none;
+                            background: #f3f4f6;
+                            border-radius: 50%;
+                            font-size: 20px;
+                            color: #6b7280;
+                            cursor: pointer;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            transition: all 0.2s ease;
+                        }
+                        #product-options-modal .close-btn:hover {
+                            background: #ef4444;
+                            color: white;
+                            transform: rotate(90deg);
+                        }
+                        #product-options-modal h3 {
+                            font-size: 24px;
+                            font-weight: 700;
+                            color: #1f2937;
+                            margin-bottom: 24px;
+                            padding-right: 40px;
+                        }
+                        #product-options-modal .product-preview {
+                            display: flex;
+                            align-items: center;
+                            gap: 12px;
+                            padding: 12px;
+                            background: #f9fafb;
+                            border-radius: 10px;
+                            margin-bottom: 20px;
+                        }
+                        #product-options-modal .product-preview img {
+                            width: 60px;
+                            height: 60px;
+                            object-fit: contain;
+                            border-radius: 8px;
+                            background: white;
+                        }
+                        #product-options-modal .product-preview-name {
+                            font-size: 14px;
+                            font-weight: 600;
+                            color: #1f2937;
+                            margin-bottom: 4px;
+                        }
+                        #product-options-modal .product-preview-price {
+                            font-size: 16px;
+                            font-weight: 700;
+                            color: #667eea;
+                        }
+                        #product-options-modal .selection-group {
+                            margin-bottom: 20px;
+                        }
+                        #product-options-modal label {
+                            display: block;
+                            font-size: 14px;
+                            font-weight: 600;
+                            color: #374151;
+                            margin-bottom: 8px;
+                        }
+                        #product-options-modal select {
+                            width: 100%;
+                            padding: 12px 16px;
+                            font-size: 15px;
+                            color: #1f2937;
+                            background: #f9fafb;
+                            border: 2px solid #e5e7eb;
+                            border-radius: 10px;
+                            cursor: pointer;
+                            transition: all 0.2s ease;
+                        }
+                        #product-options-modal select:hover {
+                            border-color: #667eea;
+                            background-color: #ffffff;
+                        }
+                        #product-options-modal select:focus {
+                            outline: none;
+                            border-color: #667eea;
+                            background-color: #ffffff;
+                            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+                        }
+                        #product-options-modal .confirm-btn {
+                            width: 100%;
+                            padding: 14px;
+                            margin-top: 24px;
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            color: white;
+                            border: none;
+                            border-radius: 10px;
+                            font-size: 16px;
+                            font-weight: 600;
+                            cursor: pointer;
+                            transition: all 0.2s ease;
+                            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+                        }
+                        #product-options-modal .confirm-btn:hover {
+                            transform: translateY(-2px);
+                            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+                        }
+                    </style>
+                    <div class="modal-content">
+                        <button type="button" class="close-btn">&times;</button>
+                        <h3>Chọn thông tin sản phẩm</h3>
+                        
+                        <div class="product-preview">
+                            <img src="${foundProduct.hinhanh}" alt="${foundProduct.tensanpham}">
+                            <div>
+                                <div class="product-preview-name">${foundProduct.tensanpham}</div>
+                                <div class="product-preview-price">${foundProduct.gia.toLocaleString('vi-VN')}₫</div>
+                            </div>
+                        </div>
+                        
+                        <div class="selection-group">
+                            <label>🎨 Màu sắc:</label>
+                            <select id="color-select">
+                                ${foundProduct.color && Array.isArray(foundProduct.color) ? foundProduct.color.map(color => `<option value="${color}">${color}</option>`).join('') : `<option value="">Mặc định</option>`}
+                            </select>
+                        </div>
+                        
+                        <div class="selection-group">
+                            <label>💾 Bộ nhớ:</label>
+                            <select id="memory-select">
+                                ${foundProduct.memory && Array.isArray(foundProduct.memory) ? foundProduct.memory.map(memory => `<option value="${memory}">${memory}</option>`).join('') : `<option value="">Mặc định</option>`}
+                            </select>
+                        </div>
+                        
+                        <button type="button" class="confirm-btn">Xác nhận</button>
+                    </div>
+                `;
                 
-                // Chuẩn hóa cart: đảm bảo price là string, có color và memory
-                cart = cart.map(item => ({
-                    ...item,
-                    price: typeof item.price === 'number' ? item.price.toString() : item.price,
-                    color: item.color || "",
-                    memory: item.memory || ""
-                }));
+                document.body.appendChild(modalOverlay);
                 
-                // Tìm sản phẩm đã có trong giỏ (so sánh name + color + memory)
-                let existingProduct = cart.find(item => 
-                    item.name === foundProduct.tensanpham && 
-                    (item.color || "") === defaultColor && 
-                    (item.memory || "") === defaultMemory
-                );
+                // Hàm đóng modal
+                const closeModal = () => {
+                    modalOverlay.remove();
+                };
                 
-                if (existingProduct) {
-                    // Nếu đã có, tăng số lượng
-                    existingProduct.quantity += 1;
-                    alert(`Đã thêm 1 sản phẩm nữa vào giỏ hàng!\nTổng số lượng: ${existingProduct.quantity}`);
-                } else {
-                    // Nếu chưa có, thêm mới
-                    cart.push({
-                        img: foundProduct.hinhanh,
-                        name: foundProduct.tensanpham,
-                        color: defaultColor,
-                        memory: defaultMemory,
-                        price: foundProduct.gia.toString(),
-                        quantity: 1
-                    });
+                // Đóng khi click nút X
+                modalOverlay.querySelector('.close-btn').onclick = closeModal;
+                
+                // Đóng khi click overlay (không phải modal content)
+                modalOverlay.onclick = (e) => {
+                    if (e.target === modalOverlay) {
+                        closeModal();
+                    }
+                };
+                
+                // Xác nhận và thêm vào giỏ
+                modalOverlay.querySelector('.confirm-btn').onclick = () => {
+                    const selectedColor = document.getElementById('color-select').value || defaultColor;
+                    const selectedMemory = document.getElementById('memory-select').value || defaultMemory;
+                    closeModal();
+                    addToCartWithOptions(foundProduct, selectedColor, selectedMemory);
+                };
+                
+                // Hàm thêm vào giỏ hàng với options đã chọn
+                function addToCartWithOptions(product, color, memory) {
+                    // Lấy giỏ hàng hiện tại và chuẩn hóa dữ liệu
+                    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
                     
-                    const productInfo = defaultColor && defaultMemory 
-                        ? `"${foundProduct.tensanpham} - ${defaultMemory} - ${defaultColor}"`
-                        : `"${foundProduct.tensanpham}"`;
-                    alert(`Đã thêm ${productInfo} vào giỏ hàng!`);
+                    // Chuẩn hóa cart: đảm bảo price là string, có color và memory
+                    cart = cart.map(item => ({
+                        ...item,
+                        price: typeof item.price === 'number' ? item.price.toString() : item.price,
+                        color: item.color || "",
+                        memory: item.memory || ""
+                    }));
+                    
+                    // Tìm sản phẩm đã có trong giỏ (so sánh name + color + memory)
+                    let existingProduct = cart.find(item => 
+                        item.name === product.tensanpham && 
+                        (item.color || "") === color && 
+                        (item.memory || "") === memory
+                    );
+                    
+                    if (existingProduct) {
+                        // Nếu đã có, tăng số lượng
+                        existingProduct.quantity += 1;
+                        alert(`Đã thêm 1 sản phẩm nữa vào giỏ hàng!\nTổng số lượng: ${existingProduct.quantity}`);
+                    } else {
+                        // Nếu chưa có, thêm mới
+                        cart.push({
+                            img: product.hinhanh,
+                            name: product.tensanpham,
+                            color: color,
+                            memory: memory,
+                            price: product.gia.toString(),
+                            quantity: 1
+                        });
+                        
+                        const productInfo = color && memory 
+                            ? `"${product.tensanpham} - ${memory} - ${color}"`
+                            : `"${product.tensanpham}"`;
+                        alert(`Đã thêm ${productInfo} vào giỏ hàng!`);
+                    }
+                    
+                    // Lưu giỏ hàng vào localStorage
+                    console.log('🛒 Giỏ hàng đã được cập nhật:', JSON.stringify(cart));
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    
+                    // Cập nhật số lượng hiển thị trên icon giỏ hàng
+                    if (typeof window.updateCartCount === 'function') {
+                        window.updateCartCount();
+                    }
+                    
+                    // Cập nhật render cart nếu đang ở trang giỏ hàng
+                    if (typeof window.renderCartItems === 'function') {
+                        window.renderCartItems();
+                    }
+                    
+                    // Hiệu ứng animation cho nút
+                    const originalText = btnCart.innerHTML;
+                    btnCart.innerHTML = '<i class="fa-solid fa-check"></i> Đã thêm';
+                    btnCart.style.backgroundColor = '#16A34A';
+                    
+                    setTimeout(() => {
+                        btnCart.innerHTML = originalText;
+                        btnCart.style.backgroundColor = '';
+                    }, 1500);
                 }
-                
-                // Lưu giỏ hàng vào localStorage
-                console.log('🛒 Giỏ hàng đã được cập nhật:', JSON.stringify(cart));
-                localStorage.setItem('cart', JSON.stringify(cart));
-                // Cập nhật số lượng hiển thị trên icon giỏ hàng
-                if (typeof window.updateCartCount === 'function') {
-                    window.updateCartCount();
-                }
-                
-                // Cập nhật render cart nếu đang ở trang giỏ hàng
-                if (typeof window.renderCartItems === 'function') {
-                    window.renderCartItems();
-                }
-                
-                // Hiệu ứng animation cho nút
-                const originalText = btnCart.innerHTML;
-                btnCart.innerHTML = '<i class="fa-solid fa-check"></i> Đã thêm';
-                btnCart.style.backgroundColor = '#16A34A';
-                
-                setTimeout(() => {
-                    btnCart.innerHTML = originalText;
-                    btnCart.style.backgroundColor = '';
-                }, 1500);
             };
         }
     }
@@ -562,6 +763,8 @@ function renderProductDetailPage(detail) {
         </div>
             `;
             
+        //Di Chuyển đến đầu trang
+        window.scrollTo(0, 0);
         // GẮN EVENT CHO NÚT "TIẾP TỤC MUA HÀNG" SAU KHI RENDER
         setupContinueShoppingButton();
     } else if (!productContainer) {
@@ -783,7 +986,7 @@ function setupAddToCartButton() {
         } else {
             // Nếu chưa có, thêm mới
             cart.push({
-                img: productDetail.img,
+                img: productDetail.img[0],
                 name: productName,
                 color: productColor,
                 memory: productMemory,

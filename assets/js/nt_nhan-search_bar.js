@@ -106,7 +106,9 @@ function renderFilteredProducts() {
             </div>
             <div class="product-actions">
                 <button class="btn-detail">Chi tiết</button>
-                <button class="btn-cart">Mua ngay</button>
+                <button class="btn-cart" title="Thêm vào giỏ hàng">
+                    <span style="margin-left: 6px;">Giỏ hàng</span>
+                </button>
             </div>
         </div>
     `).join('');
