@@ -328,6 +328,34 @@ function addOrder(date, address, customer_id, amount, purchase, product_list) {
     // Cập nhật biến global allOrder
     allOrder = currentOrders;
     
+    // ====== TỰ ĐỘNG CẬP NHẬT SỐ ĐƠN HÀNG CỦA KHÁCH HÀNG ======
+    try {
+        // Lấy danh sách users từ localStorage
+        let users = JSON.parse(localStorage.getItem('phonestore_users') || '[]');
+        
+        // Tìm user có customer_id tương ứng
+        const userIndex = users.findIndex(u => u.id === customer_id);
+        
+        if (userIndex !== -1) {
+            // Tăng số đơn hàng lên 1
+            users[userIndex].orders = (users[userIndex].orders || 0) + 1;
+            
+            // Lưu lại vào localStorage
+            localStorage.setItem('phonestore_users', JSON.stringify(users));
+            
+            console.log(`✅ Đã cập nhật số đơn hàng cho khách hàng ID ${customer_id}: ${users[userIndex].orders} đơn`);
+            
+            // Dispatch event để trang admin có thể cập nhật UI nếu đang mở
+            window.dispatchEvent(new CustomEvent('phonestore-user-orders-updated', {
+                detail: { customerId: customer_id, orders: users[userIndex].orders }
+            }));
+        } else {
+            console.warn(`⚠️ Không tìm thấy khách hàng với ID ${customer_id}`);
+        }
+    } catch (error) {
+        console.error('❌ Lỗi khi cập nhật số đơn hàng:', error);
+    }
+    
     // preProcessing chỉ có ở trang admin, kiểm tra trước khi gọi
     if (typeof preProcessing === 'function') {
         // preProcessing(5, allOrder, customerData, allOrder.length);
