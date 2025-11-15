@@ -256,6 +256,7 @@ function setupProductCardEvents() {
                 
                 // 2. Thu thập dữ liệu từ card
                 let productDetail = {
+                    discount: productDetailString.discount || 0,
                     img: productDetailString.images,
                     hinhanh: productDetailString.hinhanh,
                     name: productDetailString.tensanpham,
@@ -645,7 +646,7 @@ function renderProductDetailPage(detail) {
             </div>
             
             <div class="product-details">
-                <span class="sale-badge">GIẢM 10%</span>
+                <span class="sale-badge">GIẢM ${detail.discount}%</span>
                 <h1>${detail.name}</h1>
                 
                 <div class="reviews">
