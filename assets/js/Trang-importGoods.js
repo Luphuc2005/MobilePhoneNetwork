@@ -169,7 +169,7 @@ function initImportPage() {
         <input type="text" class="prod-name" placeholder="Tên sản phẩm mới" style="display:none;">
       </td>
       <td><input type="number" class="prod-price" placeholder="Giá nhập" readonly></td>
-      <td><input type="number" class="prod-qty" placeholder="Số lượng"></td>
+      <td><input type="number" class="prod-qty" placeholder="Số lượng" id="quality"></td>
       <td class="prod-total">0₫</td>
       <td><button type="button" class="btn-del">🗑️</button></td>`;
     productDetailBody.appendChild(row);
@@ -225,7 +225,14 @@ function initImportPage() {
   // =================== LƯU PHIẾU NHẬP ===================
   form.onsubmit = (e) => {
     e.preventDefault();
+    let sl = document.getElementById("quality");
+    if (sl.value < 1) {
+      const products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
+    console.log(products.length);
 
+      alert("Vui lòng nhập số lượng lớn hơn 1");
+      return;
+    }
     const date = document.getElementById("importDate").value;
     const rows = Array.from(productDetailBody.querySelectorAll("tr"));
 

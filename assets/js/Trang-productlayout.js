@@ -32,7 +32,8 @@ if (document.readyState === "loading") {
     let a = document.getElementsByClassName("sidebar-menu-item")[2];
     a.addEventListener("click", () => {
       // 1. Lấy dữ liệu từ localStorage
-      let productAll = JSON.parse(localStorage.getItem("phonestore_products")) || [];
+      let productAll =
+        JSON.parse(localStorage.getItem("phonestore_products")) || [];
 
       console.log(productAll);
       const productsContent = document.getElementById("products-content");
@@ -44,9 +45,10 @@ if (document.readyState === "loading") {
   });
 } else {
 }
+
 // ====================== PRODUCT PAGE ======================
-function initProductPage(x) {
-  let products = x;
+function initProductPage(data) {
+  let products = data;
   // Inject HTML vào container nếu chưa có
   const container = document.getElementById("product-management");
   if (container && !document.getElementById("productTable")) {
@@ -167,7 +169,6 @@ function initProductPage(x) {
     renderTable(currentPage);
     renderPagination();
   }
-
   document
     .getElementById("addProductBtn")
     .addEventListener("click", () => openAddForm(reload));
@@ -194,14 +195,25 @@ function initProductPage(x) {
 function openEditForm(p, onSaved) {
   const form = document.querySelector(".edit-form-overlay");
   form.style.display = "flex";
+
   form.querySelector(".form-title").textContent = "✏️ Sửa sản phẩm";
+
+  // ⬇ Gán dữ liệu vào form
   form.querySelector(".editName").value = p.tensanpham;
   form.querySelector(".editCategory").value = p.danhmuc;
-  form.querySelector(".editPrice").value = p.giavon;
+  form.querySelector(".editPrice").value = p.gia;
+  form.querySelector(".editCostPrice").value = p.giavon || "";
+  form.querySelector(".editOldPrice").value = p.oldPrice || "";
   form.querySelector(".editQuantity").value = p.soluong;
+  form.querySelector(".editStatus").value = p.trangthai ? "true" : "false";
+  form.querySelector(".editRating").value = p.rating || "";
+  form.querySelector(".editReviews").value = p.reviews || "";
+  form.querySelector(".editColors").value = (p.color || []).join(", ");
+  form.querySelector(".editMemory").value = (p.memory || []).join(", ");
+
   form.querySelector(".editDescription").value = p.description || "";
 
-  // --- Xử lý preview ảnh cũ ---
+  // Ảnh preview
   const preview = form.querySelector("#editImagePreview");
   if (p.hinhanh) {
     preview.src = p.hinhanh;
@@ -211,14 +223,14 @@ function openEditForm(p, onSaved) {
     preview.style.display = "none";
   }
 
-  // --- Lưu thay đổi ---
+  // ✔ Lưu thay đổi
   form.querySelector(".save-btn").onclick = (e) => {
     e.preventDefault();
 
-    // ✅ Kiểm tra hợp lệ trước khi lưu
     if (!validateEditForm(form)) return;
 
-    const products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
+    const products =
+      JSON.parse(localStorage.getItem("phonestore_products")) || [];
     const idx = products.findIndex((x) => x.id === p.id);
 
     if (idx > -1) {
@@ -226,10 +238,25 @@ function openEditForm(p, onSaved) {
         ...products[idx],
         tensanpham: form.querySelector(".editName").value.trim(),
         danhmuc: form.querySelector(".editCategory").value,
-        giavon: +form.querySelector(".editPrice").value,
+        gia: +form.querySelector(".editPrice").value,
+        giavon: +form.querySelector(".editCostPrice").value,
+        oldPrice: +form.querySelector(".editOldPrice").value,
         soluong: +form.querySelector(".editQuantity").value,
+        trangthai: form.querySelector(".editStatus").value === "true",
+        rating: +form.querySelector(".editRating").value,
+        reviews: +form.querySelector(".editReviews").value,
+        color: form
+          .querySelector(".editColors")
+          .value.split(",")
+          .map((x) => x.trim())
+          .filter((x) => x),
+        memory: form
+          .querySelector(".editMemory")
+          .value.split(",")
+          .map((x) => x.trim())
+          .filter((x) => x),
         description: form.querySelector(".editDescription").value.trim(),
-        hinhanh: document.querySelector("#editImagePreview")?.src || p.hinhanh, // ✅ giữ ảnh cũ nếu chưa chọn mới
+        hinhanh: preview.src || p.hinhanh,
       };
 
       localStorage.setItem("phonestore_products", JSON.stringify(products));
@@ -240,11 +267,12 @@ function openEditForm(p, onSaved) {
     }
   };
 }
-
 function openAddForm(onSaved) {
   const form = document.querySelector(".edit-form-overlay");
   form.style.display = "flex";
   form.querySelector(".form-title").textContent = "➕ Thêm sản phẩm mới";
+
+  // Reset form
   form.querySelectorAll("input, textarea").forEach((el) => (el.value = ""));
   const preview = form.querySelector("#editImagePreview");
   preview.src = "";
@@ -253,23 +281,38 @@ function openAddForm(onSaved) {
   form.querySelector(".save-btn").onclick = (e) => {
     e.preventDefault();
 
-    // ✅ Gọi hàm kiểm tra
     if (!validateEditForm(form)) return;
 
-    const products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
+    const products =
+      JSON.parse(localStorage.getItem("phonestore_products")) || [];
+
     const newProduct = {
       id: products.length ? Math.max(...products.map((x) => x.id)) + 1 : 1,
       tensanpham: form.querySelector(".editName").value.trim(),
       danhmuc: form.querySelector(".editCategory").value,
-      giavon: +form.querySelector(".editPrice").value,
+      gia: +form.querySelector(".editPrice").value,
+      giavon: +form.querySelector(".editCostPrice").value,
+      oldPrice: +form.querySelector(".editOldPrice").value,
       soluong: +form.querySelector(".editQuantity").value,
+      trangthai: form.querySelector(".editStatus").value === "true",
+      rating: +form.querySelector(".editRating").value,
+      reviews: +form.querySelector(".editReviews").value,
+      color: form
+        .querySelector(".editColors")
+        .value.split(",")
+        .map((x) => x.trim())
+        .filter((x) => x),
+      memory: form
+        .querySelector(".editMemory")
+        .value.split(",")
+        .map((x) => x.trim())
+        .filter((x) => x),
       description: form.querySelector(".editDescription").value.trim(),
-      hinhanh:
-        document.querySelector("#editImagePreview")?.src ||
-        "https://via.placeholder.com/80",
+      hinhanh: preview.src || "https://via.placeholder.com/150",
     };
 
     products.unshift(newProduct);
+
     localStorage.setItem("phonestore_products", JSON.stringify(products));
 
     alert("✅ Thêm sản phẩm thành công!");
@@ -285,21 +328,25 @@ function renderForm() {
   const formContainer = document.createElement("div");
   formContainer.className = "edit-form-overlay";
   formContainer.style.display = "none";
-  formContainer.style.justifyContent = "center";
-  formContainer.style.alignItems = "center";
 
   formContainer.innerHTML = `
     <div class="edit-form-content">
+
       <button class="close-btn">×</button>
       <h2 class="form-title">✏️ Sửa sản phẩm</h2>
+
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+
+        <!-- Tên sản phẩm -->
         <div class="form-group">
           <label>Tên sản phẩm</label>
           <input type="text" class="editName" placeholder="Nhập tên sản phẩm..." />
         </div>
+
+        <!-- Danh mục -->
         <div class="form-group">
           <label>Danh mục</label>
-          <select class="editCategory" style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:8px;">
+          <select class="editCategory">
             <option value="">-- Chọn danh mục --</option>
             <option value="Iphone">🍎 Iphone</option>
             <option value="Samsung">📱 Samsung</option>
@@ -310,13 +357,50 @@ function renderForm() {
             <option value="Nokia">📞 Nokia</option>
           </select>
         </div>
+
+        <!-- Giá bán -->
         <div class="form-group">
-          <label>Giá</label>
-          <input type="number" class="editPrice" placeholder="Nhập giá..." min="1" />
+          <label>Giá bán</label>
+          <input type="number" class="editPrice" placeholder="Nhập giá bán..." min="1" />
         </div>
+
+        <!-- Giá vốn -->
+        <div class="form-group">
+          <label>Giá vốn</label>
+          <input type="number" class="editCostPrice" placeholder="Nhập giá vốn..." min="1" />
+        </div>
+
+        <!-- Giá cũ -->
+        <div class="form-group">
+          <label>Giá cũ (nếu có)</label>
+          <input type="number" class="editOldPrice" placeholder="Nhập giá cũ..." min="1" />
+        </div>
+
+        <!-- Số lượng -->
         <div class="form-group">
           <label>Số lượng</label>
-          <input type="number" class="editQuantity" placeholder="Nhập số lượng..." min="1"/>
+          <input type="number" class="editQuantity" placeholder="Nhập số lượng..." min="1" />
+        </div>
+
+        <!-- Trạng thái -->
+        <div class="form-group">
+          <label>Trạng thái</label>
+          <select class="editStatus">
+            <option value="true">Còn hàng</option>
+            <option value="false">Hết hàng</option>
+          </select>
+        </div>
+
+        <!-- Rating -->
+        <div class="form-group">
+          <label>Đánh giá (sao)</label>
+          <input type="number" class="editRating" step="0.1" min="0" max="5" placeholder="4.5" disabled />
+        </div>
+
+        <!-- Reviews -->
+        <div class="form-group">
+          <label>Số lượt đánh giá</label>
+          <input type="number" class="editReviews" placeholder="0" min="0" disabled />
         </div>
 
         <!-- Upload ảnh -->
@@ -324,13 +408,18 @@ function renderForm() {
           <div class="uploadimage">
             <label style="font-weight:500; margin-bottom:6px;">Hình ảnh sản phẩm</label>
             <label for="editImageFile"
-              style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:140px; border:2px dashed #ccc; border-radius:12px; cursor:pointer; background:#fafafa;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" stroke="#aaa" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round" class="mb-2">
+              style="display:flex; flex-direction:column; align-items:center; justify-content:center;
+              width:100%; height:140px; border:2px dashed #ccc; border-radius:12px;
+              cursor:pointer; background:#fafafa;">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none"
+                stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M4 16v1a1 1 0 001 1h14a1 1 0 001-1v-1M12 12v9m0 0l-3-3m3 3l3-3M12 3v9" />
               </svg>
-              <p style="color:#666; font-weight:500;">Click để tải ảnh lên</p>
-              <p style="color:#999; font-size:12px;">PNG, JPG (max 5MB)</p>
+
+              <p style="color:#666;font-weight:500;">Click để tải ảnh lên</p>
+              <p style="color:#999;font-size:12px;">PNG, JPG (max 5MB)</p>
+
               <input id="editImageFile" type="file" accept="image/*" style="display:none;" />
             </label>
           </div>
@@ -342,41 +431,33 @@ function renderForm() {
           </div>
         </div>
 
+        <!-- Màu sắc -->
         <div class="form-group" style="grid-column:span 2;">
-          <label>Mô tả</label>
-          <textarea class="editDescription" style="width:100%;min-height:80px;padding:8px;border:1px solid #ddd;border-radius:8px;"></textarea>
+          <label>Màu sắc (cách nhau bởi dấu phẩy)</label>
+          <input type="text" class="editColors" placeholder="VD: Đen, Tím, Vàng, Bạc" />
         </div>
 
+        <!-- Dung lượng -->
+        <div class="form-group" style="grid-column:span 2;">
+          <label>Dung lượng (cách nhau bởi dấu phẩy)</label>
+          <input type="text" class="editMemory" placeholder="VD: 128GB, 256GB, 512GB, 1TB" />
+        </div>
+
+        <!-- Mô tả -->
+        <div class="form-group" style="grid-column:span 2;">
+          <label>Mô tả</label>
+          <textarea class="editDescription" style="height:80px;"></textarea>
+        </div>
+
+        <!-- Buttons -->
         <div class="form-actions" style="
           grid-column: span 2;
           display: flex;
           justify-content: flex-end;
           gap: 10px;
-          margin-top: 12px;
         ">
-          <button class="cancel-btn" style="
-            padding: 8px 18px;
-            border: 1px solid #ccc;
-            background: #f5f5f5;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s ease;
-          ">
-            Hủy
-          </button>
-          <button class="save-btn" style="
-            padding: 8px 18px;
-            background: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s ease;
-          ">
-             Lưu thay đổi
-          </button>
+          <button class="cancel-btn">Hủy</button>
+          <button class="save-btn">Lưu thay đổi</button>
         </div>
 
       </div>
@@ -385,25 +466,28 @@ function renderForm() {
 
   document.body.appendChild(formContainer);
 
-  // --- Đóng form ---
+  // Đóng form
   formContainer.querySelector(".close-btn").onclick = () =>
     (formContainer.style.display = "none");
   formContainer.querySelector(".cancel-btn").onclick = (e) => {
     e.preventDefault();
     formContainer.style.display = "none";
   };
+
+  // Click ra ngoài để đóng
   formContainer.addEventListener("click", (e) => {
     if (e.target.classList.contains("edit-form-overlay")) {
       e.target.style.display = "none";
     }
   });
 
-  // ✅ Xử lý preview ảnh khi upload mới
+  // Upload ảnh preview
   formContainer
     .querySelector("#editImageFile")
     .addEventListener("change", (e) => {
       const file = e.target.files[0];
       const preview = document.getElementById("editImagePreview");
+
       if (file) {
         const reader = new FileReader();
         reader.onload = (event) => {
@@ -417,6 +501,7 @@ function renderForm() {
       }
     });
 }
+
 function validateEditForm() {
   const name = document.querySelector(".editName").value.trim();
   const category = document.querySelector(".editCategory").value;

@@ -217,3 +217,35 @@
     opacity: 1;
   }
 }
+/* Label */
+label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151; /* xám đậm */
+  margin-bottom: 4px;
+  display: inline-block;
+}
+
+/* Input date */
+input[type="date"] {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  background: #ffffff;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Khi hover */
+input[type="date"]:hover {
+  border-color: #9ca3af;
+}
+
+/* Khi focus */
+input[type="date"]:focus {
+  border-color: #2563eb;               /* xanh dương */
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
