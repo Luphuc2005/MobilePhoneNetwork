@@ -33,7 +33,7 @@ function navigateTo(sectionId,event){
         const sectionDesc = document.getElementById("section-desc");
         // lấy tên của trang 
         let linkText = sectionId;
-        const linkElement = document.querySelector(`.sidebar-menu-item[href="#${sectionId}"] span`);
+        const linkElement = document.querySelector(`.sidebar-menu-item-cate[href="#${sectionId}"] span`);
 
         if(linkElement){
             linkText = linkElement.textContent;
@@ -42,7 +42,7 @@ function navigateTo(sectionId,event){
         if(sectionDesc) sectionDesc.textContent = `Nội dung cho phần "${linkText}" sẽ được phát triển `;
         if(otherSection) otherSection.style.display ="block";
     }
-    const menuItems = document.querySelectorAll(".sidebar-menu-item");
+    const menuItems = document.querySelectorAll(".sidebar-menu-item-cate");
     menuItems.forEach(item =>{
         item.classList.remove("active");
     });
@@ -51,7 +51,7 @@ function navigateTo(sectionId,event){
         event.currentTarget.classList.add('active');
     } else {
         //không có sự kiện xảy ra -> tìm trang hiện tại hiển thị nav
-        const defaultActiveItem = document.querySelector(`.sidebar-menu-item[href="#${sectionId}"]`);
+        const defaultActiveItem = document.querySelector(`.sidebar-menu-item-cate[href="#${sectionId}"]`);
         if (defaultActiveItem) {
             defaultActiveItem.classList.add('active');
         }
