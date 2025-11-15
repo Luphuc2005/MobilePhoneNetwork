@@ -1027,6 +1027,19 @@ window.editUser = function (index) {
           </div>
         </div>
 
+        <div>
+          <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
+            🛒 Số đơn hàng
+          </label>
+          <input type="number" id="editOrdersNew" value="${
+            u.orders || 0
+          }" placeholder="Nhập số đơn hàng" min="0"
+            style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; transition: all 0.3s; box-sizing: border-box;" />
+          <p style="margin: 8px 0 0 0; font-size: 12px; color: #64748b;">
+            💡 Số đơn hàng mà khách hàng này đã mua
+          </p>
+        </div>
+
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
           <div>
             <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
@@ -1214,6 +1227,7 @@ function handleEditUser(index) {
   const phone = document.getElementById("editPhoneNew").value.trim();
   const password = document.getElementById("editPasswordNew").value.trim();
   const trangthai = document.getElementById("editTrangThaiNew").value;
+  const orders = parseInt(document.getElementById("editOrdersNew").value) || 0;
 
   // Get address from 3 fields
   const ward = document.getElementById("editWard").value.trim();
@@ -1287,6 +1301,7 @@ function handleEditUser(index) {
     address: address || "Chưa cập nhật",
     password,
     trangthai,
+    orders: orders >= 0 ? orders : 0, // Đảm bảo số đơn hàng >= 0
   };
 
   localStorage.setItem("phonestore_users", JSON.stringify(users));
@@ -1522,6 +1537,56 @@ window.addEventListener("DOMContentLoaded", () => {
       renderUsers();
     });
   }
+
+  // ====== LẮNG NGHE CẬP NHẬT SỐ ĐƠN HÀNG TỪ TRANG INDEX ======
+  // Lắng nghe event khi có đơn hàng mới
+  window.addEventListener('phonestore-user-orders-updated', (e) => {
+    const { customerId, orders } = e.detail;
+    console.log(`🔄 [Quản lý KH] Nhận thông báo cập nhật đơn hàng: Customer ID ${customerId} có ${orders} đơn`);
+    
+    // Reload users từ localStorage
+    const savedUsers = JSON.parse(localStorage.getItem("phonestore_users")) || [];
+    users = savedUsers.map((user) => ({
+      ...user,
+      address: user.address || "Chưa cập nhật",
+      orders: user.orders || 0,
+      trangthai:
+        user.trangthai === "Hoạt động"
+          ? "active"
+          : user.trangthai === "Đã khóa"
+          ? "locked"
+          : user.trangthai || "active",
+    }));
+    
+    // Render lại bảng
+    renderUsers();
+  });
+
+  // Lắng nghe thay đổi localStorage (khi có đơn hàng mới từ tab khác)
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'phonestore_users') {
+      console.log('🔄 [Quản lý KH] Phát hiện thay đổi users từ tab khác');
+      
+      // Reload users
+      const savedUsers = JSON.parse(e.newValue || '[]');
+      users = savedUsers.map((user) => ({
+        ...user,
+        address: user.address || "Chưa cập nhật",
+        orders: user.orders || 0,
+        trangthai:
+          user.trangthai === "Hoạt động"
+            ? "active"
+            : user.trangthai === "Đã khóa"
+            ? "locked"
+            : user.trangthai || "active",
+      }));
+      
+      // Render lại bảng
+      renderUsers();
+    }
+  });
+
+  console.log("✅ [Quản lý KH] Đã setup listener cho cập nhật đơn hàng");
 });
 
 // ====== ANIMATIONS ======
