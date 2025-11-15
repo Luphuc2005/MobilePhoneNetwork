@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- Dữ liệu mặc định ---
     const defaultCategories = [
-        { id: 1, icon: './assets/images/logo/iPhone.png', name: 'iPhone', description: 'Điện thoại Apple iPhone', productCount: 45, status: 'Hoạt động', iconType: 'image' },
+        { id: 1, icon: './assets/images/logo/iPhone.png', name: 'Iphone', description: 'Điện thoại Apple iPhone', productCount: 45, status: 'Hoạt động', iconType: 'image' },
         { id: 2, icon: './assets/images/logo/samsung.png', name: 'Samsung', description: 'Điện thoại Samsung Galaxy', productCount: 38, status: 'Hoạt động', iconType: 'image' },
         { id: 3, icon: './assets/images/logo/xiaomi.png', name: 'Xiaomi', description: 'Điện thoại Xiaomi', productCount: 32, status: 'Hoạt động', iconType: 'image' },
         { id: 4, icon: './assets/images/logo/oppo.png', name: 'OPPO', description: 'Điện thoại OPPO', productCount: 25, status: 'Hoạt động', iconType: 'image' },
