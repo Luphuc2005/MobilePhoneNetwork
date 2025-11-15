@@ -1,6 +1,7 @@
 // Lấy dữ liệu sản phẩm và loại sản phẩm
 let inventoryProducts = JSON.parse(localStorage.getItem('phonestore_products')) || [];
 let productCategories = JSON.parse(localStorage.getItem('phonestore_categories')) || [];
+let ordersInventory = JSON.parse(localStorage.getItem('phonestore_orders')) || [];
 
 window.addEventListener('storage', function(e) {
     if (e.key === 'phonestore_categories') {
@@ -16,7 +17,7 @@ window.addEventListener('storage', function(e) {
         // Có thể trigger lại search nếu đang có kết quả hiển thị
     }
     if (e.key === 'phonestore_orders') {
-        orders = JSON.parse(e.newValue || '[]');
+        ordersInventory = JSON.parse(e.newValue || '[]');
         initializeInventoryForm();
     }
 });
@@ -24,6 +25,7 @@ window.addEventListener('storage', function(e) {
 function checkForUpdates() {
     const currentTypes = JSON.parse(localStorage.getItem('phonestore_categories') || '[]');
     const currentInventory = JSON.parse(localStorage.getItem('phonestore_products') || '[]');
+    const currentOrders = JSON.parse(localStorage.getItem('phonestore_orders') || '[]');
     
     if (JSON.stringify(currentTypes) !== JSON.stringify(productCategories)) {
         productCategories = currentTypes;
@@ -32,6 +34,11 @@ function checkForUpdates() {
     
     if (JSON.stringify(currentInventory) !== JSON.stringify(inventoryProducts)) {
         inventoryProducts = currentInventory;
+        initializeInventoryForm();
+    }
+    
+    if (JSON.stringify(currentOrders) !== JSON.stringify(ordersInventory)) {
+        ordersInventory = currentOrders;
         initializeInventoryForm();
     }
 }
@@ -150,21 +157,20 @@ function calculateInventory(productId, startDate, endDate) {
 
     // Tính số lượng xuất (từ đơn hàng)
     const exported = orders.reduce((total, order) => {
-        // Nếu không có filter ngày, lấy tất cả
         if (!hasDateFilter) {
+            if (order.status === 'waiting' || order.status === 'cancel') return total;
             const productInOrder = order.product_list.find(([id]) => id == productIdNum);
             if (productInOrder) {
-                return total + productInOrder[1]; // [1] là số lượng
+                return total + productInOrder[1];
             }
             return total;
         }
-        
-        // Có filter ngày thì kiểm tra ngày
         const orderDate = parseDateTime(order.date);
         if (orderDate && orderDate >= startDateObj && orderDate <= endDateObj) {
+            if (order.status === 'waiting' || order.status === 'cancel') return total;
             const productInOrder = order.product_list.find(([id]) => id == productIdNum);
             if (productInOrder) {
-                return total + productInOrder[1]; // [1] là số lượng
+                return total + productInOrder[1];
             }
         }
         return total;

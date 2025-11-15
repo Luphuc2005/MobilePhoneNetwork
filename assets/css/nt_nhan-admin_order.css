@@ -115,6 +115,7 @@ body {
 
 .order-search-bar .input-date {
     margin: 20px 5px;
+    width: auto !important
 }
 
 .order-search-bar .search-btn {

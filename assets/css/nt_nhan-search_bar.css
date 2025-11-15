@@ -160,3 +160,57 @@
   color: white;
   background-color: #667eea;
 }
+
+@media (max-width: 992px) {
+  .search-product-content .product-card {
+    flex: 0 0 calc(100%/3);
+  }
+}
+
+@media (max-width: 768px) {
+  .search-product-content-wrapper {
+    gap: 16px;
+  }
+  .search-product-navbar {
+    width: 100%;
+  }
+  .search-product-content {
+    width: 100%;
+    gap: 16px;
+  }
+  .search-bar {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .search-bar input {
+    width: 100%;
+  }
+  .search-bar button {
+    width: 100%;
+    margin-top: 0;
+  }
+  .search-product-content .product-card {
+    flex: 0 0 calc(100%/2);
+  }
+}
+
+@media (max-width: 576px) {
+  .search-product-wrapper {
+    padding: 0 16px;
+  }
+  .search-product-header {
+    margin: 16px 0;
+  }
+  .search-product-content .product-card {
+    flex: 0 0 calc((100%/4));
+  }
+  .search-product-pagination {
+    gap: 6px;
+  }
+  .search-product-page-btn,
+  .search-product-nav-btn {
+    padding: 10px 12px;
+    min-width: 36px;
+    font-size: 13px;
+  }
+}
