@@ -27,6 +27,14 @@ html, body
     color: gray;
 }
 
+#formDangKy {
+    visibility: hidden;
+}
+
+#formDangNhap {
+    visibility: hidden;
+}
+
 .form-background {
     position: fixed;
     overflow: auto;
@@ -40,8 +48,13 @@ html, body
     justify-content: safe center;
     align-items: center;
     flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.2s ease-in;
 }
 
+.form-background.open {
+    opacity: 1;
+}
 
 .form-container {
     background-color: white;
@@ -53,6 +66,14 @@ html, body
     position:relative;
 }
 
+#formDangKy .form-container {
+    min-width: max-content; 
+    width: 30%;
+}
+
+#formDangKy .form {
+    width: 100%;
+}
 .form-container p {
     font-size: small;
 }
@@ -89,9 +110,8 @@ html, body
 .form {
     display: flex;
     flex-flow: column;
-    padding: 0 3dvw 0 3dvw;
+    padding: 0 25px;
 }
-
 
 #hoVaTenDangKy {
     background: url(../images/icons/auth/name.svg);
@@ -114,7 +134,7 @@ html, body
 #formDangNhap input[type="password"]  {
     width: 100%;
     min-height: 35px;
-    height: 4dvh;
+    height: 3em;
     padding-left: 40px;
     padding-right: 10px;
     margin-top: 2%;
@@ -123,6 +143,7 @@ html, body
     background-size: 20px !important;
     background-position: 10px center !important;
     border: solid 0.3px lightgray;
+    font-size: 1em;
 }
 
 #formDangKy legend,
@@ -134,8 +155,8 @@ html, body
 #formDangKy fieldset,
 #formDangNhap fieldset {
     padding: 0;
-    margin-top: 5%;
-    margin-bottom: 2%;
+    margin-top: 15px;
+    margin-bottom: 10px;
     border: none;
 }
 
