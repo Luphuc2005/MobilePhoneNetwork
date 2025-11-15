@@ -13,7 +13,7 @@ let sortBy = "id";
 let editingIndex = null;
 let totalFilteredUsers = 0; // Số lượng users sau khi filter
 
-// ====== DOM ELEMENTS (Sẽ được lấy sau khi DOM load) ======
+// ====== DOM ELEMENTS (Sẽ được lấy sau khi DOM load) ====== lữu trữ tham chiếu
 let modal,
   editModal,
   btnAdd,
@@ -39,7 +39,7 @@ function showNotification(title, message, type = "success") {
     type === "success"
       ? "linear-gradient(135deg, #10b981 0%, #059669 100%)"
       : "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)";
-  const icon = type === "success" ? "✓" : "⚠";
+  const icon = type === "success" ? "OK" : "Chưa được";
 
   const notification = document.createElement("div");
   notification.style.cssText = `
@@ -51,7 +51,7 @@ function showNotification(title, message, type = "success") {
     padding: 20px 25px;
     border-radius: 12px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    z-index: 10000;
+    z-index: 10000; 
     max-width: 400px;
     animation: slideInRight 0.4s ease;
   `;
@@ -77,7 +77,7 @@ function showNotification(title, message, type = "success") {
   `;
 
   document.body.appendChild(notification);
-  setTimeout(() => notification.remove(), 5000);
+  setTimeout(() => notification.remove(), 5000); // 5000ms = 5s
 }
 
 function showConfirmDialog(title, message, onConfirm) {
@@ -147,7 +147,12 @@ function updateStatistics() {
   const totalUsers = users.length;
   const activeUsers = users.filter((u) => u.trangthai === "active").length;
   const lockedUsers = users.filter((u) => u.trangthai === "locked").length;
-  const totalOrders = users.reduce((sum, u) => sum + (u.orders || 0), 0);
+  let totalOrders = 0;
+  for (let i = 0; i < users.length; i++) {
+    const user = users[i];
+    const orders = user.orders || 0;
+    totalOrders += orders;
+  }
 
   document.getElementById("totalUsersCount").textContent = totalUsers;
   document.getElementById("activeUsersCount").textContent = activeUsers;
@@ -157,10 +162,7 @@ function updateStatistics() {
 
 // ====== RENDER USERS ======
 function renderUsers() {
-  console.log("🔍 [renderUsers] Bắt đầu render, tổng users:", users.length);
-
   if (!userTableBody) {
-    console.error("❌ Không tìm thấy userTableBody element!");
     return;
   }
 
@@ -172,10 +174,11 @@ function renderUsers() {
   if (searchQuery) {
     filteredUsers = filteredUsers.filter(
       (u) =>
-        u.name.toLowerCase().includes(searchQuery) ||
-        u.email.toLowerCase().includes(searchQuery) ||
-        u.phone.toLowerCase().includes(searchQuery) ||
-        (u.address && u.address.toLowerCase().includes(searchQuery))
+        (u.name && u.name.toLowerCase().includes(searchQuery)) ||
+        (u.email && u.email.toLowerCase().includes(searchQuery)) ||
+        (u.phone && u.phone.toLowerCase().includes(searchQuery)) ||
+        (u.address && u.address.toLowerCase().includes(searchQuery)) ||
+        (u.id && u.id.toString().includes(searchQuery))
     );
   }
 
@@ -227,15 +230,23 @@ function renderUsers() {
     const actualIndex = users.findIndex((u) => u.id === user.id);
     const isActive = user.trangthai === "active";
     const statusBadge = isActive
-      ? '<span style="background: #d1fae5; color: #065f46; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">👌 Hoạt động</span>'
-      : '<span style="background: #fee2e2; color: #991b1b; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">🔒 Đã khóa</span>';
+      ? '<span style="background: #d1fae5; color: #065f46; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;"> Hoạt động</span>'
+      : '<span style="background: #fee2e2; color: #991b1b; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;"> Đã khóa</span>';
 
     const lockIcon = isActive ? "khoa.png" : "3d-unlocked.png";
     const lockTitle = isActive ? "Khóa tài khoản" : "Mở khóa tài khoản";
 
     const row = document.createElement("div");
-    row.style.cssText =
-      "display: grid; grid-template-columns: 70px 1.5fr 2fr 130px 2.5fr 130px 90px 130px 200px; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #e2e8f0; align-items: center; transition: all 0.2s; font-size: 13px;";
+    row.style.cssText = `
+    display: grid;
+    grid-template-columns: 60px 1.8fr 2fr 120px 2.2fr 110px 80px 100px 180px;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    align-items: center;
+    transition: all 0.2s;
+    font-size: 13px;
+  `;
     row.onmouseover = () => (row.style.background = "#f8fafc");
     row.onmouseout = () => (row.style.background = "white");
 
@@ -247,37 +258,41 @@ function renderUsers() {
     };
 
     row.innerHTML = `
-      <div style="text-align: center; font-weight: 700; color: #667eea;">#${
-        user.id
-      }</div>
-      <div style="font-weight: 600; color: #1e293b;">${user.name}</div>
-      <div style="color: #64748b; font-size: 12px;">${user.email}</div>
-      <div style="color: #475569;">${user.phone}</div>
-      <div style="color: #64748b; font-size: 12px;" title="${
-        user.address || "Chưa cập nhật"
-      }">${truncateText(user.address, 40)}</div>
-      <div style="text-align: center;">${statusBadge}</div>
-      <div style="text-align: center; font-weight: 700; color: #f59e0b;">${
-        user.orders || 0
-      }</div>
-      <div style="text-align: center; color: #64748b; font-size: 12px;">${
-        user.joinDate
-      }</div>
-      <div style="display: flex; gap: 8px; justify-content: center;">
-        <button onclick="viewUser(${actualIndex})" title="Xem chi tiết" style="padding: 8px 12px; border: 2px solid #3b82f6; background: white; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
-          <img src="assets/images/icons/eye1.png" alt="Xem" style="width: 16px; height: 16px;" />
-        </button>
-        <button onclick="editUser(${actualIndex})" title="Chỉnh sửa" style="padding: 8px 12px; border: 2px solid #10b981; background: white; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
-          <img src="assets/images/icons/sua.png" alt="Sửa" style="width: 16px; height: 16px;" />
-        </button>
-        <button onclick="toggleLockUser(${actualIndex})" title="${lockTitle}" style="padding: 8px 12px; border: 2px solid #f59e0b; background: white; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
-          <img src="assets/images/icons/${lockIcon}" alt="Khóa" style="width: 16px; height: 16px;" />
-        </button>
-        <button onclick="deleteUser(${actualIndex})" title="Xóa" style="padding: 8px 12px; border: 2px solid #ef4444; background: white; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
-          <img src="assets/images/icons/xoa.png" alt="Xóa" style="width: 16px; height: 16px;" />
-        </button>
-      </div>
-    `;
+    <div style="text-align: center; font-weight: 700; color: #667eea; font-size: 14px;">#${
+      user.id
+    }</div>
+    <div style="font-weight: 600; color: #1e293b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${
+      user.name
+    }</div>
+    <div style="color: #64748b; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${
+      user.email
+    }</div>
+    <div style="color: #475569; text-align: center;">${user.phone}</div>
+    <div style="color: #64748b; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${
+      user.address || "Chưa cập nhật"
+    }">${truncateText(user.address, 35)}</div>
+    <div style="text-align: center;">${statusBadge}</div>
+    <div style="text-align: center; font-weight: 700; color: #f59e0b; font-size: 14px;">${
+      user.orders || 0
+    }</div>
+    <div style="text-align: center; color: #64748b; font-size: 11px;">${
+      user.joinDate
+    }</div>
+    <div style="display: flex; gap: 6px; justify-content: center;">
+      <button onclick="viewUser(${actualIndex})" title="Xem chi tiết" style="padding: 7px 10px; border: 2px solid #3b82f6; background: white; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
+        <img src="assets/images/icons/eye1.png" alt="Xem" style="width: 15px; height: 15px; display: block;" />
+      </button>
+      <button onclick="editUser(${actualIndex})" title="Chỉnh sửa" style="padding: 7px 10px; border: 2px solid #10b981; background: white; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
+        <img src="assets/images/icons/sua.png" alt="Sửa" style="width: 15px; height: 15px; display: block;" />
+      </button>
+      <button onclick="toggleLockUser(${actualIndex})" title="${lockTitle}" style="padding: 7px 10px; border: 2px solid #f59e0b; background: white; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
+        <img src="assets/images/icons/${lockIcon}" alt="Khóa" style="width: 15px; height: 15px; display: block;" />
+      </button>
+      <button onclick="deleteUser(${actualIndex})" title="Xóa" style="padding: 7px 10px; border: 2px solid #ef4444; background: white; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
+        <img src="assets/images/icons/xoa.png" alt="Xóa" style="width: 15px; height: 15px; display: block;" />
+      </button>
+    </div>
+  `;
 
     userTableBody.appendChild(row);
   });
@@ -300,18 +315,39 @@ function parseVietnameseDate(dateStr) {
 function renderPagination(totalCount) {
   const totalPages = Math.ceil(totalCount / usersPerPage);
   const pageNumbers = document.getElementById("pageNumbers");
-  pageNumbers.innerHTML = "";
+  const prevPageBtn = document.getElementById("prevPage");
+  const nextPageBtn = document.getElementById("nextPage");
 
-  // If no pages, disable all
-  if (totalPages === 0) {
-    document.getElementById("prevPage").disabled = true;
-    document.getElementById("nextPage").disabled = true;
+  if (!pageNumbers || !prevPageBtn || !nextPageBtn) {
+    console.error("❌ [Pagination] Không tìm thấy các element phân trang!");
     return;
   }
 
+  pageNumbers.innerHTML = "";
+
+  // Kiểm tra nếu số lượng <= usersPerPage thì làm mờ và vô hiệu hóa phân trang
+  const shouldDisablePagination = totalCount <= usersPerPage;
+
+  // If no pages, chỉ dùng style (không disable)
+  if (totalPages === 0) {
+    prevPageBtn.removeAttribute("disabled");
+    nextPageBtn.removeAttribute("disabled");
+    prevPageBtn.style.opacity = "0.5";
+    prevPageBtn.style.cursor = "not-allowed";
+    nextPageBtn.style.opacity = "0.5";
+    nextPageBtn.style.cursor = "not-allowed";
+    return;
+  }
+
+  // Render page number buttons
   for (let i = 1; i <= totalPages; i++) {
     const btn = document.createElement("button");
     btn.textContent = i;
+    
+    // Làm mờ nếu số lượng <= usersPerPage (chưa đủ 1 trang đầy)
+    const opacity = shouldDisablePagination ? "0.4" : "1";
+    const cursor = shouldDisablePagination ? "not-allowed" : "pointer";
+    
     btn.style.cssText = `
       padding: 8px 14px;
       border: 2px solid ${i === currentPage ? "#667eea" : "#e2e8f0"};
@@ -322,20 +358,69 @@ function renderPagination(totalCount) {
       };
       color: ${i === currentPage ? "white" : "#475569"};
       border-radius: 8px;
-      cursor: pointer;
+      cursor: ${cursor};
       font-weight: 600;
       transition: all 0.3s;
+      opacity: ${opacity};
     `;
-    btn.onclick = () => {
-      currentPage = i;
-      renderUsers();
-    };
+
+    // Chỉ cho phép click nếu số lượng > usersPerPage
+    if (!shouldDisablePagination) {
+      btn.onclick = () => {
+        currentPage = i;
+        renderUsers();
+      };
+    } else {
+      btn.onclick = null; // Vô hiệu hóa click
+    }
     pageNumbers.appendChild(btn);
   }
 
-  document.getElementById("prevPage").disabled = currentPage === 1;
-  document.getElementById("nextPage").disabled =
-    currentPage === totalPages || totalPages === 0;
+  // Update prev/next buttons
+  const isFirstPage = currentPage === 1;
+  const isLastPage = currentPage === totalPages;
+
+  // Prev button - làm mờ nếu số lượng <= usersPerPage hoặc đang ở trang đầu
+  prevPageBtn.removeAttribute("disabled");
+  if (shouldDisablePagination || isFirstPage) {
+    prevPageBtn.style.opacity = "0.4";
+    prevPageBtn.style.cursor = "not-allowed";
+  } else {
+    prevPageBtn.style.opacity = "1";
+    prevPageBtn.style.cursor = "pointer";
+  }
+
+  // Next button - làm mờ nếu số lượng <= usersPerPage hoặc đang ở trang cuối
+  nextPageBtn.removeAttribute("disabled");
+  if (shouldDisablePagination || isLastPage || totalPages === 0) {
+    nextPageBtn.style.opacity = "0.4";
+    nextPageBtn.style.cursor = "not-allowed";
+  } else {
+    nextPageBtn.style.opacity = "1";
+    nextPageBtn.style.cursor = "pointer";
+  }
+
+  // Xóa event listeners cũ bằng cách thay thế onclick
+  prevPageBtn.onclick = null;
+  nextPageBtn.onclick = null;
+
+  // Chỉ thêm event listeners nếu số lượng > usersPerPage
+  if (!shouldDisablePagination) {
+    prevPageBtn.onclick = () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderUsers();
+      }
+    };
+
+    nextPageBtn.onclick = () => {
+      const totalPages = Math.ceil(totalFilteredUsers / usersPerPage);
+      if (currentPage < totalPages) {
+        currentPage++;
+        renderUsers();
+      }
+    };
+  }
 }
 
 function updateUserInfo(filteredCount) {
@@ -356,7 +441,7 @@ function updateUserInfo(filteredCount) {
 
 // ====== SHOW ADD USER MODAL ======
 window.showAddUserModal = function () {
-  console.log("🔧 [showAddUserModal] Đang mở modal thêm khách hàng");
+  console.log(" [showAddUserModal] Đang mở modal thêm khách hàng");
   const overlay = document.createElement("div");
   overlay.id = "addUserOverlay";
   overlay.style.cssText = `
@@ -421,9 +506,9 @@ window.showAddUserModal = function () {
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
           <div>
             <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
-              Số điện thoại <span style="color: #ef4444;">*</span>
+              Số điện thoại 
             </label>
-            <input type="text" id="addPhoneNew" placeholder="0123456789" required
+            <input type="text" id="addPhoneNew" placeholder="0123456789"
               style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; transition: all 0.3s; box-sizing: border-box;" />
           </div>
           
@@ -606,9 +691,9 @@ function handleAddUser() {
   if (!address) address = "Chưa cập nhật";
 
   // Validation
-  if (!name || !email || !phone || !password) {
+  if (!name || !email || !password) {
     showNotification(
-      "⚠️ Thiếu thông tin",
+      " Thiếu thông tin",
       "Vui lòng nhập đầy đủ các trường bắt buộc!",
       "error"
     );
@@ -617,34 +702,30 @@ function handleAddUser() {
 
   if (!isValidEmail(email)) {
     showNotification(
-      "📧 Email không hợp lệ",
+      "Email không hợp lệ",
       "Vui lòng nhập đúng định dạng email!",
       "error"
     );
     return;
   }
 
-  if (!isValidPhone(phone)) {
-    showNotification(
-      "📱 SĐT không hợp lệ",
-      "Số điện thoại phải có 10-11 số!",
-      "error"
-    );
-    return;
-  }
+  // if (!isValidPhone(phone)) {
+  //   showNotification(
+  //     "SĐT không hợp lệ",
+  //     "Số điện thoại phải có 10-11 số!",
+  //     "error"
+  //   );
+  //   return;
+  // }
 
   if (users.some((u) => u.email.toLowerCase() === email.toLowerCase())) {
-    showNotification(
-      "❌ Email đã tồn tại",
-      "Email này đã được sử dụng!",
-      "error"
-    );
+    showNotification("Email đã tồn tại", "Email này đã được sử dụng!", "error");
     return;
   }
 
   if (password.length < 6) {
     showNotification(
-      "🔒 Mật khẩu quá ngắn",
+      " Mật khẩu quá ngắn",
       "Mật khẩu phải có ít nhất 6 ký tự!",
       "error"
     );
@@ -749,7 +830,7 @@ window.viewUser = function (index) {
         </div>
         
         <div style="background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); padding: 20px; border-radius: 12px; border-left: 4px solid #10b981;">
-          <div style="font-size: 13px; color: #64748b; margin-bottom: 6px; font-weight: 600;">📅 NGÀY THAM GIA</div>
+          <div style="font-size: 13px; color: #64748b; margin-bottom: 6px; font-weight: 600;"> NGÀY THAM GIA</div>
           <div style="font-size: 18px; font-weight: 700; color: #1e293b;">${
             u.joinDate
           }</div>
@@ -763,14 +844,14 @@ window.viewUser = function (index) {
         
         <div style="display: grid; gap: 16px;">
           <div style="display: flex; padding-bottom: 12px; border-bottom: 2px solid #e2e8f0;">
-            <div style="flex: 0 0 140px; color: #64748b; font-weight: 600; font-size: 14px;">📱 Số điện thoại:</div>
+            <div style="flex: 0 0 140px; color: #64748b; font-weight: 600; font-size: 14px;"> Số điện thoại:</div>
             <div style="flex: 1; color: #1e293b; font-weight: 600; font-size: 14px;">${
               u.phone
             }</div>
           </div>
           
           <div style="display: flex; padding-bottom: 12px; border-bottom: 2px solid #e2e8f0;">
-            <div style="flex: 0 0 140px; color: #64748b; font-weight: 600; font-size: 14px;">📍 Địa chỉ:</div>
+            <div style="flex: 0 0 140px; color: #64748b; font-weight: 600; font-size: 14px;"> Địa chỉ:</div>
             <div style="flex: 1; color: #1e293b; font-size: 14px; line-height: 1.6;">${
               u.address || "Chưa cập nhật"
             }</div>
@@ -922,11 +1003,11 @@ window.editUser = function (index) {
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
           <div>
             <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
-              Số điện thoại <span style="color: #ef4444;">*</span>
+              Số điện thoại 
             </label>
             <input type="text" id="editPhoneNew" value="${
               u.phone
-            }" placeholder="0123456789" required
+            }" placeholder="0123456789"
               style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; transition: all 0.3s; box-sizing: border-box;" />
           </div>
           
@@ -1264,15 +1345,20 @@ window.deleteUser = function (index) {
 
 // ====== SETUP EVENT LISTENERS ======
 function setupEventListeners() {
-  console.log("🔧 [Setup] Thiết lập event listeners");
+  // Search - lấy element trực tiếp thay vì dùng biến global
+  const searchInputElement = document.getElementById("userSearchInput");
 
-  // Search
-  if (searchInput) {
-    searchInput.addEventListener("input", (e) => {
-      searchQuery = e.target.value.toLowerCase();
-      currentPage = 1;
+  if (searchInputElement) {
+    searchInputElement.addEventListener("input", (e) => {
+      searchQuery = e.target.value.trim().toLowerCase();
+
+      currentPage = 1; // đưa về trang đầu
+
       renderUsers();
     });
+    console.log(" [Setup] Event listener đã được gắn");
+  } else {
+    console.error(" [Setup] KHÔNG tìm thấy element #userSearchInput!");
   }
 
   // Filter status
@@ -1304,24 +1390,7 @@ function setupEventListeners() {
   const prevPageBtn = document.getElementById("prevPage");
   const nextPageBtn = document.getElementById("nextPage");
 
-  if (prevPageBtn) {
-    prevPageBtn.addEventListener("click", () => {
-      if (currentPage > 1) {
-        currentPage--;
-        renderUsers();
-      }
-    });
-  }
-
-  if (nextPageBtn) {
-    nextPageBtn.addEventListener("click", () => {
-      const totalPages = Math.ceil(totalFilteredUsers / usersPerPage);
-      if (currentPage < totalPages) {
-        currentPage++;
-        renderUsers();
-      }
-    });
-  }
+ 
 }
 
 // ====== INITIALIZE ======
@@ -1337,9 +1406,7 @@ window.addEventListener("DOMContentLoaded", () => {
   filterStatusSelect = document.getElementById("filterStatus");
   sortBySelect = document.getElementById("sortBy");
 
-  console.log("🔍 [Init] btnAdd element:", btnAdd);
-  console.log("🔍 [Init] userTableBody element:", userTableBody);
-  console.log("🔍 [Init] searchInput element:", searchInput);
+ 
 
   // Load users from localStorage
   let savedUsers = JSON.parse(localStorage.getItem("phonestore_users")) || [];
@@ -1443,6 +1510,18 @@ window.addEventListener("DOMContentLoaded", () => {
 
   // Setup event listeners
   setupEventListeners();
+
+  // Thêm event listener trực tiếp (backup) để đảm bảo hoạt động
+  const searchBox = document.getElementById("userSearchInput");
+  if (searchBox) {
+    console.log("🔥 [BACKUP] Gắn event listener trực tiếp cho searchBox");
+    searchBox.addEventListener("input", function (e) {
+      console.log("🔥 [BACKUP] Search triggered:", e.target.value);
+      searchQuery = e.target.value.trim().toLowerCase();
+      currentPage = 1;
+      renderUsers();
+    });
+  }
 });
 
 // ====== ANIMATIONS ======
@@ -1494,6 +1573,43 @@ style.textContent = `
   .pagination button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  /* --- Hide search icon --- */
+  /* If icon is set as a background-image on the input */
+  #userSearchInput {
+    background-image: none !important;
+    background-repeat: no-repeat !important;
+    background-position: right center !important;
+    -webkit-appearance: textfield;
+    appearance: textfield;
+    padding-right: 12px; /* adjust if needed */
+  }
+
+  /* Remove default webkit search decorations */
+  #userSearchInput::-webkit-search-cancel-button,
+  #userSearchInput::-webkit-search-decoration,
+  #userSearchInput::-webkit-search-results-button,
+  #userSearchInput::-webkit-search-results-decoration {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    display: none !important;
+  }
+
+  /* Hide common icon elements that may sit next to the input */
+  .search-icon,
+  .input-search-icon,
+  .icon-search,
+  .user-search-icon,
+  img.search-icon,
+  img[alt~="search"] {
+    display: none !important;
+  }
+
+  /* If icon is inside a container next to the input */
+  .search-container .search-icon,
+  .search-wrapper .search-icon {
+    display: none !important;
   }
 `;
 document.head.appendChild(style);

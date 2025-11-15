@@ -633,7 +633,7 @@ body {
     margin-bottom: 8px;
 }
 
-.sidebar-menu-item {
+.sidebar-menu-item-cate {
     display: flex;
     align-items: center;
     gap: 15px;
@@ -646,25 +646,25 @@ body {
     
 }
 
-.sidebar-menu-item:hover {
+.sidebar-menu-item-cate:hover {
     background-color: rgba(255, 255, 255, 0.1);
     color: white;
     padding-left: 30px; /* Dịch sang phải khi hover */
 }
 
-.sidebar-menu-item.active {
+.sidebar-menu-item-cate.active {
     background-color: rgba(255, 255, 255, 0.2);
     color: white;
     border-right: 4px solid white; /* Gạch phải cho active */
     font-weight: 600;
 }
 
-.sidebar-menu-item svg {
+.sidebar-menu-item-cate svg {
     width: 20px;
     height: 20px;
     flex-shrink: 0;
 }
-.sidebar-menu-item span{
+.sidebar-menu-item-cate span{
     color: white;
 }
 .sidebar-section-title {
@@ -709,7 +709,7 @@ body {
 
 .category-icon {
     font-size: 36px;
-    margin-bottom: 12px;
+    /* margin-bottom: 12px; */
 }
 
 .category-card span {
@@ -1109,16 +1109,16 @@ body {
     transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
-/* Pagination(phân trang) */
-.pagination {
+/* pagination-cate(phân trang) */
+.pagination-cate {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
     margin-top: 40px;
 }
-.pagination button,
-.pagination span{
+.pagination-cate button,
+.pagination-cate span{
     padding: 10px 16px;
     background-color: white;
     border: 1px solid #ddd;
@@ -1128,17 +1128,17 @@ body {
     font-size: 14px;
 }
 /* giới hạn di chuyển không âm và không lớn hơn số trang */
-.pagination button:hover:not(:disabled){
+.pagination-cate button:hover:not(:disabled){
     background-color: #667eea;
     color: white;
     border-color: #667eea;
 }
 /* làm mờ ẩn trỏ chuột  */
-.pagination button:disabled{
+.pagination-cate button:disabled{
     opacity: 0.5;
     cursor: not-allowed;
 }
-.pagination .active{
+.pagination-cate .active{
     background-color: #667eea;
     color: white;
     border-color: #667eea;
@@ -1147,7 +1147,7 @@ body {
 .page-number:hover:not(.active){
     background-color: #f0f0f0;
 }
-.pagination-ellipsis{
+.pagination-cate-ellipsis{
     border: none;
     /* trong suốt */
     background: transparent;
@@ -1195,8 +1195,8 @@ body {
     background-color: #f8f9fa;
 }
 
-/* Pagination */
-.pagination-controls {
+/* pagination-cate */
+.pagination-cate-controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1205,7 +1205,7 @@ body {
     gap: 15px;
 }
 
-.pagination-info {
+.pagination-cate-info {
     font-size: 14px;
     color: #666;
 }
@@ -1216,6 +1216,8 @@ body {
 }
 
 .category-icon img {
+    align-items: center;
+    justify-content: center;
     width: 36px;
     height: 36px;
     /* giữ nguyên kích thước */
@@ -1680,7 +1682,7 @@ body {
         min-width: 150px;
     }
 
-    .sidebar-menu-item {
+    .sidebar-menu-item-cate {
         flex-direction: column;
         text-align: center;
         gap: 8px;
@@ -1834,7 +1836,7 @@ body {
         font-size: 14px;
     }
 
-    .pagination-controls {
+    .pagination-cate-controls {
         flex-direction: column;
     }
 }

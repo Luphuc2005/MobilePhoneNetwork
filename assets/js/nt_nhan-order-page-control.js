@@ -208,7 +208,13 @@ function initAddress() {
 window.addEventListener('storage', function(e) {
     if (e.key === 'phonestore_users') {
         customerData = JSON.parse(e.newValue || '[]');
-        preProcessing(numberOrderPerPage, allOrder, customerData, allOrder.length);
+        renderPageOrder();
+        // preProcessing(numberOrderPerPage, allOrder, customerData, allOrder.length);
+    }
+    if (e.key === 'phonestore_orders') {
+        allOrder = JSON.parse(e.newValue || '[]');
+        filteredOrder = allOrder;
+        renderPageOrder();
     }
 });
 
@@ -217,7 +223,8 @@ function checkForUpdates() {
     
     if (JSON.stringify(currentUser) !== JSON.stringify(customerData)) {
         customerData = currentUser;
-        preProcessing(numberOrderPerPage, allOrder, customerData, allOrder.length);
+        renderPageOrder();
+        // preProcessing(numberOrderPerPage, allOrder, customerData, allOrder.length);
     }
 }
 

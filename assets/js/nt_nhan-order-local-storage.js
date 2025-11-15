@@ -284,10 +284,36 @@ storeOrderInLocalStorage();
 // hủy đơn: khách hàng có thể chọn hủy đơn
 // khi chọn hủy đơn chỉ cần gọi hàm cancelOrder truyền mã đơn hàng vào là có thể hủy
 
+// Hàm tạo orderId mới
+function generateOrderId() {
+    const timestamp = Date.now().toString().slice(-6);
+    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+
+    const orderId = `ORD${timestamp}${random}`;
+    
+    // Lưu orderId vào localStorage để addOrder có thể sử dụng
+    localStorage.setItem('lastCreatedOrderId', orderId);
+    
+    return orderId;
+}
+
+// Export hàm generateOrderId ra window
+window.generateOrderId = generateOrderId;
+
 function addOrder(date, address, customer_id, amount, purchase, product_list) {
-    lastId ++;
+    // Lấy dữ liệu mới nhất từ localStorage để tránh mất dữ liệu
+    let currentOrders = JSON.parse(localStorage.getItem('phonestore_orders') || '[]');
+    
+    // Lấy order_id từ localStorage (phải được tạo trước bằng generateOrderId)
+    let orderId = localStorage.getItem('lastCreatedOrderId');
+    
+    // Nếu không có order_id từ localStorage, tự động tạo mới (fallback)
+    if (!orderId) {
+        orderId = generateOrderId();
+    }
+    
     let newOrder = {
-        order_id: `DH${String(lastId).padStart(6, '0')}`,
+        order_id: orderId,
         date: date,
         address: address,
         customer_id: customer_id, 
@@ -296,14 +322,32 @@ function addOrder(date, address, customer_id, amount, purchase, product_list) {
         purchase: purchase, 
         product_list: product_list
     }
-    allOrder.push(newOrder);
-    localStorage.setItem('phonestore_orders', JSON.stringify(allOrder));
+    currentOrders.push(newOrder);
+    localStorage.setItem('phonestore_orders', JSON.stringify(currentOrders));
+    
+    // Cập nhật biến global allOrder
+    allOrder = currentOrders;
     
     // preProcessing chỉ có ở trang admin, kiểm tra trước khi gọi
     if (typeof preProcessing === 'function') {
-        preProcessing(5, allOrder, customerData, allOrder.length);
+        // preProcessing(5, allOrder, customerData, allOrder.length);
+        renderPageOrder();
     }
+    
+    // Trả về order_id để có thể sử dụng ngay
+    return newOrder.order_id;
 }
+
+// Export addOrder ra window để có thể gọi từ mọi nơi
+window.addOrder = addOrder;
+
+// Hàm lấy order_id mới nhất được tạo
+function getLastCreatedOrderId() {
+    return localStorage.getItem('lastCreatedOrderId');
+}
+
+// Export hàm getLastCreatedOrderId ra window
+window.getLastCreatedOrderId = getLastCreatedOrderId;
 
 // addOrder("20/10/2025 16:35", "Quận 6", 5, 17990000, "Ví điện tử", [[5, 1], [14, 1]]);
 

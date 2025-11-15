@@ -16,14 +16,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- Dữ liệu mặc định ---
     const defaultCategories = [
-        { id: 1, icon: '📱', name: 'iPhone', description: 'Điện thoại Apple iPhone', productCount: 45, status: 'Hoạt động', iconType: 'emoji' },
-        { id: 2, icon: '🤖', name: 'Samsung', description: 'Điện thoại Samsung Galaxy', productCount: 38, status: 'Hoạt động', iconType: 'emoji' },
-        { id: 3, icon: '🎯', name: 'Xiaomi', description: 'Điện thoại Xiaomi', productCount: 32, status: 'Hoạt động', iconType: 'emoji' },
-        { id: 4, icon: '⚡', name: 'OPPO', description: 'Điện thoại OPPO', productCount: 25, status: 'Hoạt động', iconType: 'emoji' },
-        { id: 5, icon: '🔥', name: 'Vivo', description: 'Điện thoại Vivo', productCount: 20, status: 'Hoạt động', iconType: 'emoji' },
-        { id: 6, icon: '💎', name: 'Realme', description: 'Điện thoại Realme', productCount: 18, status: 'Ẩn', iconType: 'emoji' },
-        { id: 7, icon: '🎨', name: 'Nokia', description: 'Điện thoại Nokia', productCount: 12, status: 'Hoạt động', iconType: 'emoji' },
-        { id: 8, icon: '🌟', name: 'Huawei', description: 'Điện thoại Huawei', productCount: 15, status: 'Ẩn', iconType: 'emoji' }
+        { id: 1, icon: './assets/images/logo/iPhone.png', name: 'iPhone', description: 'Điện thoại Apple iPhone', productCount: 45, status: 'Hoạt động', iconType: 'image' },
+        { id: 2, icon: './assets/images/logo/samsung.png', name: 'Samsung', description: 'Điện thoại Samsung Galaxy', productCount: 38, status: 'Hoạt động', iconType: 'image' },
+        { id: 3, icon: './assets/images/logo/xiaomi.png', name: 'Xiaomi', description: 'Điện thoại Xiaomi', productCount: 32, status: 'Hoạt động', iconType: 'image' },
+        { id: 4, icon: './assets/images/logo/oppo.png', name: 'OPPO', description: 'Điện thoại OPPO', productCount: 25, status: 'Hoạt động', iconType: 'image' },
+        { id: 5, icon: './assets/images/logo/vivo.png', name: 'Vivo', description: 'Điện thoại Vivo', productCount: 20, status: 'Hoạt động', iconType: 'image' },
+        { id: 6, icon: './assets/images/logo/realme-logo.png', name: 'Realme', description: 'Điện thoại Realme', productCount: 18, status: 'Ẩn', iconType: 'image' },
+        { id: 7, icon: './assets/images/logo/nokia.png', name: 'Nokia', description: 'Điện thoại Nokia', productCount: 12, status: 'Hoạt động', iconType: 'image' },
+        { id: 8, icon: './assets/images/logo/huawei.png', name: 'Huawei', description: 'Điện thoại Huawei', productCount: 15, status: 'Ẩn', iconType: 'image' }
     ];
 
     // --- Khởi tạo dữ liệu ---

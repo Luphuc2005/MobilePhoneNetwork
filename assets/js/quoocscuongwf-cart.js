@@ -388,8 +388,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // Lấy thông tin user hiện tại
         const customer_id = JSON.parse(localStorage.getItem('phonestore_currentUser')).id;
         const cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
-        const paymentMethod = Array.from(paymentOptions).find(option => option.checked)?.value || 'cod';
+        const paymentMethodValue = Array.from(paymentOptions).find(option => option.checked)?.value || 'cod';
         const notes = notesElement ? notesElement.value : '';
+        
+        // Map payment method sang tiếng Việt
+        const paymentMethodMap = {
+            'cod': 'Tiền mặt khi giao hàng',
+            'momo': 'Ví điện tử',
+            'card': 'Chuyển khoản ngân hàng',
+            'bank': 'Chuyển khoản ngân hàng'
+        };
+        const paymentMethod = paymentMethodMap[paymentMethodValue] || paymentMethodValue;
         
         // Tính tổng tiền từ cart
         let totalAmount = 0;
@@ -412,24 +421,56 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.quantity
             ]);
         });
+        // Format date sang định dạng dd/mm/yyyy HH:mm
+        const now = new Date();
+        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}`;
+        
+        // Tạo orderId TRƯỚC khi tạo đơn hàng
+        let orderId;
+        if (typeof window.generateOrderId === 'function') {
+            orderId = window.generateOrderId();
+        } else {
+            // Fallback: tạo orderId tạm
+            orderId = `ORD${Date.now()}`;
+            localStorage.setItem('lastCreatedOrderId', orderId);
+        }
+        
         // Xóa giỏ hàng sau khi đặt hàng thành công
         let orderItem = {
-            date: new Date().toISOString(),
+            date: formattedDate,
             address: address,
             customer_id: customer_id, 
             amount: totalAmount,
             purchase: paymentMethod,
-            product_list: product_list
-            
+            product_list: product_list,
+            order_id: orderId
         }
-        // orderLocal.addOrder(
-        //     orderItem.date,
-        //     orderItem.address,
-        //     orderItem.customer_id,
-        //     orderItem.amount,
-        //     orderItem.purchase,
-        //     orderItem.product_list
-        // );
+        
+        // Gọi hàm addOrder để thêm đơn hàng vào hệ thống
+        if (typeof window.addOrder === 'function') {
+            window.addOrder(
+                orderItem.date,
+                orderItem.address,
+                orderItem.customer_id,
+                orderItem.amount,
+                orderItem.purchase,
+                orderItem.product_list
+            );
+        } else if (typeof orderLocal !== 'undefined' && typeof orderLocal.addOrder === 'function') {
+            orderLocal.addOrder(
+                orderItem.date,
+                orderItem.address,
+                orderItem.customer_id,
+                orderItem.amount,
+                orderItem.purchase,
+                orderItem.product_list
+            );
+        }
 
         
         // Lưu giỏ hàng hiện tại trước khi xóa (để hiển thị trong modal)
