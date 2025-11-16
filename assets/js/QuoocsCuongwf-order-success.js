@@ -16,7 +16,32 @@ function formatPrice(price) {
 
 // Hàm format ngày tháng
 function formatDate(dateString) {
+    // Kiểm tra nếu dateString không tồn tại hoặc rỗng
+    if (!dateString) {
+        return '--';
+    }
+    
+    // Kiểm tra nếu dateString đã ở định dạng dd/mm/yyyy HH:mm
+    // Ví dụ: "25/12/2024 14:30"
+    const dateTimePattern = /^(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})$/;
+    const match = dateString.match(dateTimePattern);
+    
+    if (match) {
+        // Đã ở định dạng đúng, chỉ cần thay đổi format hiển thị
+        const [, day, month, year, hours, minutes] = match;
+        return `${day}/${month}/${year} lúc ${hours}:${minutes}`;
+    }
+    
+    // Nếu không phải định dạng trên, thử parse như Date object hoặc ISO string
     const date = new Date(dateString);
+    
+    // Kiểm tra nếu date hợp lệ
+    if (isNaN(date.getTime())) {
+        // Nếu không parse được, trả về chuỗi gốc hoặc '--'
+        return dateString || '--';
+    }
+    
+    // Format từ Date object
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();

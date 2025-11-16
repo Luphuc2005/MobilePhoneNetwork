@@ -135,6 +135,15 @@ body {
     letter-spacing: -0.5px;
     /* không cho xuống hàng  */
     white-space: nowrap;
+    /* Căn chỉnh logo và chữ thẳng hàng */
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo a img {
+    vertical-align: middle;
+    display: inline-block;
 }
 /* thanh tìm kiếm  */
 .search-bar {
