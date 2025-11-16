@@ -2,6 +2,9 @@
 let inventoryProducts = JSON.parse(localStorage.getItem('phonestore_products')) || [];
 let productCategories = JSON.parse(localStorage.getItem('phonestore_categories')) || [];
 let ordersInventory = JSON.parse(localStorage.getItem('phonestore_orders')) || [];
+let inventoryItemsPerPage = 10;
+let inventoryCurrentPage = 1;
+let inventoryLastResults = [];
 
 window.addEventListener('storage', function(e) {
     if (e.key === 'phonestore_categories') {
@@ -99,6 +102,7 @@ function initializeInventoryForm() {
         inventory: calculateInventory(product.id, startDate || null, endDate || null)
     }));
 
+    inventoryCurrentPage = 1;
     renderInventoryResults(results);
 }
 
@@ -290,26 +294,25 @@ function getStockStatus(closingStock) {
 // Hiển thị kết quả tìm kiếm
 function renderInventoryResults(results) {
     const tbody = document.getElementById('inventory-list');
-    tbody.innerHTML = ``;
-    
-    let totalStock = 0;
-    let totalValue = 0;
-    let lowStockCount = 0;
+    inventoryLastResults = results;
 
-    results.forEach(result => {
+    const totalStock = results.reduce((s, r) => s + r.inventory.closingStock, 0);
+    const totalValue = results.reduce((s, r) => {
+        const p = inventoryProducts.find(p => p.id === r.productId);
+        return s + (p ? r.inventory.closingStock * p.gia : 0);
+    }, 0);
+    const lowStockCount = results.reduce((s, r) => s + (r.inventory.closingStock <= 5 ? 1 : 0), 0);
+
+    const totalPages = Math.ceil(results.length / inventoryItemsPerPage) || 1;
+    const startIdx = (inventoryCurrentPage - 1) * inventoryItemsPerPage;
+    const pageResults = results.slice(startIdx, startIdx + inventoryItemsPerPage);
+
+    tbody.innerHTML = ``;
+    pageResults.forEach(result => {
         const product = inventoryProducts.find(p => p.id === result.productId);
         if (!product) return;
-
         const stockValue = result.inventory.closingStock * product.gia;
-        totalStock += result.inventory.closingStock;
-        totalValue += stockValue;
-        
-        if (result.inventory.closingStock <= 5) {
-            lowStockCount++;
-        }
-
         const [statusText, statusClass] = getStockStatus(result.inventory.closingStock);
-        
         tbody.innerHTML += `
             <tr>
                 <td>${product.tensanpham}</td>
@@ -325,10 +328,44 @@ function renderInventoryResults(results) {
         `;
     });
 
-    // Cập nhật summary
     document.getElementById('total-inventory').textContent = totalStock;
     document.getElementById('total-value').textContent = formatCurrency(totalValue) + '₫';
     document.getElementById('low-stock').textContent = lowStockCount;
+    renderInventoryPagination(Math.ceil(inventoryLastResults.length / inventoryItemsPerPage) || 1);
+}
+
+function renderInventoryPagination(totalPages) {
+    const container = document.getElementById('inventory-pagination');
+    if (!container) return;
+    container.innerHTML = '';
+
+    const prev = document.createElement('button');
+    prev.textContent = '‹';
+    prev.disabled = inventoryCurrentPage === 1;
+    prev.addEventListener('click', () => goToInventoryPage(inventoryCurrentPage - 1));
+    container.appendChild(prev);
+
+    for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = String(i);
+        if (i === inventoryCurrentPage) btn.classList.add('active');
+        btn.addEventListener('click', () => goToInventoryPage(i));
+        container.appendChild(btn);
+    }
+
+    const next = document.createElement('button');
+    next.textContent = '›';
+    next.disabled = inventoryCurrentPage >= totalPages;
+    next.addEventListener('click', () => goToInventoryPage(inventoryCurrentPage + 1));
+    container.appendChild(next);
+}
+
+function goToInventoryPage(page) {
+    const totalPages = Math.ceil(inventoryLastResults.length / inventoryItemsPerPage) || 1;
+    if (page < 1 || page > totalPages) return;
+    inventoryCurrentPage = page;
+    renderInventoryResults(inventoryLastResults);
+    renderInventoryPagination(totalPages);
 }
 
 // Xử lý sự kiện tìm kiếm
@@ -356,6 +393,7 @@ document.getElementById('btn-search-inventory').addEventListener('click', functi
         inventory: calculateInventory(product.id, startDate || null, endDate || null)
     }));
 
+    inventoryCurrentPage = 1;
     renderInventoryResults(results);
 });
 
