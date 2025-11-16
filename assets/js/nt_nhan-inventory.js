@@ -170,23 +170,43 @@ function calculateInventory(productId, startDate, endDate) {
     }
 
     // Tính số lượng xuất (từ đơn hàng)
+    // Chỉ tính các đơn hàng đã xác nhận, đang giao, hoặc hoàn thành
     const exported = orders.reduce((total, order) => {
-        if (!hasDateFilter) {
-            if (order.status === 'waiting' || order.status === 'cancel') return total;
-            const productInOrder = order.product_list.find(([id]) => id == productIdNum);
-            if (productInOrder) {
-                return total + productInOrder[1];
-            }
+        // Bỏ qua đơn hàng chờ xử lý hoặc đã hủy
+        if (order.status === 'waiting' || order.status === 'cancel') {
             return total;
         }
-        const orderDate = parseDateTime(order.date);
-        if (orderDate && orderDate >= startDateObj && orderDate <= endDateObj) {
-            if (order.status === 'waiting' || order.status === 'cancel') return total;
-            const productInOrder = order.product_list.find(([id]) => id == productIdNum);
-            if (productInOrder) {
-                return total + productInOrder[1];
-            }
+        
+        // Tìm sản phẩm trong đơn hàng
+        const productInOrder = order.product_list?.find(([id]) => id == productIdNum);
+        if (!productInOrder) {
+            return total;
         }
+        
+        // Nếu không có filter ngày, tính tất cả đơn hàng hợp lệ
+        if (!hasDateFilter) {
+            return total + (productInOrder[1] || 0);
+        }
+        
+        // Nếu có filter ngày, kiểm tra ngày đơn hàng
+        const orderDate = parseDateTime(order.date);
+        if (!orderDate) {
+            return total; // Bỏ qua nếu không parse được ngày
+        }
+        
+        // So sánh ngày: orderDate phải >= startDate và <= endDate
+        // Reset giờ phút giây để so sánh chính xác
+        const orderDateOnly = new Date(orderDate);
+        orderDateOnly.setHours(0, 0, 0, 0);
+        const startDateOnly = new Date(startDateObj);
+        startDateOnly.setHours(0, 0, 0, 0);
+        const endDateOnly = new Date(endDateObj);
+        endDateOnly.setHours(0, 0, 0, 0);
+        
+        if (orderDateOnly >= startDateOnly && orderDateOnly <= endDateOnly) {
+            return total + (productInOrder[1] || 0);
+        }
+        
         return total;
     }, 0);
 
@@ -270,12 +290,29 @@ function calculateOpeningStock(productId, startDate) {
     }, 0);
 
     // Tính tổng xuất trước ngày bắt đầu
+    // Chỉ tính các đơn hàng đã xác nhận, đang giao, hoặc hoàn thành (không tính waiting và cancel)
     const totalExported = orders.reduce((total, order) => {
+        // Bỏ qua đơn hàng chờ xử lý hoặc đã hủy
+        if (order.status === 'waiting' || order.status === 'cancel') {
+            return total;
+        }
+        
         const orderDate = parseDateTime(order.date);
-        if (orderDate && orderDate < startDate) {
-            const productInOrder = order.product_list.find(([id]) => id == productIdNum);
+        if (!orderDate) {
+            return total; // Bỏ qua nếu không parse được ngày
+        }
+        
+        // Reset giờ phút giây để so sánh chính xác
+        const orderDateOnly = new Date(orderDate);
+        orderDateOnly.setHours(0, 0, 0, 0);
+        const startDateOnly = new Date(startDate);
+        startDateOnly.setHours(0, 0, 0, 0);
+        
+        // Chỉ tính đơn hàng trước ngày bắt đầu (không bao gồm ngày bắt đầu)
+        if (orderDateOnly < startDateOnly) {
+            const productInOrder = order.product_list?.find(([id]) => id == productIdNum);
             if (productInOrder) {
-                return total + productInOrder[1];
+                return total + (productInOrder[1] || 0);
             }
         }
         return total;

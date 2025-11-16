@@ -126,6 +126,17 @@ document.addEventListener("DOMContentLoaded", () => {
         if (previewImg) previewImg.src = '';
     }
 
+    // Hàm đếm số sản phẩm thực tế theo danh mục
+    function getProductCountByCategory(categoryName) {
+        const products = JSON.parse(localStorage.getItem('phonestore_products') || '[]');
+        // Đếm số sản phẩm có danhmuc trùng với categoryName (không phân biệt hoa thường)
+        return products.filter(p => {
+            const productCategory = (p.danhmuc || '').trim();
+            const category = (categoryName || '').trim();
+            return productCategory.toLowerCase() === category.toLowerCase();
+        }).length;
+    }
+
     // --- Render Bảng ---
     function renderTable() {
         if (!tableBody) return;
@@ -151,13 +162,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 const toggleText = cat.status === 'Hoạt động' ? 'Ẩn' : 'Hiện';
                 const toggleClass = cat.status === 'Hoạt động' ? 'btn-delete' : 'btn-show';
                 const toggleIcon = cat.status === 'Hoạt động' ? 'fa-eye-slash' : 'fa-eye';
+                
+                // Tính số sản phẩm thực tế từ danh sách sản phẩm
+                const actualProductCount = getProductCountByCategory(cat.name);
 
                 return `
                     <div class="table-row-cate">
                         <div data-label="ID">${cat.id}</div>
                         <div data-label="Icon" class="category-icon">${iconHtml}</div>
                         <div data-label="Tên loại" style="font-weight:600;">${cat.name}</div>
-                        <div data-label="Số SP">${cat.productCount} sản phẩm</div>
+                        <div data-label="Số SP">${actualProductCount} sản phẩm</div>
                         <div data-label="Trạng thái">
                             <span class="status-badge ${cat.status === 'Hoạt động' ? 'status-active' : 'status-hidden'}">${cat.status}</span>
                         </div>
@@ -467,6 +481,19 @@ document.addEventListener("DOMContentLoaded", () => {
             filteredCategories = [...categories];
             renderTable();
         }
+    });
+
+    // --- Lắng nghe thay đổi sản phẩm để cập nhật số lượng ---
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'phonestore_products') {
+            // Khi có thay đổi sản phẩm, render lại bảng để cập nhật số lượng
+            renderTable();
+        }
+    });
+
+    // Lắng nghe custom event khi sản phẩm thay đổi (trong cùng tab)
+    window.addEventListener('phonestore-products-changed', () => {
+        renderTable();
     });
 
     // --- Debug helper ---
