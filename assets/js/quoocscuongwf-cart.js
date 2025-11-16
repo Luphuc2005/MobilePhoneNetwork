@@ -119,6 +119,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     /**
+     * Lấy số lượng tồn kho của sản phẩm từ localStorage
+     * @param {string} productName - Tên sản phẩm
+     * @returns {number} - Số lượng tồn kho (0 nếu không tìm thấy)
+     */
+    function getProductStock(productName) {
+        const products = JSON.parse(localStorage.getItem('phonestore_products') || '[]');
+        const product = products.find(p => p.tensanpham === productName);
+        if (product && product.soluong !== undefined) {
+            return typeof product.soluong === 'string' ? parseInt(product.soluong) : product.soluong;
+        }
+        return 0; // Nếu không tìm thấy, trả về 0
+    }
+
+    /**
      * Cập nhật tổng tiền cho một hàng sản phẩm.
      * @param {HTMLElement} item - Phần tử .cart-item.
      */
@@ -130,13 +144,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!priceElement || !quantityInput || !totalElement) return;
 
-        // Xử lý cả định dạng $ và ₫
-        let priceText = priceElement.textContent.replace(/[$₫,.]/g, '').trim();
+        // Xử lý parse giá: loại bỏ tất cả ký tự không phải số
+        // Định dạng VNĐ: "29.999.999₫" -> "29999999"
+        let priceText = priceElement.textContent.replace(/[^\d]/g, '').trim();
         const price = parseFloat(priceText);
+        
+        // Lấy số lượng từ input
         const quantity = parseInt(quantityInput.value) || 1;
         
-        // Format theo VNĐ
-        totalElement.textContent = `${(price * quantity).toLocaleString('vi-VN')}₫`;
+        // Tính thành tiền
+        const total = price * quantity;
+        
+        // Format theo VNĐ (dùng dấu chấm để phân cách hàng nghìn)
+        totalElement.textContent = `${total.toLocaleString('vi-VN')}₫`;
 
         // Sau khi cập nhật tổng tiền của item, cập nhật tổng tiền toàn bộ giỏ hàng
         updateCartTotal();
@@ -153,8 +173,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         let grandTotal = 0;
         allItemTotals.forEach(totalElement => {
-            // Xử lý cả định dạng $ và ₫
-            let totalText = totalElement.textContent.replace(/[$₫,.]/g, '').trim();
+            // Parse giá: loại bỏ tất cả ký tự không phải số
+            // Định dạng VNĐ: "29.999.999₫" -> "29999999"
+            let totalText = totalElement.textContent.replace(/[^\d]/g, '').trim();
             grandTotal += parseFloat(totalText) || 0;
         });
 
@@ -196,7 +217,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 const itemMemory = item.dataset.productMemory || '';
                 const itemColor = item.dataset.productColor || '';
                 
-                quantityInput.value = parseInt(quantityInput.value) + 1;
+                // Kiểm tra số lượng tồn kho
+                const currentQuantity = parseInt(quantityInput.value) || 1;
+                const stockQuantity = getProductStock(itemName);
+                
+                if (currentQuantity >= stockQuantity) {
+                    alert(`Số lượng tồn kho chỉ còn ${stockQuantity} sản phẩm. Không thể thêm nữa!`);
+                    quantityInput.value = stockQuantity;
+                    return;
+                }
+                
+                quantityInput.value = currentQuantity + 1;
                 updateItemTotal(item);
                 
                 // Cập nhật localStorage
@@ -296,6 +327,94 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Cập nhật tổng tiền sau khi xóa
                 updateCartTotal();
             };
+        }
+
+        // Thêm event listener cho input số lượng khi người dùng nhập trực tiếp
+        const quantityInput = item.querySelector('.item-quantity');
+        if (quantityInput) {
+            // Lấy số lượng tồn kho và set max cho input
+            const itemName = item.dataset.productName;
+            if (itemName) {
+                const stockQuantity = getProductStock(itemName);
+                if (stockQuantity > 0) {
+                    quantityInput.setAttribute('max', stockQuantity);
+                }
+            }
+            
+            quantityInput.addEventListener('input', () => {
+                const itemName = item.dataset.productName;
+                const itemMemory = item.dataset.productMemory || '';
+                const itemColor = item.dataset.productColor || '';
+                const inputValue = parseInt(quantityInput.value) || 1;
+                
+                // Đảm bảo số lượng tối thiểu là 1
+                if (inputValue < 1) {
+                    quantityInput.value = 1;
+                    updateItemTotal(item);
+                    return;
+                }
+                
+                // Kiểm tra số lượng tồn kho
+                if (itemName) {
+                    const stockQuantity = getProductStock(itemName);
+                    if (stockQuantity > 0 && inputValue > stockQuantity) {
+                        alert(`Số lượng tồn kho chỉ còn ${stockQuantity} sản phẩm. Vui lòng nhập số lượng không vượt quá ${stockQuantity}!`);
+                        quantityInput.value = stockQuantity;
+                        updateItemTotal(item);
+                        
+                        // Cập nhật localStorage với số lượng đã điều chỉnh
+                        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                        const product = cart.find(p => 
+                            p.name === itemName &&
+                            (p.memory || '') === itemMemory &&
+                            (p.color || '') === itemColor
+                        );
+                        if (product) {
+                            product.quantity = stockQuantity;
+                            localStorage.setItem('cart', JSON.stringify(cart));
+                            window.updateCartCount();
+                        }
+                        return;
+                    }
+                }
+                
+                // Cập nhật giá ngay lập tức
+                updateItemTotal(item);
+                
+                // Cập nhật localStorage
+                if (itemName) {
+                    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+                    const product = cart.find(p => 
+                        p.name === itemName &&
+                        (p.memory || '') === itemMemory &&
+                        (p.color || '') === itemColor
+                    );
+                    if (product) {
+                        product.quantity = inputValue;
+                        localStorage.setItem('cart', JSON.stringify(cart));
+                        
+                        // Cập nhật cart count
+                        window.updateCartCount();
+                    }
+                }
+            });
+            
+            // Cũng cập nhật khi blur (khi người dùng rời khỏi input)
+            quantityInput.addEventListener('blur', () => {
+                const itemName = item.dataset.productName;
+                const inputValue = parseInt(quantityInput.value) || 1;
+                
+                if (inputValue < 1) {
+                    quantityInput.value = 1;
+                } else if (itemName) {
+                    const stockQuantity = getProductStock(itemName);
+                    if (stockQuantity > 0 && inputValue > stockQuantity) {
+                        alert(`Số lượng tồn kho chỉ còn ${stockQuantity} sản phẩm. Đã tự động điều chỉnh về ${stockQuantity}!`);
+                        quantityInput.value = stockQuantity;
+                    }
+                }
+                updateItemTotal(item);
+            });
         }
 
         // Cũng cập nhật tổng tiền khi tải trang (phòng trường hợp số lượng đã được điền sẵn)
@@ -1132,6 +1251,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 itemDetails += '</div>';
             }
             
+            // Lấy số lượng tồn kho để set max cho input
+            const stockQuantity = getProductStock(carts[i].name);
+            const maxAttr = stockQuantity > 0 ? `max="${stockQuantity}"` : '';
+            
             itemCart.innerHTML=`
                 <div class="item-name-container cart-col product">
                     <div class="item-image">
@@ -1146,7 +1269,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="item-quantity-container cart-col quantity">
                     <div style="display: flex;">
                         <span class="decrease">-</span>
-                        <input type="number" class="item-quantity" value="${carts[i].quantity}" min="1">
+                        <input type="number" class="item-quantity" value="${carts[i].quantity}" min="1" ${maxAttr}>
                         <span class="increase">+</span>
                     </div>
 

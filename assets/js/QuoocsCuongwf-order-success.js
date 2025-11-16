@@ -132,8 +132,19 @@ function showOrderSuccessModal() {
             cart = JSON.parse(localStorage.getItem('cart') || '[]');
         }
         
-        // Lấy thông tin user
+        // Lấy thông tin user từ phonestore_users dựa trên customer_id
+        let customerInfo = null;
+        if (orderData.customer_id) {
+            const allUsers = JSON.parse(localStorage.getItem('phonestore_users') || '[]');
+            customerInfo = allUsers.find(user => user.id === orderData.customer_id);
+        }
+        
+        // Fallback: lấy từ currentUser nếu không tìm thấy trong phonestore_users
         const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+        if (!customerInfo && currentUser.id) {
+            const allUsers = JSON.parse(localStorage.getItem('phonestore_users') || '[]');
+            customerInfo = allUsers.find(user => user.id === currentUser.id);
+        }
         
         // Lấy Order ID từ localStorage (đã được tạo trước khi gọi addOrder)
         let orderId = localStorage.getItem('lastCreatedOrderId');
@@ -146,10 +157,16 @@ function showOrderSuccessModal() {
         // Cập nhật thông tin vào modal
         document.getElementById('order-id').textContent = orderId;
         
-        // Thông tin người nhận (ưu tiên từ orderData, fallback sang currentUser)
-        document.getElementById('customer-name').textContent = currentUser.hoten || 'Khách hàng';
-        document.getElementById('customer-phone').textContent = currentUser.sodienthoai || '--';
-        document.getElementById('customer-email').textContent = currentUser.email || '--';
+        // Thông tin người nhận (ưu tiên từ customerInfo, fallback sang currentUser)
+        if (customerInfo) {
+            document.getElementById('customer-name').textContent = customerInfo.name || customerInfo.hoten || 'Khách hàng';
+            document.getElementById('customer-phone').textContent = customerInfo.phone || customerInfo.sodienthoai || '--';
+            document.getElementById('customer-email').textContent = customerInfo.email || '--';
+        } else {
+            document.getElementById('customer-name').textContent = currentUser.name || currentUser.hoten || 'Khách hàng';
+            document.getElementById('customer-phone').textContent = currentUser.phone || currentUser.sodienthoai || '--';
+            document.getElementById('customer-email').textContent = currentUser.email || '--';
+        }
         
         // Địa chỉ giao hàng
         document.getElementById('delivery-address').textContent = orderData.address || '--';
