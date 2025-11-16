@@ -2,7 +2,15 @@ let productsSearchBar = JSON.parse(localStorage.getItem('phonestore_products')) 
 let filteredProducts = [...productsSearchBar];
 let currentPageSearchProduct = 1;
 const paginationContainer = document.querySelector('.search-product-pagination');
-const itemsPerPage = 8; 
+const itemsPerPage = 8;
+
+// Export function để autocomplete có thể sử dụng
+window.updateFilteredProducts = function(products) {
+    filteredProducts = products;
+    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    renderPagination(totalPages);
+    renderFilteredProducts();
+}; 
 
 function filterProducts(filters) {
     console.log(productsSearchBar);
@@ -190,6 +198,7 @@ function formatCurrency(value) {
     return value.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
 }
 
+// Nút Áp dụng bộ lọc
 document.querySelector('.apply-filter')?.addEventListener('click', function() {
     const filters = {
         manufacturers: [],
@@ -220,34 +229,167 @@ document.querySelector('.apply-filter')?.addEventListener('click', function() {
     document.querySelector('.search-product-content')?.scrollIntoView({ behavior: 'smooth' });
     filterProducts(filters);
 });
-//========Duy Đăng (Quick Acces )==========
 
-document.querySelectorAll('.category-card').forEach(card => {
-    card.addEventListener('click', function() {
+// Nút Bỏ chọn - Clear tất cả filter
+document.getElementById('clearFilterBtn')?.addEventListener('click', function() {
+    // Bỏ chọn tất cả checkbox
+    document.querySelectorAll('.filter-options input[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    
+    // Reset filtered products về tất cả sản phẩm
+    filteredProducts = [...productsSearchBar];
+    currentPageSearchProduct = 1;
+    
+    // Render lại sản phẩm
+    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    renderPagination(totalPages);
+    renderFilteredProducts();
+    
+    console.log('✅ Đã bỏ chọn tất cả bộ lọc');
+});
+//========Duy Đăng (Quick Acces )==========
+// Map tên category với giá trị checkbox trong filter
+function mapCategoryToFilterValue(categoryName) {
+    const categoryMap = {
+        'iPhone': 'Apple',
+        'Iphone': 'Apple',
+        'Apple': 'Apple',
+        'Samsung': 'Samsung',
+        'Xiaomi': 'Xiaomi',
+        'OPPO': 'OPPO',
+        'Vivo': 'Vivo',
+        'Realme': 'Realme',
+        'Nokia': 'Nokia'
+    };
+    
+    // Tìm exact match hoặc partial match
+    for (const [key, value] of Object.entries(categoryMap)) {
+        if (categoryName.includes(key) || categoryName === key) {
+            return value;
+        }
+    }
+    
+    // Nếu không tìm thấy, trả về chính nó
+    return categoryName;
+}
+
+// Click vào category card - Tự động áp dụng filter
+function setupCategoryCardClick() {
+    // Dùng event delegation vì category cards được render động
+    document.addEventListener('click', function(e) {
+        const categoryCard = e.target.closest('.category-card');
+        if (!categoryCard) return;
+        
+        // Lấy tên category
+        const spanElement = categoryCard.querySelector('span');
+        const categoryName = spanElement ? spanElement.textContent.trim() : '';
+        
+        if (!categoryName) return;
+        
+        // Map category name với filter value
+        const filterValue = mapCategoryToFilterValue(categoryName);
+        console.log(`🔄 Click category: ${categoryName} -> Filter: ${filterValue}`);
+        
+        // Bỏ chọn tất cả checkbox trong "Hãng sản xuất" trước
+        document.querySelectorAll('.search-product-type input[type="checkbox"]').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        
+        // Tìm và check checkbox tương ứng
+        const checkboxes = document.querySelectorAll('.search-product-type input[type="checkbox"]');
+        let found = false;
+        
+        checkboxes.forEach(checkbox => {
+            if (checkbox.value === filterValue || 
+                checkbox.value.toLowerCase() === categoryName.toLowerCase() ||
+                checkbox.nextElementSibling?.textContent.trim() === categoryName) {
+                checkbox.checked = true;
+                found = true;
+                console.log(`✅ Đã check: ${checkbox.value}`);
+            }
+        });
+        
+        // Nếu không tìm thấy exact match, thử tìm partial
+        if (!found) {
+            checkboxes.forEach(checkbox => {
+                const labelText = checkbox.nextElementSibling?.textContent.trim() || '';
+                if (labelText.toLowerCase().includes(categoryName.toLowerCase()) ||
+                    categoryName.toLowerCase().includes(labelText.toLowerCase())) {
+                    checkbox.checked = true;
+                    found = true;
+                    console.log(`✅ Đã check (partial): ${checkbox.value}`);
+                }
+            });
+        }
+        
+        // Tạo filters object giống như nút "Áp dụng bộ lọc"
         const filters = {
             manufacturers: [],
             priceRanges: [],
             storage: [],
             rating: []
         };
-
-        const spanText = this.querySelector('span')?.textContent;
-        if (spanText) {
-            filters.manufacturers.push(spanText);
-            console.log(spanText);
-            document.querySelector('.search-product-content')?.scrollIntoView({ behavior: 'smooth' });
+        
+        // Lấy tất cả filter đã chọn (bao gồm cả filter cũ nếu có)
+        document.querySelectorAll('.filter-options input:checked').forEach(input => {
+            const group = input.closest('.filter-group');
+            const groupTitle = group.querySelector('h3').textContent;
+            
+            switch(groupTitle) {
+                case 'Hãng sản xuất':
+                    filters.manufacturers.push(input.value);
+                    break;
+                case 'Khoảng giá':
+                    filters.priceRanges.push(input.value);
+                    break;
+                case 'Bộ nhớ trong':
+                    filters.storage.push(input.value);
+                    break;
+                case 'Đánh giá':
+                    filters.rating.push(Number(input.value));
+                    break;
+            }
+        });
+        
+        // Áp dụng filter ngay lập tức
+        setTimeout(() => {
+            // Scroll đến phần tìm kiếm
+            const searchSection = document.querySelector('.search-product-wrapper');
+            if (searchSection) {
+                searchSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            
+            // Áp dụng filter
             filterProducts(filters);
-        }
+            console.log('✅ Đã áp dụng filter từ category card:', filters);
+        }, 100);
+    });
+}
+
+// Khởi tạo khi DOM ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupCategoryCardClick);
+} else {
+    setupCategoryCardClick();
+}
+
+// Legacy code - giữ lại để tương thích
+document.querySelectorAll('.category-card').forEach(card => {
+    card.addEventListener('click', function(e) {
+        e.preventDefault();
+        // Logic mới đã được xử lý trong setupCategoryCardClick
     });
 });
-document.querySelector('.search-bar-btn').addEventListener('click', function() {
+document.querySelector('.search-bar-btn')?.addEventListener('click', function() {
     const filters = {
         manufacturers: [],
         priceRanges: [],
         storage: [],
         rating: []
     };
-    const keyword = document.querySelector('.search-bar input').value;
+    const searchInput = document.querySelector('.search-bar input') || document.getElementById('headerSearchInput');
+    const keyword = searchInput ? searchInput.value : '';
 
     document.querySelectorAll('.filter-options input:checked').forEach(input => {
         const group = input.closest('.filter-group');

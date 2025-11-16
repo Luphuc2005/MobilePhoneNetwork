@@ -25,9 +25,12 @@
         <a href="index.html">📱PhoneStore</a>
       </div>
       <!-- Thanh tìm kiếm (Thanh Nhàn) -->
-      <div class="search-bar">
-        <input type="text" placeholder="Tìm kiếm sản phẩm...">
-        <button class="search-bar-btn">Tìm kiếm</button>
+      <div class="search-bar-wrapper">
+        <div class="search-bar">
+          <input type="text" id="headerSearchInput" placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
+          <button class="search-bar-btn">Tìm kiếm</button>
+        </div>
+        <div class="search-autocomplete" id="searchAutocomplete"></div>
       </div>
       <!-- Menu điều hướng chính -->
       <nav class="main-nav">
@@ -205,7 +208,10 @@
               </div>
             </div>
 
-            <button class="apply-filter">Áp dụng bộ lọc</button>
+            <div class="filter-actions">
+              <button class="apply-filter">Áp dụng bộ lọc</button>
+              <button class="clear-filter" id="clearFilterBtn">Bỏ chọn</button>
+            </div>
           </div>
         </div>
         <div class="search-product-content">
@@ -316,6 +322,7 @@
   <script src="./assets/js/duyddawng-category-sync.js"></script>
   <script src="./assets/js/tuankhoi-validation.js"></script>
   <script src="./assets/js/nt_nhan-search_bar.js"></script>
+  <script src="./assets/js/search-autocomplete.js"></script>
 </body>
 
 </html>
