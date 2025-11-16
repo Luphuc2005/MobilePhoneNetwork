@@ -16,8 +16,8 @@ window.addEventListener('storage', function(e) {
         initializeInventoryForm();
     }
     if (e.key === 'phonestore_import_orders') {
-        // Cập nhật lại khi có thay đổi import orders (không cần reload data vì chỉ dùng để tính toán)
-        // Có thể trigger lại search nếu đang có kết quả hiển thị
+        updateProductStockQuantities();
+        initializeInventoryForm();
     }
     if (e.key === 'phonestore_orders') {
         ordersInventory = JSON.parse(e.newValue || '[]');
@@ -47,6 +47,15 @@ function checkForUpdates() {
 }
 
 setInterval(checkForUpdates, 2000);
+
+function updateProductStockQuantities() {
+    const updated = inventoryProducts.map(p => {
+        const inv = calculateInventory(p.id, null, null);
+        return { ...p, soluong: inv.closingStock };
+    });
+    inventoryProducts = updated;
+    localStorage.setItem('phonestore_products', JSON.stringify(updated));
+}
 
 // Khởi tạo dữ liệu form
 function initializeInventoryForm() {
@@ -102,6 +111,7 @@ function initializeInventoryForm() {
         inventory: calculateInventory(product.id, startDate || null, endDate || null)
     }));
 
+    updateProductStockQuantities();
     inventoryCurrentPage = 1;
     renderInventoryResults(results);
 }
@@ -395,6 +405,8 @@ document.getElementById('btn-search-inventory').addEventListener('click', functi
     inventoryCurrentPage = 1;
     renderInventoryResults(results);
 });
+
+
 
 // Khởi tạo form khi trang được load
 document.addEventListener('DOMContentLoaded', initializeInventoryForm);
