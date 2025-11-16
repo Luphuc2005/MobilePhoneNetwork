@@ -28,7 +28,7 @@ if (document.readyState === "loading") {
       <h3 id="formTitle">➕ Thêm phiếu nhập</h3>
       <form id="importForm">
         <label>Ngày nhập:</label>
-        <input type="date" id="importDate" required />
+        <input type="date" id="importDate" required min="" />
 
         <h4>Danh sách sản phẩm</h4>
         <table class="sub-table" id="productDetailTable">
@@ -143,6 +143,16 @@ function initImportPage() {
     form.reset();
     productDetailBody.innerHTML = "";
     document.getElementById("formTitle").textContent = "➕ Thêm phiếu nhập";
+    
+    // Set min date là hôm nay (chỉ cho phép chọn từ hiện tại và tương lai)
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    const importDateInput = document.getElementById("importDate");
+    if (importDateInput) {
+      importDateInput.setAttribute('min', todayStr);
+      importDateInput.value = todayStr; // Set mặc định là hôm nay
+    }
+    
     openModal(modal);
   };
 
@@ -234,6 +244,18 @@ function initImportPage() {
       return;
     }
     const date = document.getElementById("importDate").value;
+    
+    // Kiểm tra ngày nhập không được là quá khứ
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset về 00:00:00 để so sánh chính xác
+    const selectedDate = new Date(date);
+    selectedDate.setHours(0, 0, 0, 0);
+    
+    if (selectedDate < today) {
+      alert("Ngày nhập không được là quá khứ! Vui lòng chọn ngày từ hôm nay trở đi.");
+      return;
+    }
+    
     const rows = Array.from(productDetailBody.querySelectorAll("tr"));
 
     const details = rows
@@ -311,7 +333,40 @@ function initImportPage() {
         return alert("Không thể sửa phiếu đã hoàn thành!");
       editingId = id;
       document.getElementById("formTitle").textContent = `✏️ Sửa phiếu #${id}`;
-      document.getElementById("importDate").value = item.date;
+      
+      // Set min date là hôm nay (chỉ cho phép chọn từ hiện tại và tương lai)
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayStr = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+      const importDateInput = document.getElementById("importDate");
+      if (importDateInput) {
+        importDateInput.setAttribute('min', todayStr);
+        
+        // Parse ngày cũ (có thể là định dạng dd/mm/yyyy hoặc yyyy-mm-dd)
+        let oldDate;
+        if (item.date.includes('/')) {
+          // Định dạng dd/mm/yyyy
+          const [day, month, year] = item.date.split('/');
+          oldDate = new Date(year, month - 1, day);
+        } else {
+          // Định dạng yyyy-mm-dd
+          oldDate = new Date(item.date);
+        }
+        oldDate.setHours(0, 0, 0, 0);
+        
+        // Kiểm tra nếu ngày cũ là quá khứ, set về hôm nay
+        if (oldDate < today) {
+          importDateInput.value = todayStr;
+          alert("Ngày nhập cũ là quá khứ. Đã tự động đổi về hôm nay. Vui lòng kiểm tra lại!");
+        } else {
+          // Chuyển đổi sang định dạng yyyy-mm-dd cho input type="date"
+          const year = oldDate.getFullYear();
+          const month = String(oldDate.getMonth() + 1).padStart(2, '0');
+          const day = String(oldDate.getDate()).padStart(2, '0');
+          importDateInput.value = `${year}-${month}-${day}`;
+        }
+      }
+      
       productDetailBody.innerHTML = "";
       item.details.forEach((d) => {
         const row = document.createElement("tr");
