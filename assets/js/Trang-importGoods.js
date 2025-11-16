@@ -100,7 +100,7 @@ function initImportPage() {
   const formatMoney = (n) => Number(n).toLocaleString("vi-VN") + "₫";
 
   const totalOf = (details) =>
-    details.reduce((sum, d) => sum + d.gia * d.qty, 0);
+    details.reduce((sum, d) => sum + (d.price ? d.price : d.gia * d.qty), 0);
 
   const renderTable = (list = importList) => {
     tableBody.innerHTML = "";
@@ -317,9 +317,9 @@ function initImportPage() {
                 (d) => `
               <tr>
                 <td>${d.product}</td>
-                <td>${formatMoney(d.gia)}</td>
+                <td>${formatMoney(d.price ? d.price : d.gia)}</td>
                 <td>${d.qty}</td>
-                <td>${formatMoney(d.gia * d.qty)}</td>
+                <td>${formatMoney(d.price ? d.price : d.gia * d.qty)}</td>
               </tr>`
               )
               .join("")}

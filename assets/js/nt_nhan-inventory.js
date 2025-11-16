@@ -179,7 +179,6 @@ function calculateInventory(productId, startDate, endDate) {
         }
         return total;
     }, 0);
-    console.log(exported);
 
     // Tính số lượng nhập từ import orders (chỉ tính các phiếu đã hoàn thành)
     const imported = importOrders.reduce((total, impOrder) => {

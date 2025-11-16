@@ -257,7 +257,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const itemName = item.dataset.productName;
                 const itemMemory = item.dataset.productMemory || '';
                 const itemColor = item.dataset.productColor || '';
-                
                 if (quantityInput.value > 1) {
                     quantityInput.value = parseInt(quantityInput.value) - 1;
                     updateItemTotal(item);

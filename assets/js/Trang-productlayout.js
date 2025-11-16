@@ -1,6 +1,5 @@
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => {
-    let page = `
+function initProductPageWrapper() {
+  let page = `
   <h1>📦 Quản lý sản phẩm</h1>
   <div class="product-header">
     <input type="text" id="inputSearch" placeholder="🔍 Tìm kiếm sản phẩm..." />
@@ -27,23 +26,40 @@ if (document.readyState === "loading") {
     <tbody id="productTable"></tbody>
   </table>
   <div id="pagination" style="margin-top:15px; display:flex; gap:5px; justify-content:center;"></div>
-`;
+  `;
 
-    let a = document.getElementsByClassName("sidebar-menu-item-cate")[2];
-    a.addEventListener("click", () => {
-      // 1. Lấy dữ liệu từ localStorage
-      let productAll =
-        JSON.parse(localStorage.getItem("phonestore_products")) || [];
+  const renderProductPage = () => {
+    const productsContent = document.getElementById("products-content");
+    if (!productsContent) return;
 
-      console.log(productAll);
-      const productsContent = document.getElementById("products-content");
-      productsContent.innerHTML = page;
+    // Gắn HTML vào trang
+    productsContent.innerHTML = page;
 
-      // 3. Khởi tạo trang sản phẩm với dữ liệu hiện có
-      initProductPage(productAll);
+    // Lấy sản phẩm từ localStorage
+    let productAll =
+      JSON.parse(localStorage.getItem("phonestore_products")) || [];
+
+    // Gọi hàm vẽ bảng sp
+    initProductPage(productAll);
+  };
+
+  // Lần đầu (F5 / load trang) -> render luôn
+  renderProductPage();
+
+  // Gắn click cho menu
+  const menuItems = document.getElementsByClassName("sidebar-menu-item-cate");
+  if (menuItems && menuItems[2]) {
+    menuItems[2].addEventListener("click", () => {
+      renderProductPage();
     });
-  });
+  }
+}
+
+// Đảm bảo luôn chạy được cả khi DOM đã sẵn (F5) hoặc script load sớm
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initProductPageWrapper);
 } else {
+  initProductPageWrapper();
 }
 
 // ====================== PRODUCT PAGE ======================
@@ -86,21 +102,17 @@ function initProductPage(data) {
           </div>
         </td>
         <td><span class="badge">${p.danhmuc}</span></td>
-   <td>${p.gia ? p.gia.toLocaleString() + "₫" : "0₫"}</td>
-
-<td class="${(p.soluong ?? 0) === 0 ? "out-stock" : "in-stock"}">
-  ${p.soluong ?? 0}
-</td>
-
-<td>
-  <span class="status ${
-    (p.soluong ?? 0) === 0 ? "status-red" : "status-green"
-  }">
-    ${(p.soluong ?? 0) === 0 ? "Hết hàng" : "Còn hàng"}
-  </span>
-</td>
-
-
+        <td>${p.giavon.toLocaleString()}₫</td>
+        <td class="${p.soluong === 0 ? "out-stock" : "in-stock"}">${
+        p.soluong
+      }</td>
+        <td>
+          <span class="status ${
+            p.soluong === 0 ? "status-red" : "status-green"
+          }">
+            ${p.soluong === 0 ? "Hết hàng" : "Còn hàng"}
+          </span>
+        </td>
         <td class="actions">
           <button title="Sửa" class="edit">✏️</button>
           <button title="Xóa" class="delete"><i class="fa-solid fa-trash"></i></button>
@@ -205,6 +217,16 @@ function openEditForm(p, onSaved) {
   // ⬇ Gán dữ liệu vào form
   form.querySelector(".editName").value = p.tensanpham;
   form.querySelector(".editCategory").value = p.danhmuc;
+  form.querySelector(".editPrice").value = p.gia;
+  form.querySelector(".editCostPrice").value = p.giavon || "";
+  form.querySelector(".editOldPrice").value = p.oldPrice || "";
+  form.querySelector(".editQuantity").value = p.soluong;
+  form.querySelector(".editStatus").value = p.trangthai ? "true" : "false";
+  form.querySelector(".editRating").value = p.rating || "";
+  form.querySelector(".editReviews").value = p.reviews || "";
+  form.querySelector(".editColors").value = (p.color || []).join(", ");
+  form.querySelector(".editMemory").value = (p.memory || []).join(", ");
+
   form.querySelector(".editDescription").value = p.description || "";
 
   // Ảnh preview
@@ -232,6 +254,23 @@ function openEditForm(p, onSaved) {
         ...products[idx],
         tensanpham: form.querySelector(".editName").value.trim(),
         danhmuc: form.querySelector(".editCategory").value,
+        gia: +form.querySelector(".editPrice").value,
+        giavon: +form.querySelector(".editCostPrice").value,
+        oldPrice: +form.querySelector(".editOldPrice").value,
+        soluong: +form.querySelector(".editQuantity").value,
+        trangthai: form.querySelector(".editStatus").value === "true",
+        rating: +form.querySelector(".editRating").value,
+        reviews: +form.querySelector(".editReviews").value,
+        color: form
+          .querySelector(".editColors")
+          .value.split(",")
+          .map((x) => x.trim())
+          .filter((x) => x),
+        memory: form
+          .querySelector(".editMemory")
+          .value.split(",")
+          .map((x) => x.trim())
+          .filter((x) => x),
         description: form.querySelector(".editDescription").value.trim(),
         hinhanh: preview.src || p.hinhanh,
       };
@@ -267,6 +306,23 @@ function openAddForm(onSaved) {
       id: products.length ? Math.max(...products.map((x) => x.id)) + 1 : 1,
       tensanpham: form.querySelector(".editName").value.trim(),
       danhmuc: form.querySelector(".editCategory").value,
+      gia: +form.querySelector(".editPrice").value,
+      giavon: +form.querySelector(".editCostPrice").value,
+      oldPrice: +form.querySelector(".editOldPrice").value,
+      soluong: +form.querySelector(".editQuantity").value,
+      trangthai: form.querySelector(".editStatus").value === "true",
+      rating: +form.querySelector(".editRating").value,
+      reviews: +form.querySelector(".editReviews").value,
+      color: form
+        .querySelector(".editColors")
+        .value.split(",")
+        .map((x) => x.trim())
+        .filter((x) => x),
+      memory: form
+        .querySelector(".editMemory")
+        .value.split(",")
+        .map((x) => x.trim())
+        .filter((x) => x),
       description: form.querySelector(".editDescription").value.trim(),
       hinhanh: preview.src || "https://via.placeholder.com/150",
     };
@@ -280,6 +336,7 @@ function openAddForm(onSaved) {
     onSaved && onSaved();
   };
 }
+
 // ====================== RENDER FORM (1 LẦN DUY NHẤT) ======================
 function renderForm() {
   if (document.querySelector(".edit-form-overlay")) return;
@@ -317,6 +374,51 @@ function renderForm() {
           </select>
         </div>
 
+        <!-- Giá bán -->
+        <div class="form-group">
+          <label>Giá bán</label>
+          <input type="number" class="editPrice" placeholder="Nhập giá bán..." min="1" />
+        </div>
+
+        <!-- Giá vốn -->
+        <div class="form-group">
+          <label>Giá vốn</label>
+          <input type="number" class="editCostPrice" placeholder="Nhập giá vốn..." min="1" />
+        </div>
+
+        <!-- Giá cũ -->
+        <div class="form-group">
+          <label>Giá cũ (nếu có)</label>
+          <input type="number" class="editOldPrice" placeholder="Nhập giá cũ..." min="1" />
+        </div>
+
+        <!-- Số lượng -->
+        <div class="form-group">
+          <label>Số lượng</label>
+          <input type="number" class="editQuantity" placeholder="Nhập số lượng..." min="1" />
+        </div>
+
+        <!-- Trạng thái -->
+        <div class="form-group">
+          <label>Trạng thái</label>
+          <select class="editStatus">
+            <option value="true">Còn hàng</option>
+            <option value="false">Hết hàng</option>
+          </select>
+        </div>
+
+        <!-- Rating -->
+        <div class="form-group">
+          <label>Đánh giá (sao)</label>
+          <input type="number" class="editRating" step="0.1" min="0" max="5" placeholder="4.5" disabled />
+        </div>
+
+        <!-- Reviews -->
+        <div class="form-group">
+          <label>Số lượt đánh giá</label>
+          <input type="number" class="editReviews" placeholder="0" min="0" disabled />
+        </div>
+
         <!-- Upload ảnh -->
         <div class="imagePre" style="grid-column: span 2;">
           <div class="uploadimage">
@@ -345,10 +447,22 @@ function renderForm() {
           </div>
         </div>
 
+        <!-- Màu sắc -->
+        <div class="form-group" style="grid-column:span 2;">
+          <label>Màu sắc (cách nhau bởi dấu phẩy)</label>
+          <input type="text" class="editColors" placeholder="VD: Đen, Tím, Vàng, Bạc" />
+        </div>
+
+        <!-- Dung lượng -->
+        <div class="form-group" style="grid-column:span 2;">
+          <label>Dung lượng (cách nhau bởi dấu phẩy)</label>
+          <input type="text" class="editMemory" placeholder="VD: 128GB, 256GB, 512GB, 1TB" />
+        </div>
+
         <!-- Mô tả -->
         <div class="form-group" style="grid-column:span 2;">
           <label>Mô tả</label>
-<textarea class="editDescription" style="height:80px;"></textarea>
+          <textarea class="editDescription" style="height:80px;"></textarea>
         </div>
 
         <!-- Buttons -->
@@ -407,6 +521,8 @@ function renderForm() {
 function validateEditForm() {
   const name = document.querySelector(".editName").value.trim();
   const category = document.querySelector(".editCategory").value;
+  const price = parseFloat(document.querySelector(".editPrice").value);
+  const quantity = parseInt(document.querySelector(".editQuantity").value);
   const description = document.querySelector(".editDescription").value.trim();
   const imageInput = document.querySelector("#editImageFile");
 
@@ -417,6 +533,16 @@ function validateEditForm() {
 
   if (!category) {
     alert("⚠️ Vui lòng chọn danh mục!");
+    return false;
+  }
+
+  if (isNaN(price) || price <= 0) {
+    alert("⚠️ Giá sản phẩm phải lớn hơn 0!");
+    return false;
+  }
+
+  if (isNaN(quantity) || quantity < 1) {
+    alert("⚠️ Số lượng phải là số nguyên ≥ 1!");
     return false;
   }
 

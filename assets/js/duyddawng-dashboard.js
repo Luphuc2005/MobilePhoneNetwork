@@ -45,7 +45,7 @@ function setupSync(){
 function innitDashboard(){
     UpdateDashboard();
     setupSync();
-       setInterval(() => {
+    setInterval(() => {
         if (document.getElementById('dashboard-content').style.display !== 'none') {
             updateDashboard();
         }
