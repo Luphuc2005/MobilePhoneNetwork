@@ -1,3 +1,4 @@
+
 .search-product-wrapper {
   box-sizing: border-box;
   padding: 0px 40px;
@@ -186,9 +187,10 @@
 
 .search-bar button {
   width: 25%;
-  margin-top: 2%;
   border: none;
   border-radius: 8px;
+  font-weight: 550;
+  color: #545252;
   cursor: pointer;
 }
 
