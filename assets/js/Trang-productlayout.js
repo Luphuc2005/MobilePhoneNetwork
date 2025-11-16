@@ -1,14 +1,50 @@
+// Hàm lấy danh sách categories từ localStorage
+function getCategories() {
+  return JSON.parse(localStorage.getItem('phonestore_categories') || '[]');
+}
+
+// Hàm lấy màu cho category badge
+function getCategoryColor(categoryName) {
+  const colorMap = {
+    'Iphone': { bg: '#e3f2fd', color: '#1976d2' },
+    'Samsung': { bg: '#fff3e0', color: '#e65100' },
+    'Xiaomi': { bg: '#f3e5f5', color: '#7b1fa2' },
+    'OPPO': { bg: '#e8f5e9', color: '#388e3c' },
+    'Oppo': { bg: '#e8f5e9', color: '#388e3c' },
+    'Vivo': { bg: '#e0f2f1', color: '#00695c' },
+    'Realme': { bg: '#fff9c4', color: '#f57f17' },
+    'Nokia': { bg: '#fce4ec', color: '#c2185b' },
+    'Huawei': { bg: '#ede7f6', color: '#512da8' }
+  };
+  
+  // Tìm màu theo tên chính xác hoặc tìm kiếm không phân biệt hoa thường
+  for (const [key, value] of Object.entries(colorMap)) {
+    if (categoryName.toLowerCase() === key.toLowerCase()) {
+      return value;
+    }
+  }
+  
+  // Màu mặc định nếu không tìm thấy
+  return { bg: '#e6f0ff', color: '#3f78e0' };
+}
+
 function initProductPageWrapper() {
+  // Lấy categories từ localStorage
+  const categories = getCategories();
+  const activeCategories = categories.filter(cat => cat.status === 'Hoạt động');
+  
+  // Tạo options cho select filter
+  let categoryOptions = '<option value="">Tất cả danh mục</option>';
+  activeCategories.forEach(cat => {
+    categoryOptions += `<option value="${cat.name}">${cat.name}</option>`;
+  });
+  
   let page = `
-  <h1>📦 Quản lý sản phẩm</h1>
+  <h1> Quản lý sản phẩm</h1>
   <div class="product-header">
     <input type="text" id="inputSearch" placeholder="🔍 Tìm kiếm sản phẩm..." />
     <select id="filterCategory">
-      <option value="">Tất cả danh mục</option>
-      <option value="Samsung">Samsung</option>
-      <option value="Iphone">Iphone</option>
-      <option value="Realme">Realme</option>
-      <option value="Xiaomi">Xiaomi</option>
+      ${categoryOptions}
     </select>
     <button id="addProductBtn">+ Thêm sản phẩm</button>
   </div>
@@ -101,7 +137,7 @@ function initProductPage(data) {
             <small>ID: #${p.id}</small>
           </div>
         </td>
-        <td><span class="badge">${p.danhmuc}</span></td>
+        <td><span class="badge" style="background: ${getCategoryColor(p.danhmuc).bg}; color: ${getCategoryColor(p.danhmuc).color};">${p.danhmuc}</span></td>
         <td>${p.giavon.toLocaleString()}₫</td>
         <td class="${p.soluong === 0 ? "out-stock" : "in-stock"}">${
         p.soluong
@@ -214,6 +250,11 @@ function openEditForm(p, onSaved) {
 
   form.querySelector(".form-title").textContent = "✏️ Sửa sản phẩm";
 
+  // Populate category select trước khi gán giá trị
+  if (window.populateCategorySelect) {
+    window.populateCategorySelect();
+  }
+
   // ⬇ Gán dữ liệu vào form
   form.querySelector(".editName").value = p.tensanpham;
   form.querySelector(".editCategory").value = p.danhmuc;
@@ -287,6 +328,11 @@ function openAddForm(onSaved) {
   const form = document.querySelector(".edit-form-overlay");
   form.style.display = "flex";
   form.querySelector(".form-title").textContent = "➕ Thêm sản phẩm mới";
+
+  // Populate category select trước khi reset
+  if (window.populateCategorySelect) {
+    window.populateCategorySelect();
+  }
 
   // Reset form
   form.querySelectorAll("input, textarea").forEach((el) => (el.value = ""));
@@ -364,13 +410,6 @@ function renderForm() {
           <label>Danh mục</label>
           <select class="editCategory">
             <option value="">-- Chọn danh mục --</option>
-            <option value="Iphone">🍎 Iphone</option>
-            <option value="Samsung">📱 Samsung</option>
-            <option value="Xiaomi">🔋 Xiaomi</option>
-            <option value="Oppo">💚 Oppo</option>
-            <option value="Vivo">💙 Vivo</option>
-            <option value="Realme">⚡ Realme</option>
-            <option value="Nokia">📞 Nokia</option>
           </select>
         </div>
 
@@ -481,6 +520,36 @@ function renderForm() {
   `;
 
   document.body.appendChild(formContainer);
+
+  // Hàm populate category select (có thể gọi từ bên ngoài)
+  function populateCategorySelect() {
+    const form = document.querySelector(".edit-form-overlay");
+    if (!form) return;
+    
+    const categorySelect = form.querySelector(".editCategory");
+    if (!categorySelect) return;
+    
+    // Lấy categories từ localStorage
+    const categories = getCategories();
+    const activeCategories = categories.filter(cat => cat.status === 'Hoạt động');
+    
+    // Giữ lại option đầu tiên (-- Chọn danh mục --)
+    categorySelect.innerHTML = '<option value="">-- Chọn danh mục --</option>';
+    
+    // Thêm các category options
+    activeCategories.forEach(cat => {
+      const option = document.createElement('option');
+      option.value = cat.name;
+      option.textContent = cat.name;
+      categorySelect.appendChild(option);
+    });
+  }
+  
+  // Populate category select khi form được render
+  populateCategorySelect();
+  
+  // Lưu hàm populate để có thể gọi lại
+  window.populateCategorySelect = populateCategorySelect;
 
   // Đóng form
   formContainer.querySelector(".close-btn").onclick = () =>
