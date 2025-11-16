@@ -195,6 +195,10 @@ function addEllipsis() {
 //     }
 // });
 
+function formatCurrency(value) {
+    return value.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+}
+
 function initAddress() {
     const dictrictSearch = document.getElementById('dictrict-select');
     const districts = vietnamAddress["Thành phố Hồ Chí Minh"].districts;
@@ -236,6 +240,9 @@ let filteredOrder = allOrder;
 // let currentPageOrder = 1;
 
 function renderPageOrder() {
+    function formatCurrency(value) {
+        return value.toLocaleString("vi-VN", { style: "currency", currency: "VND" });
+    }
     document.querySelector('.order-search-bar')?.scrollIntoView({ behavior: 'smooth' });
     let start = (currentPageOrder - 1) * numberOrderPerPage;
     let end = start + numberOrderPerPage;
@@ -284,7 +291,7 @@ function renderPageOrder() {
                         </div>
                         <div class = "order-info">
                             <h3>Thông tin đơn hàng</h3>
-                            <div class="info-line info-label">Tổng tiền: <span class="total-price info-value">${order.amount}₫</span></div>
+                            <div class="info-line info-label">Tổng tiền: <span class="total-price info-value">${formatCurrency(order.amount)}</span></div>
                             <div class="info-line info-label">Thanh toán: <span class = "info-value">${order.purchase}</span></div>
                             
                             <div class="status-update-section" data-id-order = "${order.order_id}">

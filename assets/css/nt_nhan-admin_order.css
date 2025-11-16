@@ -284,7 +284,12 @@ body {
     width: 100%;
     background-color: #eaf6ff;
     border: 1px solid #eaf6ff;
+    cursor: pointer;
 }
+
+.status-update-form .status-select:hover {
+    background-color: #9bcef6;
+} 
 
 .status-update-form .select-list {
     position: absolute;
