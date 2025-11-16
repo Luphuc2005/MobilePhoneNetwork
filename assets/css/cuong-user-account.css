@@ -1245,26 +1245,73 @@ a {
 .background-user-info {
     display: none;
     background-color: #51505077;
-    position: absolute;;
-    top: 0%;
-    left: 0%;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 1200px;
+    height: 100%;
+    z-index: 9999;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* --- Container chính của Form --- */
 .user-info {
-    
     width: 100%;
-    max-width: 600px; /* Giới hạn chiều rộng của form */
-    position: absolute;
-    top: 3%;
-    left: 30%;
-    right: 30%;
+    max-width: 1200px; /* Tăng chiều rộng để chứa 2 cột */
+    position: relative;
+    margin: 2% auto;
     background: #ffffff;
-    padding: 25px 30px;
-    border-radius: 10px;
+    padding: 30px 35px;
+    border-radius: 12px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    z-index: 10000;
+    overflow: visible !important; /* Đảm bảo dropdown không bị cắt */
+}
+
+/* --- Bố cục 2 cột cho checkout --- */
+.checkout-layout {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.checkout-left {
+    flex: 1;
+    min-width: 0; /* Để tránh overflow */
+}
+
+.checkout-right {
+    flex: 0 0 380px; /* Chiều rộng cố định cho phần tóm tắt */
+    position: sticky;
+    top: 20px;
+    z-index: 1; /* Đảm bảo không đè lên form bên trái */
+}
+
+.order-summary-box {
+    background: #f8fafc;
+    padding: 24px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    position: relative;
+    z-index: 1;
+}
+
+@media (max-width: 1024px) {
+    .checkout-layout {
+        flex-direction: column;
+    }
+    
+    .checkout-right {
+        flex: 1;
+        width: 100%;
+        position: relative;
+        top: 0;
+    }
+    
+    .user-info {
+        max-width: 700px;
+    }
 }
 
 .user-info h2 {
@@ -1308,6 +1355,116 @@ a {
     border: 1px solid #ccc;
     border-radius: 5px;
     transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box; /* Đảm bảo padding không làm tăng width */
+}
+
+/* Đảm bảo select có thể click được và không bị che */
+.form-group select {
+    position: relative !important;
+    z-index: 1000 !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 15px center !important;
+    padding-right: 40px !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+}
+
+/* Đảm bảo select không bị disabled */
+.form-group select:not([disabled]) {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+.form-group select[disabled] {
+    cursor: not-allowed !important;
+    opacity: 0.6;
+}
+
+/* Khi select được focus, đảm bảo dropdown hiển thị đúng */
+.form-group select:focus,
+.form-group select:hover,
+.form-group select:active {
+    z-index: 1001 !important;
+    outline: 2px solid #667eea !important;
+    outline-offset: 2px !important;
+}
+
+/* Đảm bảo form-group chứa select có z-index phù hợp */
+.form-group {
+    position: relative;
+    z-index: auto;
+}
+
+.form-group:has(select) {
+    z-index: auto;
+}
+
+.form-group:has(select:focus),
+.form-group:has(select:hover),
+.form-group:has(select:active) {
+    z-index: 1001 !important;
+}
+
+/* Đảm bảo select luôn có thể click, nhưng vẫn giữ label hoạt động */
+.form-group:has(select) label {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+.form-group:has(select) select {
+    pointer-events: auto !important;
+    position: relative !important;
+}
+
+/* Đảm bảo không có overlay nào che lên select */
+.new-address-form select#quan-huyen {
+    pointer-events: auto !important;
+    z-index: 1000 !important;
+    position: relative !important;
+}
+
+.new-address-form select#tinh-thanh {
+    pointer-events: auto !important;
+    z-index: 1000 !important;
+    position: relative !important;
+}
+
+/* Đảm bảo form không bị overflow */
+.checkout-left {
+    overflow: visible !important;
+    position: relative;
+    z-index: auto;
+}
+
+#checkout-form {
+    overflow: visible;
+    position: relative;
+}
+
+/* Đảm bảo new-address-form không bị che */
+.new-address-form {
+    position: relative;
+    z-index: auto;
+}
+
+/* Đảm bảo nút button không đè lên form */
+.checkout-actions {
+    position: relative;
+    z-index: 1;
+    margin-top: 30px;
+}
+
+.checkout-actions .btn {
+    position: relative;
+    z-index: 1;
 }
 
 /* Hiệu ứng khi focus vào ô input */
@@ -1647,9 +1804,10 @@ a {
     /* --- Style lại FORM POPUP --- */
     .background-user-info {
         /* Đảm bảo lớp nền phủ hết và cố định */
-        height: 100%;
+        height: 100vh;
         position: fixed;
-        overflow-y: scroll; /* Cho phép cuộn cả lớp nền */
+        overflow-y: auto; /* Cho phép cuộn cả lớp nền */
+        z-index: 9999;
     }
 
     .user-info {

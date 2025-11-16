@@ -455,21 +455,38 @@ body {
 /* Dropdown menu - Thiết kế lại cho hợp lý */
 .dropdown-menu {
     position: absolute;
-    top: calc(100% + 10px);
+    top: calc(100% + 15px);
     right: 0;
     background: white;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    min-width: 240px;
+    padding: 12px 0;
     z-index: 1002;
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
     transition: all 0.3s ease;
     pointer-events: none;
+    /* Thêm vùng buffer để tránh mất khi di chuột */
+    margin-top: -10px;
+    padding-top: 20px;
+}
+
+/* Vùng vô hình để nối account button và dropdown */
+.dropdown-menu::after {
+    content: "";
+    position: absolute;
+    top: -15px;
+    left: 0;
+    right: 0;
+    height: 15px;
+    background: transparent;
     min-width: 100%;
 }
 
 .user-acount-area:hover .dropdown-menu,
+.user-acount-area .dropdown-menu:hover,
 .user-acount-area .dropdown-menu.show {
     opacity: 1;
     visibility: visible;
@@ -517,6 +534,9 @@ body {
     width: 100%;
     border: none;
     background: none;
+    padding: 16px 24px;
+    text-align: left;
+    font-size: 16px;
     padding: 12px 20px;
     font-size: 14px;
     font-weight: 600;
@@ -525,6 +545,8 @@ body {
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
+    gap: 12px;
+    font-weight: 500;
     justify-content: flex-end;
     gap: 10px;
 }
@@ -540,6 +562,36 @@ body {
 
 .dropdown-menu ul li:last-child button {
     border-radius: 0 0 12px 12px;
+}
+
+/* Icon cho các menu item */
+.dropdown-menu ul li button::before {
+    content: "";
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    font-size: 20px;
+    line-height: 20px;
+}
+
+.dropdown-menu ul li #profile::before {
+    content: "👤";
+}
+
+.dropdown-menu ul li #orders::before {
+    content: "📦";
+}
+
+.dropdown-menu ul li #sign-out::before {
+    content: "🚪";
+}
+
+.dropdown-menu ul li #sign-in::before {
+    content: "🔑";
+}
+
+.dropdown-menu ul li #sign-up::before {
+    content: "➕";
 }
 
 /* Style cho nút đăng nhập/đăng ký khi chưa đăng nhập */
