@@ -38,8 +38,10 @@ function showNotification(title, message, type = "success") {
   const bgColor =
     type === "success"
       ? "linear-gradient(135deg, #10b981 0%, #059669 100%)"
-      : "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)";
-  const icon = type === "success" ? "OK" : "Chưa được";
+      : type === "error"
+      ? "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)"
+      : "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)";
+  const icon = type === "success" ? "✅" : type === "error" ? "❌" : "ℹ️";
 
   const notification = document.createElement("div");
   notification.style.cssText = `
@@ -1031,9 +1033,9 @@ window.editUser = function (index) {
           <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #1e293b; font-size: 14px;">
             🛒 Số đơn hàng
           </label>
-          <input type="number" id="editOrdersNew" value="${
+          <input type="number" cursor:not-allowed; id="editOrdersNew" value="${
             u.orders || 0
-          }" placeholder="Nhập số đơn hàng" min="0"
+          }" placeholder="Nhập số đơn hàng" min="0" disabled
             style="width: 100%; padding: 12px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; transition: all 0.3s; box-sizing: border-box;" />
           <p style="margin: 8px 0 0 0; font-size: 12px; color: #64748b;">
             💡 Số đơn hàng mà khách hàng này đã mua
@@ -1342,6 +1344,45 @@ window.toggleLockUser = function (index) {
 // ====== DELETE USER ======
 window.deleteUser = function (index) {
   const u = users[index];
+  
+  // Kiểm tra xem người dùng có đơn hàng chưa hoàn thành không
+  const allOrders = JSON.parse(localStorage.getItem('phonestore_orders') || '[]');
+  const userOrders = allOrders.filter(order => order.customer_id === u.id);
+  
+  // Chỉ cho phép xóa khi:
+  // 1. Chưa có đơn hàng nào, HOẶC
+  // 2. Tất cả đơn hàng đều đã hoàn thành (status === 'done')
+  const incompleteOrders = userOrders.filter(order => order.status !== 'done');
+  
+  if (incompleteOrders.length > 0) {
+    // Đếm số đơn hàng theo từng trạng thái
+    const statusCounts = {};
+    incompleteOrders.forEach(order => {
+      let statusName;
+      switch(order.status) {
+        case 'waiting': statusName = 'Chờ xử lý'; break;
+        case 'accepted': statusName = 'Đã xác nhận'; break;
+        case 'delivery': statusName = 'Đang giao'; break;
+        case 'cancel': statusName = 'Đã hủy'; break;
+        default: statusName = order.status;
+      }
+      statusCounts[statusName] = (statusCounts[statusName] || 0) + 1;
+    });
+    
+    const statusDetails = Object.entries(statusCounts)
+      .map(([status, count]) => `${status}: ${count}`)
+      .join(', ');
+    
+    showNotification(
+      "⚠️ Không thể xóa tài khoản!",
+      `Khách hàng <strong>${u.name}</strong> đang có <strong>${incompleteOrders.length}</strong> đơn hàng chưa hoàn thành:<br>` +
+      `<small><strong>${statusDetails}</strong></small><br><br>` +
+      `Chỉ có thể xóa tài khoản khi tất cả đơn hàng đã hoàn thành hoặc chưa có đơn hàng nào.`,
+      "error"
+    );
+    return;
+  }
+  
   showConfirmDialog(
     "⚠️ Xác nhận xóa khách hàng",
     `Bạn có chắc chắn muốn <strong style="color: #ef4444;">xóa vĩnh viễn</strong> khách hàng <strong>${u.name}</strong>?<br><small style="color: #64748b;">Email: ${u.email}</small><br><br><strong style="color: #ef4444;">⚠️ Hành động này không thể hoàn tác!</strong>`,

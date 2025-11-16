@@ -448,6 +448,27 @@ function setupProductCardEvents() {
                             background-color: #ffffff;
                             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
                         }
+                        #product-options-modal input[type="number"] {
+                            width: 100%;
+                            padding: 12px 16px;
+                            font-size: 15px;
+                            color: #1f2937;
+                            background: #f9fafb;
+                            border: 2px solid #e5e7eb;
+                            border-radius: 10px;
+                            cursor: pointer;
+                            transition: all 0.2s ease;
+                        }
+                        #product-options-modal input[type="number"]:hover {
+                            border-color: #667eea;
+                            background-color: #ffffff;
+                        }
+                        #product-options-modal input[type="number"]:focus {
+                            outline: none;
+                            border-color: #667eea;
+                            background-color: #ffffff;
+                            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+                        }
                         #product-options-modal .confirm-btn {
                             width: 100%;
                             padding: 14px;
@@ -493,6 +514,11 @@ function setupProductCardEvents() {
                             </select>
                         </div>
                         
+                        <div class="selection-group">
+                            <label>🔢 Số lượng:</label>
+                            <input type="number" id="quantity-select" min="1" value="1">
+                        </div>
+                        
                         <button type="button" class="confirm-btn">Xác nhận</button>
                     </div>
                 `;
@@ -518,12 +544,17 @@ function setupProductCardEvents() {
                 modalOverlay.querySelector('.confirm-btn').onclick = () => {
                     const selectedColor = document.getElementById('color-select').value || defaultColor;
                     const selectedMemory = document.getElementById('memory-select').value || defaultMemory;
+                    const selectedQuantity = parseInt(document.getElementById('quantity-select').value) || 1;
+                    if (selectedQuantity < 1) {
+                        alert('Số lượng phải lớn hơn 0!');
+                        return;
+                    }
                     closeModal();
-                    addToCartWithOptions(foundProduct, selectedColor, selectedMemory);
+                    addToCartWithOptions(foundProduct, selectedColor, selectedMemory, selectedQuantity);
                 };
                 
                 // Hàm thêm vào giỏ hàng với options đã chọn
-                function addToCartWithOptions(product, color, memory) {
+                function addToCartWithOptions(product, color, memory, quantity = 1) {
                     // Lấy giỏ hàng hiện tại và chuẩn hóa dữ liệu
                     let cart = JSON.parse(localStorage.getItem('cart') || '[]');
                     
@@ -544,8 +575,8 @@ function setupProductCardEvents() {
                     
                     if (existingProduct) {
                         // Nếu đã có, tăng số lượng
-                        existingProduct.quantity += 1;
-                        alert(`Đã thêm 1 sản phẩm nữa vào giỏ hàng!\nTổng số lượng: ${existingProduct.quantity}`);
+                        existingProduct.quantity += quantity;
+                        alert(`Đã thêm ${quantity} sản phẩm nữa vào giỏ hàng!\nTổng số lượng: ${existingProduct.quantity}`);
                     } else {
                         // Nếu chưa có, thêm mới
                         cart.push({
@@ -554,13 +585,13 @@ function setupProductCardEvents() {
                             color: color,
                             memory: memory,
                             price: product.gia.toString(),
-                            quantity: 1
+                            quantity: quantity
                         });
                         
                         const productInfo = color && memory 
                             ? `"${product.tensanpham} - ${memory} - ${color}"`
                             : `"${product.tensanpham}"`;
-                        alert(`Đã thêm ${productInfo} vào giỏ hàng!`);
+                        alert(`Đã thêm ${quantity} ${productInfo} vào giỏ hàng!`);
                     }
                     
                     // Lưu giỏ hàng vào localStorage

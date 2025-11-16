@@ -15,6 +15,39 @@ function preProcessStatus(status) {
     }
 }
 
+/**
+ * Lấy các trạng thái có thể chuyển tiếp từ trạng thái hiện tại
+ * Chỉ cho phép tiến, không cho phép lùi
+ * @param {string} currentStatus - Trạng thái hiện tại (waiting, accepted, delivery, done, cancel)
+ * @returns {Array} - Mảng các trạng thái có thể chuyển tiếp
+ */
+function getNextAllowedStatuses(currentStatus) {
+    const statusMap = {
+        'waiting': ['accepted', 'cancel'], // Chờ xử lý -> Đã xác nhận hoặc Đã hủy
+        'accepted': ['delivery', 'cancel'], // Đã xác nhận -> Đang giao hoặc Đã hủy
+        'delivery': ['done', 'cancel'], // Đang giao -> Hoàn thành hoặc Đã hủy
+        'done': [], // Hoàn thành -> không thể thay đổi
+        'cancel': [] // Đã hủy -> không thể thay đổi
+    };
+    return statusMap[currentStatus] || [];
+}
+
+/**
+ * Chuyển đổi status code sang tên tiếng Việt
+ * @param {string} status - Status code (waiting, accepted, delivery, done, cancel)
+ * @returns {string} - Tên tiếng Việt
+ */
+function statusToVietnamese(status) {
+    const statusMap = {
+        'waiting': 'Chờ xử lý',
+        'accepted': 'Đã xác nhận',
+        'delivery': 'Đang giao',
+        'done': 'Hoàn thành',
+        'cancel': 'Đã hủy'
+    };
+    return statusMap[status] || status;
+}
+
 function initDropdown() {
     const selectDropdown = document.querySelectorAll('.status-update-section');
     selectDropdown.forEach(dropdown => {
@@ -50,9 +83,46 @@ function initDropdown() {
             event.stopPropagation();
         });
 
+        // Lọc và chỉ hiển thị các trạng thái có thể chuyển tiếp
+        const allowedStatuses = getNextAllowedStatuses(currentStatus);
+        const currentStatusVietnamese = statusToVietnamese(currentStatus);
+        
         select_item.forEach(item => {
+            const itemStatus = preProcessStatus(item.textContent);
+            // Hiển thị: trạng thái hiện tại + các trạng thái có thể chuyển tiếp
+            // Ẩn: các trạng thái không được phép (trừ trạng thái hiện tại)
+            if (itemStatus === currentStatus) {
+                // Luôn hiển thị trạng thái hiện tại
+                item.style.display = 'block';
+                item.style.opacity = '0.6'; // Làm mờ để cho biết đây là trạng thái hiện tại
+                item.style.cursor = 'default';
+            } else if (allowedStatuses.includes(itemStatus)) {
+                // Hiển thị các trạng thái có thể chuyển tiếp
+                item.style.display = 'block';
+                item.style.opacity = '1';
+                item.style.cursor = 'pointer';
+            } else {
+                // Ẩn các trạng thái không được phép
+                item.style.display = 'none';
+            }
+            
             item.addEventListener('click', function () {
                 if (isLocked) return;
+                
+                // Kiểm tra xem trạng thái được chọn có hợp lệ không
+                const selectedStatus = preProcessStatus(item.textContent);
+                
+                // Không cho phép chọn lại trạng thái hiện tại
+                if (selectedStatus === currentStatus) {
+                    alert('Đây là trạng thái hiện tại. Vui lòng chọn trạng thái khác!');
+                    return;
+                }
+                
+                if (!allowedStatuses.includes(selectedStatus)) {
+                    alert('Không thể chuyển về trạng thái này. Chỉ có thể chuyển tiến!');
+                    return;
+                }
+                
                 select.textContent = item.textContent;
                 select_list.classList.toggle('hidden');
             })
@@ -67,9 +137,27 @@ function initDropdown() {
                     alert('Đơn hàng đã hoàn thành hoặc đã hủy, không thể thay đổi trạng thái');
                     return;
                 }
-                allOrder[index].status = preProcessStatus(select.textContent);
+                
+                const selectedStatus = preProcessStatus(select.textContent);
+                const allowedStatuses = getNextAllowedStatuses(currentStatus);
+                
+                // Không cho phép chọn lại trạng thái hiện tại
+                if (selectedStatus === currentStatus) {
+                    alert('Vui lòng chọn trạng thái khác với trạng thái hiện tại!');
+                    return;
+                }
+                
+                // Kiểm tra xem trạng thái được chọn có hợp lệ không
+                if (!allowedStatuses.includes(selectedStatus)) {
+                    alert('Không thể chuyển về trạng thái này. Chỉ có thể chuyển tiến theo luồng:\n' +
+                          'Chờ xử lý → Đã xác nhận → Đang giao → Hoàn thành\n' +
+                          'Hoặc có thể hủy ở bất kỳ giai đoạn nào trước khi hoàn thành.');
+                    return;
+                }
+                
+                allOrder[index].status = selectedStatus;
                 localStorage.setItem('phonestore_orders', JSON.stringify(allOrder));
-                console.log(`Đơn ${orderId} đổi trạng thái thành ${select.textContent}`);
+                console.log(`Đơn ${orderId} đổi trạng thái từ ${statusToVietnamese(currentStatus)} sang ${select.textContent}`);
                 renderPageOrder();
             }
         });
