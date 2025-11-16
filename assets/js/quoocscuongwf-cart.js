@@ -336,6 +336,360 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Hàm parse địa chỉ từ string sang object
+    function parseAddress(addressString) {
+        if (!addressString || addressString === 'Chưa cập nhật' || addressString === 'Chưa có địa chỉ') {
+            return { detail: '', ward: '', district: '', province: '' };
+        }
+        
+        // Format thường gặp: "Số nhà, Phường/Xã, Quận/Huyện, Tỉnh/Thành phố"
+        // Hoặc: "Phường/Xã, Quận/Huyện, Tỉnh/Thành phố"
+        // Hoặc: "Quận/Huyện, Tỉnh/Thành phố"
+        const parts = addressString.split(',').map(p => p.trim());
+        
+        if (parts.length >= 4) {
+            // "Số nhà, Phường/Xã, Quận/Huyện, Tỉnh/Thành phố"
+            return {
+                detail: parts[0] || '',
+                ward: parts[1] || '',
+                district: parts[2] || '',
+                province: parts.slice(3).join(', ') || ''
+            };
+        } else if (parts.length === 3) {
+            // "Phường/Xã, Quận/Huyện, Tỉnh/Thành phố" hoặc "Số nhà, Phường/Xã, Quận/Huyện"
+            // Kiểm tra phần đầu có phải là số nhà không
+            if (/\d/.test(parts[0])) {
+                return {
+                    detail: parts[0] || '',
+                    ward: parts[1] || '',
+                    district: parts[2] || '',
+                    province: ''
+                };
+            } else {
+                return {
+                    detail: '',
+                    ward: parts[0] || '',
+                    district: parts[1] || '',
+                    province: parts[2] || ''
+                };
+            }
+        } else if (parts.length === 2) {
+            // "Quận/Huyện, Tỉnh/Thành phố"
+            return {
+                detail: '',
+                ward: '',
+                district: parts[0] || '',
+                province: parts[1] || ''
+            };
+        } else {
+            return {
+                detail: addressString,
+                ward: '',
+                district: '',
+                province: ''
+            };
+        }
+    }
+
+    // Hàm populate dropdown tỉnh/thành từ vietnam-address.js
+    function populateProvinces() {
+        const provinceSelect = document.getElementById('tinh-thanh');
+        if (!provinceSelect || typeof window.getProvinces !== 'function') return;
+        
+        // Chỉ populate nếu chưa có (tránh duplicate)
+        if (provinceSelect.children.length > 1) {
+            return; // Đã có data rồi
+        }
+        
+        // Thêm các tỉnh/thành phố
+        const provinces = window.getProvinces();
+        provinces.forEach(province => {
+            const option = document.createElement('option');
+            option.value = province;
+            option.textContent = province;
+            provinceSelect.appendChild(option);
+        });
+    }
+
+    // Hàm populate dropdown quận/huyện khi chọn tỉnh/thành
+    function populateDistricts(province) {
+        const districtSelect = document.getElementById('quan-huyen');
+        if (!districtSelect) {
+            console.warn('District select not found');
+            return;
+        }
+        
+        if (typeof window.getDistricts !== 'function') {
+            console.error('getDistricts function not available. Make sure vietnam-address.js is loaded.');
+            return;
+        }
+        
+        // Xóa các option cũ
+        districtSelect.innerHTML = '<option value="">-- Chọn Quận/Huyện --</option>';
+        
+        // Đảm bảo select không bị disabled
+        districtSelect.disabled = false;
+        districtSelect.style.pointerEvents = 'auto';
+        districtSelect.style.cursor = 'pointer';
+        districtSelect.style.opacity = '1';
+        
+        if (!province || province === '') {
+            districtSelect.disabled = true;
+            return;
+        }
+        
+        const districts = window.getDistricts(province);
+        if (!districts || districts.length === 0) {
+            console.warn('No districts found for province:', province);
+            districtSelect.disabled = true;
+            return;
+        }
+        
+        districts.forEach(district => {
+            const option = document.createElement('option');
+            option.value = district;
+            option.textContent = district;
+            districtSelect.appendChild(option);
+        });
+        
+        // Đảm bảo select được enable sau khi populate
+        districtSelect.disabled = false;
+        districtSelect.style.pointerEvents = 'auto';
+        districtSelect.style.cursor = 'pointer';
+        
+        console.log('✅ Populated', districts.length, 'districts for province:', province);
+    }
+
+    // Hàm điền địa chỉ vào form địa chỉ mới
+    function fillNewAddressForm(address) {
+        const parsed = parseAddress(address);
+        
+        // Điền địa chỉ chi tiết
+        const addressDetail = document.getElementById('address-detail');
+        if (addressDetail) {
+            addressDetail.value = parsed.detail;
+        }
+        
+        // Chọn tỉnh/thành phố
+        const provinceSelect = document.getElementById('tinh-thanh');
+        if (provinceSelect && parsed.province) {
+            // Tìm tỉnh khớp
+            for (let i = 0; i < provinceSelect.options.length; i++) {
+                if (provinceSelect.options[i].textContent.includes(parsed.province) || 
+                    parsed.province.includes(provinceSelect.options[i].textContent)) {
+                    provinceSelect.value = provinceSelect.options[i].value;
+                    populateDistricts(provinceSelect.value);
+                    break;
+                }
+            }
+        }
+        
+        // Chọn quận/huyện (sau khi đã load)
+        setTimeout(() => {
+            const districtSelect = document.getElementById('quan-huyen');
+            if (districtSelect && parsed.district) {
+                for (let i = 0; i < districtSelect.options.length; i++) {
+                    if (districtSelect.options[i].textContent.includes(parsed.district) ||
+                        parsed.district.includes(districtSelect.options[i].textContent)) {
+                        districtSelect.value = districtSelect.options[i].value;
+                        break;
+                    }
+                }
+            }
+            
+            // Điền phường/xã (nếu có) - là input text
+            const wardInput = document.getElementById('phuong-xa');
+            if (wardInput && parsed.ward) {
+                wardInput.value = parsed.ward;
+            }
+        }, 100);
+    }
+
+    // ===== HỆ THỐNG QUẢN LÝ ĐỊA CHỈ =====
+    
+    // Lấy danh sách địa chỉ đã lưu của user
+    function getUserAddresses(userId) {
+        const key = `phonestore_user_addresses_${userId}`;
+        const addresses = JSON.parse(localStorage.getItem(key) || '[]');
+        return addresses;
+    }
+
+    // Lưu danh sách địa chỉ của user
+    function saveUserAddresses(userId, addresses) {
+        const key = `phonestore_user_addresses_${userId}`;
+        localStorage.setItem(key, JSON.stringify(addresses));
+    }
+
+    // Thêm địa chỉ mới vào danh sách
+    function addUserAddress(userId, addressData) {
+        const addresses = getUserAddresses(userId);
+        const newAddress = {
+            id: Date.now(), // ID đơn giản
+            name: addressData.name || 'Địa chỉ mới',
+            fullAddress: addressData.fullAddress,
+            province: addressData.province || '',
+            district: addressData.district || '',
+            ward: addressData.ward || '',
+            detail: addressData.detail || '',
+            createdAt: new Date().toISOString()
+        };
+        addresses.push(newAddress);
+        saveUserAddresses(userId, addresses);
+        return newAddress;
+    }
+
+    // Render danh sách địa chỉ đã lưu
+    function renderSavedAddresses(userId) {
+        const container = document.getElementById('saved-addresses-list');
+        if (!container) return;
+
+        const addresses = getUserAddresses(userId);
+        const currentUser = JSON.parse(localStorage.getItem('phonestore_currentUser') || 'null');
+        
+        // Nếu có địa chỉ từ user.address nhưng chưa có trong danh sách, thêm vào
+        if (currentUser && currentUser.address && 
+            currentUser.address !== 'Chưa cập nhật' && 
+            currentUser.address !== 'Chưa có địa chỉ') {
+            const hasMainAddress = addresses.some(addr => addr.isMain);
+            if (!hasMainAddress) {
+                const parsed = parseAddress(currentUser.address);
+                addresses.unshift({
+                    id: 'main',
+                    name: 'Địa chỉ mặc định',
+                    fullAddress: currentUser.address,
+                    province: parsed.province || '',
+                    district: parsed.district || '',
+                    ward: parsed.ward || '',
+                    detail: parsed.detail || '',
+                    isMain: true
+                });
+                saveUserAddresses(userId, addresses);
+            }
+        }
+
+        container.innerHTML = '';
+
+        if (addresses.length === 0) {
+            container.innerHTML = `
+                <div class="no-saved-addresses" style="padding: 12px; color: #64748b; font-size: 14px;">
+                    Chưa có địa chỉ đã lưu. Vui lòng nhập địa chỉ mới.
+                </div>
+            `;
+            return;
+        }
+
+        addresses.forEach((address, index) => {
+            const addressItem = document.createElement('label');
+            addressItem.className = 'custom-radio address-item';
+            addressItem.style.cssText = 'display: flex; align-items: flex-start; gap: 12px; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s;';
+            addressItem.innerHTML = `
+                <input type="radio" name="saved_address" value="${address.id}" id="address-${address.id}" ${index === 0 ? 'checked' : ''}>
+                <span class="checkmark"></span>
+                <div style="flex: 1;">
+                    <div style="font-weight: 600; color: #1e293b; margin-bottom: 4px;">${address.name || 'Địa chỉ ' + (index + 1)}</div>
+                    <div style="color: #64748b; font-size: 14px; line-height: 1.5;">${address.fullAddress}</div>
+                </div>
+            `;
+            
+            // Hover effect
+            addressItem.addEventListener('mouseenter', function() {
+                this.style.borderColor = '#667eea';
+                this.style.backgroundColor = '#f8fafc';
+            });
+            addressItem.addEventListener('mouseleave', function() {
+                this.style.borderColor = '#e2e8f0';
+                this.style.backgroundColor = 'transparent';
+            });
+
+            container.appendChild(addressItem);
+        });
+    }
+
+    // Lấy địa chỉ đã chọn
+    function getSelectedAddress(userId) {
+        const selectedRadio = document.querySelector('input[name="saved_address"]:checked');
+        if (!selectedRadio || selectedRadio.value === 'new') return null;
+
+        const addresses = getUserAddresses(userId);
+        const selectedAddress = addresses.find(addr => addr.id.toString() === selectedRadio.value);
+        return selectedAddress ? selectedAddress.fullAddress : null;
+    }
+
+    // Khởi tạo địa chỉ form khi DOM ready (chỉ gọi một lần)
+    let addressFormInitialized = false;
+    function initAddressForm() {
+        if (addressFormInitialized) return;
+        addressFormInitialized = true;
+        
+        populateProvinces();
+        
+        // Event listener cho dropdown tỉnh/thành (sử dụng event delegation để tránh duplicate)
+        document.addEventListener('change', function(e) {
+            if (e.target && e.target.id === 'tinh-thanh') {
+                const selectedProvince = e.target.value;
+                console.log('📍 Province selected:', selectedProvince);
+                
+                // Reset quận/huyện và phường/xã khi đổi tỉnh
+                const districtSelect = document.getElementById('quan-huyen');
+                const wardInput = document.getElementById('phuong-xa');
+                if (districtSelect) {
+                    districtSelect.innerHTML = '<option value="">-- Chọn Quận/Huyện --</option>';
+                    districtSelect.disabled = false;
+                    districtSelect.style.pointerEvents = 'auto';
+                    districtSelect.style.cursor = 'pointer';
+                }
+                if (wardInput) wardInput.value = '';
+                
+                // Populate quận/huyện cho tỉnh đã chọn
+                if (selectedProvince) {
+                    populateDistricts(selectedProvince);
+                } else {
+                    if (districtSelect) {
+                        districtSelect.disabled = true;
+                    }
+                }
+            }
+        });
+        
+        // Event listener cho radio chọn địa chỉ (sử dụng event delegation)
+        document.addEventListener('change', function(e) {
+            if (e.target && e.target.name === 'saved_address') {
+                const newAddressForm = document.getElementById('new-address-form');
+                if (e.target.value === 'new') {
+                    // Hiển thị form nhập địa chỉ mới
+                    if (newAddressForm) {
+                        newAddressForm.style.display = 'block';
+                        // Bật required cho các field
+                        const requiredFields = newAddressForm.querySelectorAll('[required]');
+                        requiredFields.forEach(field => field.required = true);
+                        
+                        // Đảm bảo dropdown quận/huyện được enable
+                        const districtSelect = document.getElementById('quan-huyen');
+                        if (districtSelect) {
+                            districtSelect.disabled = false;
+                            districtSelect.style.pointerEvents = 'auto';
+                            districtSelect.style.cursor = 'pointer';
+                            
+                            // Nếu đã có tỉnh được chọn, populate quận/huyện
+                            const provinceSelect = document.getElementById('tinh-thanh');
+                            if (provinceSelect && provinceSelect.value) {
+                                populateDistricts(provinceSelect.value);
+                            }
+                        }
+                    }
+                } else {
+                    // Ẩn form nhập địa chỉ mới
+                    if (newAddressForm) {
+                        newAddressForm.style.display = 'none';
+                        // Tắt required cho các field
+                        const requiredFields = newAddressForm.querySelectorAll('[required]');
+                        requiredFields.forEach(field => field.required = false);
+                    }
+                }
+            }
+        });
+    }
+
     const checkoutButton = document.getElementById('checkout-button');
     if (checkoutButton) {
         checkoutButton.addEventListener('click', () => {
@@ -350,44 +704,206 @@ document.addEventListener('DOMContentLoaded', () => {
             if (userInfoContainer) userInfoContainer.style.display = 'block';
             if (backgroundUserInfo) backgroundUserInfo.style.display = 'block';
             
+            let currentUser = JSON.parse(localStorage.getItem('phonestore_currentUser'))
+            
+            // Refresh dropdown tỉnh/thành khi mở modal (nếu cần)
+            populateProvinces();
+            
+            // Đảm bảo dropdown quận/huyện được enable và reset
+            const districtSelect = document.getElementById('quan-huyen');
+            if (districtSelect) {
+                districtSelect.disabled = false;
+                districtSelect.innerHTML = '<option value="">-- Chọn Quận/Huyện --</option>';
+                districtSelect.style.pointerEvents = 'auto';
+                districtSelect.style.cursor = 'pointer';
+            }
+            
+            // Nếu đã có tỉnh được chọn, populate quận/huyện
+            const provinceSelect = document.getElementById('tinh-thanh');
+            if (provinceSelect && provinceSelect.value) {
+                populateDistricts(provinceSelect.value);
+            }
+            
+            // Render danh sách địa chỉ đã lưu
+            renderSavedAddresses(currentUser.id);
+            
+            // Cập nhật tóm tắt đơn hàng
+            updateOrderSummary();
+            
             let name=document.getElementById('name')
             let phone=document.getElementById('phone')
             let email=document.getElementById('email')
-            let savedAddress=document.getElementById('address1-detail')
             let notes=document.getElementById('notes')
-            let paymentOptions=document.getElementsByName('payment-options')
-            let currentUser=JSON.parse(localStorage.getItem('phonestore_currentUser'))
-            name.value=currentUser.name
-            phone.value=currentUser.phone
-            email.value=currentUser.email
-            savedAddress.innerText=currentUser.address
-
+            let paymentOptions=document.getElementsByName('payment_method')
+            
+            // Điền thông tin user
+            if (name) name.value = currentUser.name || '';
+            if (phone) phone.value = currentUser.phone || '';
+            if (email) email.value = currentUser.email || '';
+            
+            // Ẩn form nhập địa chỉ mới mặc định (vì đã chọn địa chỉ từ danh sách)
+            const newAddressForm = document.getElementById('new-address-form');
+            if (newAddressForm) {
+                newAddressForm.style.display = 'none';
+            }
         });
     }
-    function submitCheckout(){
-        alert("Đơn hàng của bạn đã được đặt thành công! Cảm ơn bạn đã mua hàng.");
-        let lastOrder=localStorage.getItem('lastOrder')
-        if (lastOrder){
-            localStorage.removeItem('lastOrder')
-        }
-        let paymentOptions=document.getElementsByName('payment_method') // Sửa name cho đúng
-        let notesElement=document.getElementById('notes')
-        let address='';     
-        let address1=document.getElementById('address1')
-        if (address1.checked){
-            address=document.getElementById('address1-detail').innerText
-        } else {    
-            let tinhThanh=document.getElementById('tinh-thanh').value
-            let quanHuyen=document.getElementById('quan-huyen').value
-            let phuongXa=document.getElementById('phuong-xa').value
-            let addressDetail=document.getElementById('address-detail').value
 
-            address=`${addressDetail}, ${phuongXa}, ${quanHuyen}, ${tinhThanh}`
-        }
-
-        // Lấy thông tin user hiện tại
-        const customer_id = JSON.parse(localStorage.getItem('phonestore_currentUser')).id;
+    // Hàm cập nhật tóm tắt đơn hàng
+    function updateOrderSummary() {
         const cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
+        let totalAmount = 0;
+        
+        cartItems.forEach(item => {
+            const price = parseFloat(item.price) || 0;
+            const quantity = parseInt(item.quantity) || 1;
+            totalAmount += price * quantity;
+        });
+        
+        // Format tiền Việt Nam
+        function formatPrice(price) {
+            return new Intl.NumberFormat('vi-VN').format(price) + '₫';
+        }
+        
+        const tamTinhEl = document.querySelector('.tam-tinh-price');
+        const totalPriceEl = document.querySelector('.checkout-right .total-price');
+        
+        if (tamTinhEl) tamTinhEl.textContent = formatPrice(totalAmount);
+        if (totalPriceEl) totalPriceEl.textContent = formatPrice(totalAmount);
+    }
+
+    // Nút Hủy
+    const cancelCheckoutBtn = document.getElementById('cancel-checkout-btn');
+    if (cancelCheckoutBtn) {
+        cancelCheckoutBtn.addEventListener('click', () => {
+            const backgroundUserInfo = document.getElementById('background-user-info');
+            const userInfoContainer = document.getElementById('user-info-container');
+            if (backgroundUserInfo) backgroundUserInfo.style.display = 'none';
+            if (userInfoContainer) userInfoContainer.style.display = 'none';
+        });
+    }
+
+    // Nút Tiếp tục
+    const continueCheckoutBtn = document.getElementById('continue-checkout-btn');
+    if (continueCheckoutBtn) {
+        continueCheckoutBtn.addEventListener('click', () => {
+            // Validate form trước khi tiếp tục
+            const form = document.getElementById('checkout-form');
+            if (!form) return;
+            
+            // Kiểm tra địa chỉ
+            const selectedRadio = document.querySelector('input[name="saved_address"]:checked');
+            if (!selectedRadio) {
+                alert('Vui lòng chọn địa chỉ giao hàng.');
+                return;
+            }
+            
+            if (selectedRadio.value === 'new') {
+                // Validate form địa chỉ mới
+                const tinhThanh = document.getElementById('tinh-thanh')?.value;
+                const quanHuyen = document.getElementById('quan-huyen')?.value;
+                const phuongXa = document.getElementById('phuong-xa')?.value.trim();
+                const addressDetail = document.getElementById('address-detail')?.value.trim();
+                
+                if (!tinhThanh || !quanHuyen || !phuongXa || !addressDetail) {
+                    alert('Vui lòng điền đầy đủ thông tin địa chỉ giao hàng.');
+                    return;
+                }
+            }
+            
+            // Validate thông tin cá nhân
+            const name = document.getElementById('name')?.value.trim();
+            const phone = document.getElementById('phone')?.value.trim();
+            const email = document.getElementById('email')?.value.trim();
+            
+            if (!name || !phone || !email) {
+                alert('Vui lòng điền đầy đủ thông tin cá nhân.');
+                return;
+            }
+            
+            // Nếu đã validate xong, gọi submitCheckout
+            submitCheckout();
+        });
+    }
+    function submitCheckout(e){
+        if (e) e.preventDefault();
+        
+        // Validation: Kiểm tra giỏ hàng
+        const cartItems = JSON.parse(localStorage.getItem('cart') || '[]');
+        if (cartItems.length === 0) {
+            alert('Giỏ hàng của bạn đang trống. Vui lòng thêm sản phẩm trước khi thanh toán.');
+            return;
+        }
+
+        // Validation: Kiểm tra đăng nhập
+        const currentUser = JSON.parse(localStorage.getItem('phonestore_currentUser') || 'null');
+        if (!currentUser || !currentUser.id) {
+            alert('Vui lòng đăng nhập để tiếp tục thanh toán.');
+            return;
+        }
+
+        // Lấy địa chỉ từ form
+        let address = '';
+        const selectedRadio = document.querySelector('input[name="saved_address"]:checked');
+        
+        if (!selectedRadio) {
+            alert('Vui lòng chọn địa chỉ giao hàng.');
+            return;
+        }
+
+        if (selectedRadio.value === 'new') {
+            // Lấy địa chỉ từ form nhập mới
+            let tinhThanhEl = document.getElementById('tinh-thanh');
+            let quanHuyenEl = document.getElementById('quan-huyen');
+            let phuongXaEl = document.getElementById('phuong-xa');
+            let addressDetailEl = document.getElementById('address-detail');
+            
+            let tinhThanh = tinhThanhEl ? tinhThanhEl.value : '';
+            let quanHuyen = quanHuyenEl ? quanHuyenEl.value : '';
+            let phuongXa = phuongXaEl ? phuongXaEl.value.trim() : '';
+            let addressDetail = addressDetailEl ? addressDetailEl.value.trim() : '';
+
+            // Validation địa chỉ mới
+            if (!tinhThanh || !quanHuyen || !phuongXa || !addressDetail) {
+                alert('Vui lòng điền đầy đủ thông tin địa chỉ giao hàng.');
+                return;
+            }
+
+            // Xây dựng địa chỉ đầy đủ theo format: "Số nhà, Phường/Xã, Quận/Huyện, Tỉnh/Thành phố"
+            let addressParts = [];
+            if (addressDetail) addressParts.push(addressDetail);
+            if (phuongXa) addressParts.push(phuongXa);
+            if (quanHuyen) addressParts.push(quanHuyen);
+            if (tinhThanh) addressParts.push(tinhThanh);
+            
+            address = addressParts.join(', ');
+
+            // Nếu user chọn lưu địa chỉ này
+            const saveAddressCheckbox = document.getElementById('save-address-checkbox');
+            if (saveAddressCheckbox && saveAddressCheckbox.checked) {
+                const addressName = document.getElementById('address-name')?.value.trim() || 'Địa chỉ mới';
+                addUserAddress(currentUser.id, {
+                    name: addressName,
+                    fullAddress: address,
+                    province: tinhThanh,
+                    district: quanHuyen,
+                    ward: phuongXa,
+                    detail: addressDetail
+                });
+            }
+        } else {
+            // Lấy địa chỉ từ danh sách đã lưu
+            address = getSelectedAddress(currentUser.id);
+            if (!address) {
+                alert('Không tìm thấy địa chỉ đã chọn.');
+                return;
+            }
+        }
+
+        // Lấy thông tin user và payment
+        const customer_id = currentUser.id;
+        const paymentOptions = document.getElementsByName('payment_method');
+        const notesElement = document.getElementById('notes');
         const paymentMethodValue = Array.from(paymentOptions).find(option => option.checked)?.value || 'cod';
         const notes = notesElement ? notesElement.value : '';
         
@@ -629,9 +1145,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="item-price cart-col price">${parseFloat(carts[i].price).toLocaleString('vi-VN')}₫</div>
                 <div class="item-quantity-container cart-col quantity">
                     <div style="display: flex;">
-                        <span class="increase">+</span>
-                        <input type="number" class="item-quantity" value="${carts[i].quantity}" min="1">
                         <span class="decrease">-</span>
+                        <input type="number" class="item-quantity" value="${carts[i].quantity}" min="1">
+                        <span class="increase">+</span>
                     </div>
 
                 </div>
@@ -676,6 +1192,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Cập nhật cart count khi trang load
     window.updateCartCount();
     checkLoginStatus();
+    
+    // Khởi tạo form địa chỉ ngay khi DOM ready (để các event listener được gắn sẵn)
+    setTimeout(() => {
+        initAddressForm();
+    }, 100);
     
     // Lắng nghe sự kiện thay đổi localStorage từ tab khác
     window.addEventListener('storage', function(e) {

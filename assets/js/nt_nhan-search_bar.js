@@ -252,8 +252,8 @@ document.getElementById('clearFilterBtn')?.addEventListener('click', function() 
 // Map tên category với giá trị checkbox trong filter
 function mapCategoryToFilterValue(categoryName) {
     const categoryMap = {
-        'iPhone': 'Apple',
-        'Iphone': 'Apple',
+        'IPhone': 'Apple',
+        
         'Apple': 'Apple',
         'Samsung': 'Samsung',
         'Xiaomi': 'Xiaomi',

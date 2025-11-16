@@ -186,11 +186,34 @@ function drawDropdownMenu()
     }
 }
 
-account.addEventListener("mouseover", (event) => {
+// Hover vào account button
+account.addEventListener("mouseenter", (event) => {
     dropdownMenu.style.visibility="visible";
 });
 
-account.addEventListener("mouseout", (event) => {
-    dropdownMenu.style.visibility="hidden";
+// Rời khỏi account button hoặc dropdown menu
+let timeoutId;
+account.addEventListener("mouseleave", (event) => {
+    // Delay để cho phép di chuyển chuột vào dropdown menu
+    timeoutId = setTimeout(() => {
+        // Kiểm tra xem chuột có đang ở trong dropdown không
+        const isHoveringDropdown = dropdownMenu.matches(':hover') || dropdownMenu.contains(event.relatedTarget);
+        if (!isHoveringDropdown) {
+            dropdownMenu.style.visibility="hidden";
+        }
+    }, 100);
+});
+
+// Hover vào dropdown menu
+dropdownMenu.addEventListener("mouseenter", (event) => {
+    clearTimeout(timeoutId);
+    dropdownMenu.style.visibility="visible";
+});
+
+dropdownMenu.addEventListener("mouseleave", (event) => {
+    // Delay nhỏ để tránh đóng quá nhanh
+    timeoutId = setTimeout(() => {
+        dropdownMenu.style.visibility="hidden";
+    }, 100);
 });
 // ================Product==============
