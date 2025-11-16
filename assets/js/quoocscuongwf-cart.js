@@ -195,7 +195,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 const itemName = item.dataset.productName;
                 const itemMemory = item.dataset.productMemory || '';
                 const itemColor = item.dataset.productColor || '';
-                
+                let products = localStorage.getItem('phonestore_products') ? JSON.parse(localStorage.getItem('phonestore_products')) : [];
+                let quantity=0;
+                for(let i=0;i<products.length;i++)
+                {
+                    if(products[i].tensanpham === itemName){
+                        console.log("san pham"+products[i].soluong)
+                        quantity=parseInt(products[i].soluong);
+                    }
+                }                
+                if( parseInt(quantityInput.value) + 1 > quantity){
+                    alert("Số lượng trong kho không đủ!");
+                    return;
+                }
                 quantityInput.value = parseInt(quantityInput.value) + 1;
                 updateItemTotal(item);
                 
@@ -226,7 +238,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const itemName = item.dataset.productName;
                 const itemMemory = item.dataset.productMemory || '';
                 const itemColor = item.dataset.productColor || '';
-                
                 if (quantityInput.value > 1) {
                     quantityInput.value = parseInt(quantityInput.value) - 1;
                     updateItemTotal(item);
