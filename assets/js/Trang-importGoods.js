@@ -44,7 +44,6 @@ if (document.readyState === "loading") {
           <tbody id="productDetailBody"></tbody>
         </table>
         <button type="button" id="btnAddDetail" class="btn-ghost">➕ Thêm sản phẩm</button>
-
         <div class="form-actions">
           <button type="button" id="btnCancelForm" class="btn-ghost">Hủy</button>
           <button type="submit" class="btn-primary">Lưu phiếu</button>
@@ -101,7 +100,7 @@ function initImportPage() {
   const formatMoney = (n) => Number(n).toLocaleString("vi-VN") + "₫";
 
   const totalOf = (details) =>
-    details.reduce((sum, d) => sum + d.price * d.qty, 0);
+    details.reduce((sum, d) => sum + d.gia * d.qty, 0);
 
   const renderTable = (list = importList) => {
     tableBody.innerHTML = "";
@@ -152,7 +151,8 @@ function initImportPage() {
 
   // =================== THÊM DÒNG SẢN PHẨM ===================
   btnAddDetail.onclick = () => {
-    const products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
+    const products =
+      JSON.parse(localStorage.getItem("phonestore_products")) || [];
 
     const options = products
       .map((p) => `<option value="${p.id}">${p.tensanpham}</option>`)
@@ -164,10 +164,11 @@ function initImportPage() {
         <select class="prod-select">
           <option value="">-- Chọn sản phẩm --</option>
           ${options}
+         
         </select>
         <input type="text" class="prod-name" placeholder="Tên sản phẩm mới" style="display:none;">
       </td>
-      <td><input type="number" class="prod-price" placeholder="Giá nhập" readonly></td>
+      <td><input type="number" class="prod-gia" placeholder="Giá nhập"></td>
       <td><input type="number" class="prod-qty" placeholder="Số lượng" id="quality"></td>
       <td class="prod-total">0₫</td>
       <td><button type="button" class="btn-del">🗑️</button></td>`;
@@ -181,28 +182,27 @@ function initImportPage() {
     const select = e.target;
     const row = select.closest("tr");
     const nameInput = row.querySelector(".prod-name");
-    const priceInput = row.querySelector(".prod-price");
+    const giaInput = row.querySelector(".prod-gia");
     const selectedId = select.value;
 
-    const products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
+    const products =
+      JSON.parse(localStorage.getItem("phonestore_products")) || [];
 
     if (selectedId === "new") {
       // thêm sản phẩm mới
       nameInput.style.display = "inline-block";
       nameInput.value = "";
-      priceInput.value = "";
-      priceInput.removeAttribute("readonly");
+      giaInput.value = "";
+      giaInput.removeAttribute("readonly");
     } else if (selectedId) {
       const prod = products.find((p) => p.id == selectedId);
       if (prod) {
         nameInput.style.display = "none";
-        priceInput.value = prod.giavon || prod.giavon || 0; // lấy giá từ local
-        priceInput.setAttribute("readonly", true);
+        giaInput.value = prod.gia || prod.gia || 0; // lấy giá từ local
       }
     } else {
       nameInput.style.display = "none";
-      priceInput.value = "";
-      priceInput.setAttribute("readonly", true);
+      giaInput.value = "";
     }
   });
 
@@ -210,9 +210,9 @@ function initImportPage() {
   productDetailBody.addEventListener("input", (e) => {
     const row = e.target.closest("tr");
     if (!row) return;
-    const price = +row.querySelector(".prod-price").value || 0;
+    const gia = +row.querySelector(".prod-gia").value || 0;
     const qty = +row.querySelector(".prod-qty").value || 0;
-    row.querySelector(".prod-total").textContent = formatMoney(price * qty);
+    row.querySelector(".prod-total").textContent = formatMoney(gia * qty);
   });
 
   // =================== XOÁ DÒNG SẢN PHẨM ===================
@@ -226,8 +226,9 @@ function initImportPage() {
     e.preventDefault();
     let sl = document.getElementById("quality");
     if (sl.value < 1) {
-      const products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
-    console.log(products.length);
+      const products =
+        JSON.parse(localStorage.getItem("phonestore_products")) || [];
+      console.log(products.length);
 
       alert("Vui lòng nhập số lượng lớn hơn 1");
       return;
@@ -243,12 +244,12 @@ function initImportPage() {
           name.style.display === "none"
             ? select.options[select.selectedIndex].text
             : name.value.trim();
-        const price = +r.querySelector(".prod-price").value;
+        const gia = +r.querySelector(".prod-gia").value;
         const qty = +r.querySelector(".prod-qty").value;
 
-        return { product: productName, price, qty };
+        return { product: productName, gia, qty };
       })
-      .filter((d) => d.product && d.qty > 0 && d.price > 0);
+      .filter((d) => d.product && d.qty > 0 && d.gia > 0);
 
     if (!date || details.length === 0) {
       alert("Nhập ngày và ít nhất 1 sản phẩm hợp lệ!");
@@ -294,9 +295,9 @@ function initImportPage() {
                 (d) => `
               <tr>
                 <td>${d.product}</td>
-                <td>${formatMoney(d.price)}</td>
+                <td>${formatMoney(d.gia)}</td>
                 <td>${d.qty}</td>
-                <td>${formatMoney(d.price * d.qty)}</td>
+                <td>${formatMoney(d.gia * d.qty)}</td>
               </tr>`
               )
               .join("")}
@@ -316,9 +317,9 @@ function initImportPage() {
         const row = document.createElement("tr");
         row.innerHTML = `
           <td><input type="text" value="${d.product}" class="prod-name"></td>
-          <td><input type="number" value="${d.price}" class="prod-price"></td>
+          <td><input type="number" value="${d.gia}" class="prod-gia"></td>
           <td><input type="number" value="${d.qty}" class="prod-qty"></td>
-          <td class="prod-total">${formatMoney(d.price * d.qty)}</td>
+          <td class="prod-total">${formatMoney(d.gia * d.qty)}</td>
           <td><button type="button" class="btn-del">🗑️</button></td>`;
         productDetailBody.appendChild(row);
       });
@@ -330,7 +331,8 @@ function initImportPage() {
         item.status = "Hoàn thành";
 
         // 🔸 Cập nhật vào localStorage sản phẩm tại đây
-        const products = JSON.parse(localStorage.getItem("phonestore_products")) || [];
+        const products =
+          JSON.parse(localStorage.getItem("phonestore_products")) || [];
         item.details.forEach((d) => {
           const exist = products.find(
             (p) => p.tensanpham?.toLowerCase() === d.product.toLowerCase()
@@ -340,7 +342,7 @@ function initImportPage() {
             exist.soluong = String(
               (Number(exist.soluong) || 0) + Number(d.qty)
             );
-            exist.gianhap = Number(d.price);
+            exist.gia = Number(d.gia);
           } else {
             const newId = products.length
               ? Math.max(...products.map((p) => p.id)) + 1
@@ -348,8 +350,9 @@ function initImportPage() {
             products.push({
               id: newId,
               tensanpham: d.product,
-              gianhap: Number(d.price),
+              gia: Number(d.gia),
               soluong: String(d.qty),
+              giavon: Number(d.gia),
             });
           }
         });
