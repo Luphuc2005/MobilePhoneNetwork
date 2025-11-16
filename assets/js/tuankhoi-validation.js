@@ -402,17 +402,3 @@ function loginUser(logEmail, logPass)
     //Sai mật khẩu
     return 2;
 }
-
-function showNotif(message, type) {
-    const notif = document.createElement("div");
-    notif.setAttribute("class", "toast");
-    document.body.appendChild(notif);
-    notif.classList.add("show");
-    if (type == "success")
-    {
-        
-    }
-    notif.innerHTML = `Test`
-    console.log("Test");
-}
-
