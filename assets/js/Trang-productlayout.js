@@ -1,6 +1,5 @@
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => {
-    let page = `
+function initProductPageWrapper() {
+  let page = `
   <h1>📦 Quản lý sản phẩm</h1>
   <div class="product-header">
     <input type="text" id="inputSearch" placeholder="🔍 Tìm kiếm sản phẩm..." />
@@ -27,23 +26,40 @@ if (document.readyState === "loading") {
     <tbody id="productTable"></tbody>
   </table>
   <div id="pagination" style="margin-top:15px; display:flex; gap:5px; justify-content:center;"></div>
-`;
+  `;
 
-    let a = document.getElementsByClassName("sidebar-menu-item-cate")[2];
-    a.addEventListener("click", () => {
-      // 1. Lấy dữ liệu từ localStorage
-      let productAll =
-        JSON.parse(localStorage.getItem("phonestore_products")) || [];
+  const renderProductPage = () => {
+    const productsContent = document.getElementById("products-content");
+    if (!productsContent) return;
 
-      console.log(productAll);
-      const productsContent = document.getElementById("products-content");
-      productsContent.innerHTML = page;
+    // Gắn HTML vào trang
+    productsContent.innerHTML = page;
 
-      // 3. Khởi tạo trang sản phẩm với dữ liệu hiện có
-      initProductPage(productAll);
+    // Lấy sản phẩm từ localStorage
+    let productAll =
+      JSON.parse(localStorage.getItem("phonestore_products")) || [];
+
+    // Gọi hàm vẽ bảng sp
+    initProductPage(productAll);
+  };
+
+  // Lần đầu (F5 / load trang) -> render luôn
+  renderProductPage();
+
+  // Gắn click cho menu
+  const menuItems = document.getElementsByClassName("sidebar-menu-item-cate");
+  if (menuItems && menuItems[2]) {
+    menuItems[2].addEventListener("click", () => {
+      renderProductPage();
     });
-  });
+  }
+}
+
+// Đảm bảo luôn chạy được cả khi DOM đã sẵn (F5) hoặc script load sớm
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initProductPageWrapper);
 } else {
+  initProductPageWrapper();
 }
 
 // ====================== PRODUCT PAGE ======================
