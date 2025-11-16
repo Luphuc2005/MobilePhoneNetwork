@@ -164,7 +164,6 @@ function initImportPage() {
         <select class="prod-select">
           <option value="">-- Chọn sản phẩm --</option>
           ${options}
-          <option value="new">➕ Thêm sản phẩm mới</option>
         </select>
         <input type="text" class="prod-name" placeholder="Tên sản phẩm mới" style="display:none;">
       </td>
