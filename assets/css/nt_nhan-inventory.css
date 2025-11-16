@@ -160,3 +160,12 @@
     background: #fee2e2;
     color: #991b1b;
 }
+
+#inventory-pagination button {
+    color: black;
+}
+
+#inventory-pagination .active {
+    background-color: #3b82f6;
+    color: white;
+}

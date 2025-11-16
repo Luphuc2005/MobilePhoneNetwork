@@ -303,7 +303,7 @@ window.addEventListener('storage', function(e) {
         typeProduct = JSON.parse(e.newValue || '[]');
         renderTypeProduct();
     }
-    if (e.key === 'product') {
+    if (e.key === 'phonestore_products') {
         productsSearchBar = JSON.parse(e.newValue || '[]');
         searchInventory();
     }
