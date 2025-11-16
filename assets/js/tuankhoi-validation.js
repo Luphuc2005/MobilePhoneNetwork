@@ -239,6 +239,8 @@ form[0].addEventListener("submit", (e) => {
         if (registerStatus)
         {
             alert("Đăng ký thành công, vui lòng đăng nhập lại");
+            formBackground[0].classList.remove("open");
+            formDangKy.style.visibility="hidden";
         }
         else
         { 
@@ -277,14 +279,15 @@ form[1].addEventListener("submit", (e) => {
         {
             //Thông báo tài khoản bị khóa
             alert("Tài khoản bị khóa");
+            formBackground[1].classList.remove("open");
+            formDangNhap.style.visibility="hidden";
         }
         else
         {
             console.log(agree);
-            if (agree)
-                sessionStorage.setItem(STORAGE_KEYS.REMEMBER_ME, agree)
             drawDropdownMenu();
-            window.location.reload();
+            location.reload();
+            formBackground[1].classList.remove("open");
         }
     }
 });
@@ -399,17 +402,3 @@ function loginUser(logEmail, logPass)
     //Sai mật khẩu
     return 2;
 }
-
-function showNotif(message, type) {
-    const notif = document.createElement("div");
-    notif.setAttribute("class", "toast");
-    document.body.appendChild(notif);
-    notif.classList.add("show");
-    if (type == "success")
-    {
-        
-    }
-    notif.innerHTML = `Test`
-    console.log("Test");
-}
-

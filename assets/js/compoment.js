@@ -98,8 +98,7 @@ function drawDropdownMenu()
         })
         list.style.flexDirection="column";
         list.style.alignItems="flex-end";
-        list.style.width="fit-content";
-        dropdownMenu.style.width="120%";
+        list.style.width="max-content";
         dropdownMenu.style.display="flex";
         dropdownMenu.style.justifyContent="center";
         account.appendChild(dropdownMenu);
@@ -114,16 +113,6 @@ function drawDropdownMenu()
             profile.addEventListener("click", (event) => {
                 location.href="auth.html";
             })
-
-            profile.onmouseenter = function ()
-            { 
-                localStorage.setItem("navigating", true);
-            }
-
-            profile.onmouseleave = function ()
-            { 
-                localStorage.removeItem("navigating");
-            }
         }
         //Đăng xuất
         const signout = document.getElementById("sign-out");

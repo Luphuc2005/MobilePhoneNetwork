@@ -57,10 +57,16 @@ window.addEventListener("storage", (event) => {
 
 changePassword.onclick = function (event) {
   formBackground[2].style.display = "block";
+  setTimeout(() => {
+    passwordResetForm.classList.add("open");
+  }, 100);
 };
 
 updateInfo.onclick = function (event) {
   formBackground[1].style.display = "block";
+  setTimeout(() => {
+    updateForm.classList.add("open");
+  }, 100);
 };
 
 showPassword[0].onclick = function (event) {
@@ -85,18 +91,26 @@ showPassword[3].onclick = function (event) {
 
 closeButton.forEach((button) => {
   button.onclick = function (e) {
-    formBackground[1].style.display = "none";
-    formBackground[2].style.display = "none";
+    updateForm.classList.remove("open");
+    passwordResetForm.classList.remove("open");
     insertFormInfo();
+    setTimeout(() => {
+      formBackground[1].style.display = "none";
+      formBackground[2].style.display = "none";
+    }, 1000);
   };
 });
 
 formBackground.forEach((background) => {
   background.onclick = function (event) {
     if (event.target == background) {
-      background.style.display = "none";
+      updateForm.classList.remove("open");
+      passwordResetForm.classList.remove("open");
       insertFormInfo();
       passwordResetForm.reset();
+      setTimeout(() => {
+        background.style.display = "none";
+      }, 1000);
     }
   };
 });
@@ -267,7 +281,7 @@ passwordResetForm.onsubmit = function (e) {
       JSON.stringify(currentUser)
     );
     localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(userList));
-    formBackground[1].style.display = "none";
+    formBackground[2].style.display = "none";
     alert("Thay đổi mật khẩu thành công");
     passwordResetForm.reset();
     resetPasswordButton.disabled = true;
@@ -331,5 +345,5 @@ function updateUser(newName, newPhone, newEmail, newAddress) {
     insertUserInfo();
     insertFormInfo();
   }
-  formBackground[0].style.display = "none";
+  formBackground[1].style.display = "none";
 }

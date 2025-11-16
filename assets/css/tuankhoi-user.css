@@ -396,9 +396,14 @@ html, body
     background-color: white;
     top: 50%;
     right: 15px;
-    transform:translateY(-50%);
+    transform:translate(110%,-50%);
     border-radius: 10px;
     z-index: 1002;
+    transition: transform 1s ease;
+}
+
+#update-form.open {
+    transform:translate(0,-50%);
 }
 
 #update-form fieldset {
@@ -475,7 +480,13 @@ html, body
     left: 50%;
     transform: translate(-50%, -50%);
     border-radius: 15px;
+    opacity: 0;
     padding: 10px;
+    transition: opacity 0.5s;
+}
+
+#reset-password-form.open {
+    opacity: 1;
 }
 
 #reset-password-form .close-form {
@@ -545,6 +556,12 @@ html, body
     cursor: default;
 }
 
+@media screen and (max-width: 1627px){
+    #user-container {
+        width: 80%;
+    }
+}
+
 @media screen and (max-width: 1317px){
     #user-container {
         width: 90%;
@@ -566,7 +583,7 @@ html, body
     }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 775px) {
     main {
         margin-top: 3%;
         margin-bottom: 5%;
