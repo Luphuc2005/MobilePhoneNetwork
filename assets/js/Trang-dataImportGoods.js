@@ -31,7 +31,14 @@ const defaultImports = [
   
 ];
 
-localStorage.setItem(
-  "phonestore_import_orders",
-  JSON.stringify(defaultImports)
-);
+// Chỉ set dữ liệu mặc định nếu chưa có dữ liệu trong localStorage
+const existingImports = localStorage.getItem("phonestore_import_orders");
+if (!existingImports || existingImports === '[]' || existingImports === 'null') {
+  localStorage.setItem(
+    "phonestore_import_orders",
+    JSON.stringify(defaultImports)
+  );
+  console.log('📦 Đã khởi tạo dữ liệu mặc định cho import orders');
+} else {
+  console.log('📦 Đã có dữ liệu import orders, giữ nguyên dữ liệu hiện có');
+}

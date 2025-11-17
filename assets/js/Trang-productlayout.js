@@ -434,7 +434,7 @@ function renderForm() {
         <!-- Số lượng -->
         <div class="form-group">
           <label>Số lượng</label>
-          <input type="number" class="editQuantity" placeholder="Nhập số lượng..." min="1" />
+          <input type="number" class="editQuantity" placeholder="Nhập số lượng..." min="1" disabled />
         </div>
 
         <!-- Trạng thái -->

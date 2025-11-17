@@ -82,7 +82,7 @@ function renderAutocomplete(products, keyword) {
         const html = `
             <div class="search-autocomplete-trending">
                 <div class="search-autocomplete-trending-header">
-                    <span class="trending-icon">🔥</span>
+                    <span class="trending-icon"></span>
                     <span class="trending-title">Xu hướng tìm kiếm</span>
                 </div>
                 <div class="search-autocomplete-trending-content">

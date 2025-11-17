@@ -1207,6 +1207,70 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
+        // Kiểm tra đăng nhập
+        const userKey = window.STORAGE_KEYS ? window.STORAGE_KEYS.CURRENT_USER : 'phonestore_currentUser';
+        const currentUser = JSON.parse(localStorage.getItem(userKey) || 'null');
+        
+        if (!currentUser || !currentUser.id) {
+            // Chưa đăng nhập - hiển thị thông báo và nút đăng nhập
+            cartContainer.innerHTML = `
+                <div style="text-align: center; padding: 60px 20px; background: #f8f9fa; border-radius: 12px; margin: 20px 0;">
+                    <div style="font-size: 64px; margin-bottom: 20px;">🔒</div>
+                    <h3 style="color: #1e293b; margin-bottom: 12px; font-size: 24px;">Vui lòng đăng nhập để xem giỏ hàng</h3>
+                    <p style="color: #64748b; margin-bottom: 30px; font-size: 16px;">Bạn cần đăng nhập để sử dụng tính năng giỏ hàng</p>
+                    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                        <a href="auth.html#login" style="
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 8px;
+                            padding: 12px 24px;
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            color: white;
+                            text-decoration: none;
+                            border-radius: 8px;
+                            font-weight: 600;
+                            transition: all 0.3s;
+                            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+                        " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(102, 126, 234, 0.4)';" 
+                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(102, 126, 234, 0.3)';">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Đăng nhập
+                        </a>
+                        <a href="auth.html#register" style="
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 8px;
+                            padding: 12px 24px;
+                            background: white;
+                            color: #667eea;
+                            text-decoration: none;
+                            border: 2px solid #667eea;
+                            border-radius: 8px;
+                            font-weight: 600;
+                            transition: all 0.3s;
+                        " onmouseover="this.style.background='#667eea'; this.style.color='white';" 
+                           onmouseout="this.style.background='white'; this.style.color='#667eea';">
+                            <i class="fas fa-user-plus"></i>
+                            Đăng ký
+                        </a>
+                    </div>
+                </div>
+            `;
+            // Ẩn các nút xóa tất cả và thanh toán
+            const deleteAllBtn = document.querySelector('.delete-all-item');
+            const checkoutBtn = document.querySelector('.checkout-btn');
+            const continueShoppingBtn = document.querySelector('.continue-shopping');
+            if (deleteAllBtn) deleteAllBtn.style.display = 'none';
+            if (checkoutBtn) checkoutBtn.style.display = 'none';
+            if (continueShoppingBtn) continueShoppingBtn.style.display = 'none';
+            
+            // Ẩn phần tóm tắt đơn hàng
+            const cartSummary = document.querySelector('.cart-summary');
+            if (cartSummary) cartSummary.style.display = 'none';
+            
+            return;
+        }
+        
         // XÓA TẤT CẢ ITEMS CŨ TRƯỚC KHI RENDER LẠI
         const oldItems = cartContainer.querySelectorAll('.cart-item');
         oldItems.forEach(item => item.remove());
@@ -1289,6 +1353,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Export renderCartItems as global function
     window.renderCartItems = renderCartItems;
+    
+    // Kiểm tra đăng nhập khi click vào giỏ hàng
+    function checkLoginBeforeCart(event) {
+        const userKey = window.STORAGE_KEYS ? window.STORAGE_KEYS.CURRENT_USER : 'phonestore_currentUser';
+        const currentUser = JSON.parse(localStorage.getItem(userKey) || 'null');
+        
+        if (!currentUser || !currentUser.id) {
+            event.preventDefault();
+            alert('⚠️ Vui lòng đăng nhập để sử dụng giỏ hàng!\n\nBạn sẽ được chuyển đến trang đăng nhập.');
+            window.location.href = 'auth.html#login';
+            return false;
+        }
+        return true;
+    }
+    
+    // Gắn event listener cho tất cả các link giỏ hàng
+    document.addEventListener('click', (e) => {
+        const cartLink = e.target.closest('a[href*="cart"], a.cart-icon');
+        if (cartLink && (cartLink.href.includes('#cart') || cartLink.href.includes('user-account.html#cart'))) {
+            checkLoginBeforeCart(e);
+        }
+    });
 
     // Biến này đã được khai báo nhưng không được sử dụng trong code gốc của bạn
     // var listItemCart; 

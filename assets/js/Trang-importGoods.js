@@ -1,6 +1,6 @@
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => {
-    let pageImport = `
+// Hàm khởi tạo trang import
+function initImportPageWrapper() {
+  const pageImport = `
 <div class="import-container">
   <h2>📦 Quản lý phiếu nhập hàng</h2>
   <div class="import-toolbar">
@@ -65,13 +65,65 @@ if (document.readyState === "loading") {
 </div>
 `;
 
-    const productsContent = document.getElementById("import-content");
+  const productsContent = document.getElementById("import-content");
+  if (productsContent) {
+    // Kiểm tra xem đã có dữ liệu trong localStorage chưa
+    const existingData = JSON.parse(localStorage.getItem("phonestore_import_orders") || '[]');
+    console.log('🔍 Kiểm tra dữ liệu trước khi init:', existingData.length, 'phiếu nhập');
+    
     productsContent.innerHTML = pageImport;
+    
+    // Đợi một chút để đảm bảo DOM đã được render
+    setTimeout(() => {
+      initImportPage();
+    }, 50);
+  }
+}
 
-    initImportPage();
+// Đảm bảo luôn chạy được cả khi DOM đã sẵn (F5) hoặc script load sớm
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    initImportPageWrapper();
+    
+    // Gắn click cho menu item để render lại khi click
+    const menuItems = document.getElementsByClassName("sidebar-menu-item-cate");
+    if (menuItems && menuItems.length > 0) {
+      Array.from(menuItems).forEach((item, index) => {
+        if (item.getAttribute('href') === '#import') {
+          item.addEventListener("click", () => {
+            // Đợi một chút để đảm bảo DOM đã được cập nhật
+            setTimeout(() => {
+              const importContent = document.getElementById("import-content");
+              if (importContent && importContent.style.display !== 'none') {
+                initImportPageWrapper();
+              }
+            }, 100);
+          });
+        }
+      });
+    }
   });
-  initImportPage();
 } else {
+  // DOM đã sẵn sàng, chạy ngay
+  initImportPageWrapper();
+  
+  // Gắn click cho menu item để render lại khi click
+  const menuItems = document.getElementsByClassName("sidebar-menu-item-cate");
+  if (menuItems && menuItems.length > 0) {
+    Array.from(menuItems).forEach((item) => {
+      if (item.getAttribute('href') === '#import') {
+        item.addEventListener("click", () => {
+          // Đợi một chút để đảm bảo DOM đã được cập nhật
+          setTimeout(() => {
+            const importContent = document.getElementById("import-content");
+            if (importContent && importContent.style.display !== 'none') {
+              initImportPageWrapper();
+            }
+          }, 100);
+        });
+      }
+    });
+  }
 }
 function initImportPage() {
   const tableBody = document.getElementById("importTableBody");
@@ -86,16 +138,50 @@ function initImportPage() {
   const btnCloseDetail = document.getElementById("btnCloseDetail");
   const searchInput = document.getElementById("searchImport");
 
-  let importList =
-    JSON.parse(localStorage.getItem("phonestore_import_orders")) || [];
+  // Load dữ liệu từ localStorage khi khởi tạo
+  // Đảm bảo luôn load lại từ localStorage mỗi lần init
+  const storedData = localStorage.getItem("phonestore_import_orders");
+  let importList = [];
+  
+  if (storedData) {
+    try {
+      importList = JSON.parse(storedData);
+      if (!Array.isArray(importList)) {
+        console.warn('⚠️ Dữ liệu không phải là array, reset về []');
+        importList = [];
+      }
+    } catch (error) {
+      console.error('❌ Lỗi khi parse dữ liệu từ localStorage:', error);
+      importList = [];
+    }
+  }
+  
   let editingId = null;
+  
+  // Log để debug
+  console.log('📦 Khởi tạo trang import - Số lượng phiếu nhập:', importList.length);
+  console.log('📦 Dữ liệu từ localStorage:', importList);
+  
+  // Kiểm tra xem có dữ liệu không
+  if (importList.length === 0) {
+    console.warn('⚠️ Không có dữ liệu trong localStorage!');
+  }
 
   // =================== HÀM TIỆN ÍCH ===================
-  const saveToLocal = () =>
-    localStorage.setItem(
-      "phonestore_import_orders",
-      JSON.stringify(importList)
-    );
+  const saveToLocal = () => {
+    try {
+      localStorage.setItem(
+        "phonestore_import_orders",
+        JSON.stringify(importList)
+      );
+      console.log('✅ Đã lưu vào localStorage:', importList);
+      return true;
+    } catch (error) {
+      console.error('❌ Lỗi khi lưu vào localStorage:', error);
+      alert('Lỗi khi lưu dữ liệu! Vui lòng thử lại.');
+      return false;
+    }
+  };
 
   const formatMoney = (n) => Number(n).toLocaleString("vi-VN") + "₫";
 
@@ -103,14 +189,22 @@ function initImportPage() {
     details.reduce((sum, d) => sum + (d.price ? d.price : d.gia * d.qty), 0);
 
   const renderTable = (list = importList) => {
+    if (!tableBody) return;
+    
     tableBody.innerHTML = "";
+    
+    if (!list || list.length === 0) {
+      tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Chưa có phiếu nhập nào</td></tr>';
+      return;
+    }
+    
     list.forEach((p) => {
       tableBody.innerHTML += `
         <tr>
           <td>#${p.id}</td>
           <td>${p.date}</td>
-          <td>${p.details.length}</td>
-          <td>${formatMoney(totalOf(p.details))}</td>
+          <td>${p.details ? p.details.length : 0}</td>
+          <td>${formatMoney(totalOf(p.details || []))}</td>
           <td><span class="badge ${
             p.status === "Hoàn thành" ? "done" : "pending"
           }">${p.status}</span></td>
@@ -123,9 +217,12 @@ function initImportPage() {
           </td>
         </tr>`;
     });
-    saveToLocal();
+    
+    // Không cần saveToLocal() ở đây vì chỉ render, không thay đổi dữ liệu
   };
 
+  // Load và render dữ liệu từ localStorage khi khởi tạo
+  console.log('📦 Đang render bảng với', importList.length, 'phiếu nhập');
   renderTable();
 
   // =================== MODAL ===================
@@ -234,15 +331,7 @@ function initImportPage() {
   // =================== LƯU PHIẾU NHẬP ===================
   form.onsubmit = (e) => {
     e.preventDefault();
-    let sl = document.getElementById("quality");
-    if (sl.value < 1) {
-      const products =
-        JSON.parse(localStorage.getItem("phonestore_products")) || [];
-      console.log(products.length);
-
-      alert("Vui lòng nhập số lượng lớn hơn 1");
-      return;
-    }
+    
     const date = document.getElementById("importDate").value;
     
     // Kiểm tra ngày nhập không được là quá khứ
@@ -293,9 +382,33 @@ function initImportPage() {
       importList.push({ id: newId, date, details, status: "Chưa hoàn thành" });
     }
 
+    // Lưu vào localStorage - chỉ dùng saveToLocal() để tránh duplicate
+    console.log('💾 Đang lưu importList:', importList);
+    if (!saveToLocal()) {
+      // Nếu lưu thất bại, không tiếp tục
+      alert('❌ Lỗi khi lưu dữ liệu! Vui lòng thử lại.');
+      return;
+    }
+    
+    // Kiểm tra lại dữ liệu đã lưu NGAY SAU KHI LƯU
+    const savedData = JSON.parse(localStorage.getItem("phonestore_import_orders") || '[]');
+    console.log('✅ Đã lưu phiếu nhập vào localStorage:', savedData);
+    console.log('✅ Số lượng phiếu nhập sau khi lưu:', savedData.length);
+    
+    // Verify: so sánh dữ liệu đã lưu với importList
+    if (savedData.length !== importList.length) {
+      console.error('❌ LỖI: Số lượng không khớp! importList:', importList.length, 'savedData:', savedData.length);
+      alert('⚠️ Có vấn đề khi lưu dữ liệu. Vui lòng kiểm tra lại!');
+    }
+    
+    // Render lại bảng với dữ liệu mới từ importList (không phải từ localStorage)
     renderTable();
-    saveToLocal();
+    
+    // Đóng modal
     closeModal(modal);
+    
+    // Thông báo thành công
+    alert("✅ Lưu phiếu nhập thành công!");
   };
 
   // =================== CHI TIẾT, SỬA, HOÀN THÀNH ===================
